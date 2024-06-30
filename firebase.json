@@ -1,0 +1,20 @@
+{
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": ["venv", ".git", "firebase-debug.log", "firebase-debug.*.log"]
+    }
+  ],
+  "hosting": {
+    "site": "ilplatform-admin",
+    "public": "front/build",
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
