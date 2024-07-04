@@ -10,10 +10,12 @@ from Salesforce.SFProcessor import SFProcessor
 from Google.Connector import GoogleConnector
 from Actions.CampsEvents import update_and_create_camps_per_week
 from Actions.CampsForm import get_camps_form
+from Helpers.VerifyAuth import verify_auth
 
 # Python imports
 import os
 import json
+
 
 
 
@@ -59,6 +61,11 @@ def get_teachers_for_partners(req: https_fn.Request) -> https_fn.Response:
 def get_week_codes(req: https_fn.Request) -> https_fn.Response:
     """HTTPS Cloud Function to get week codes."""
 
+    # Verify that the user has sufficient permissions
+    message, success = verify_auth(req, auth_level=1)
+    if not success:
+        return {"data": {"error": message, "status": 401}}
+
     # Initialize the Salesforce client
     sf = SFProcessor(SF_USERNAME.value, SF_PASSWORD.value, SF_SECURITY_TOKEN.value)
 
@@ -69,7 +76,7 @@ def get_week_codes(req: https_fn.Request) -> https_fn.Response:
     week_codes = list(map(lambda x: x["code"], sf.get_camp_weeks()))
 
     # Return the response
-    return {"data": week_codes, "status": 200}
+    return {"data": {"response": week_codes, "status": 200}}
 
 @https_fn.on_request()
 def create_camps_for_a_week(req: https_fn.Request) -> https_fn.Response:
@@ -101,6 +108,11 @@ def create_camps_for_a_week(req: https_fn.Request) -> https_fn.Response:
 def create_camps_form(req: https_fn.Request) -> https_fn.Response:
     """HTTPS Cloud Function to create camps form."""
 
+    # Verify that the user has sufficient permissions
+    message, success = verify_auth(req, auth_level=1)
+    if not success:
+        return {"data": {"error": message, "status": 401}}
+
     # Initialize the Salesforce client
     sf = SFProcessor(SF_USERNAME.value, SF_PASSWORD.value, SF_SECURITY_TOKEN.value)
 
@@ -108,8 +120,8 @@ def create_camps_form(req: https_fn.Request) -> https_fn.Response:
     data = json.loads(req.data.decode('utf8').replace("'", '"'))["data"]
     title = data["title"]
     week_codes = data["week_codes"]
-    if title is None or week_codes is None:
-        return https_fn.Response("No text parameter provided", status=400)
+    if week_codes is None or title is None:
+        return {"data": {"error": "No week_codes or title provided", "status": 400}}
 
     # Log the request
     logger.log(f"[LOG] Creating camps form with title {title} and week codes {week_codes}")
@@ -118,4 +130,34 @@ def create_camps_form(req: https_fn.Request) -> https_fn.Response:
     link = get_camps_form(google, sf, title, week_codes.replace(" ", "").split(","))
 
     # Return the response
-    return {"data": link, "status": 200}
+    return {"data": {"response": link, "status": 200}}
+
+@https_fn.on_request(
+    region='europe-west1',
+    cors=options.CorsOptions(
+        cors_origins="*",
+        cors_methods=["get", "post", "options"]
+    ))
+def update_camps_calendar(req: https_fn.Request) -> https_fn.Response:
+    """HTTPS Cloud Function to update calendar events for camps."""
+    # Verify that the user has sufficient permissions
+    message, success = verify_auth(req, auth_level=2)
+    if not success:
+        return {"data": {"error": message, "status": 401}}
+
+    # Initialize the Salesforce client
+    sf = SFProcessor(SF_USERNAME.value, SF_PASSWORD.value, SF_SECURITY_TOKEN.value)
+
+    # Grab the parameters
+    data = json.loads(req.data.decode('utf8').replace("'", '"'))["data"]
+    week_code = data["week_code"]
+    if week_code is None:
+        return {"data": {"error": "No week_code", "status": 400}}
+
+    # Log the request
+    message, success = update_and_create_camps_per_week(google, sf, week_code)
+    print(message, success)
+    if success:
+        return {"data": {"response": message, "status": 200}}
+    else:
+        return {"data": {"error": message, "status": 400}}

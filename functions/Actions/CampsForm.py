@@ -1,8 +1,8 @@
 def get_camps_form(google, sf, title, week_codes):
-    result = google.create_form(title)
+    result = google.create_camps_form()
 
     def get_camp_texts(week_code):
-        camp_codes = sf.get_camps_per_week(week_code, confirmed=False)
+        camp_codes = sf.get_camps_per_week(week_code, confirmed="Not Cancelled")
 
         def get_camp_text(camp_code):
             return sf.get_camp_details(camp_code)["teacher_text"]
@@ -38,6 +38,14 @@ def get_camps_form(google, sf, title, week_codes):
             }
             for i, week_code in enumerate(week_codes)]
     }
+    update["requests"].append({
+        "updateFormInfo": {
+            "info": {
+                "title": title
+            },
+            "updateMask": "title",
+        }
+    })
 
     form = google.update_form(result["id"], update)
     print(f'[SUCCESS] Form created successfully under link {form["responderUri"]}')

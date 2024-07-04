@@ -91,10 +91,9 @@ class GoogleConnector():
     def update_event(self, event_id, event):
         return self.calendar.events().update(calendarId=CALENDAR_CAMPS_ID, eventId=event_id, body=event).execute()
 
-    def create_form(self, title):
+    def create_camps_form(self):
         # Create body for form allowing daniel@ilplatform.be to edit
         body = {
-            "title": title,
             "addParents": ["1llQJfvK-FNlQ26-9HmUXWKALy59cr8uM"]
         }
 

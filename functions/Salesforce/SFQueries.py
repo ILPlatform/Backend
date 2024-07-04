@@ -23,7 +23,12 @@ class SFQueries:
         return query
 
     def get_camps_per_week(self, week_code, confirmed=True):
-        conf_query = "AND StageName='Confirmed'"
+        if confirmed == True:
+            conf_query = "AND StageName='Confirmed'"
+        elif confirmed == "Not Cancelled":
+            conf_query = "AND StageName!='Cancelled'"
+        else:
+            conf_query = ""
         query = f"""
             SELECT Camp_Code__c
             FROM Opportunity

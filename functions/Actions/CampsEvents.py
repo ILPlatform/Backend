@@ -62,7 +62,7 @@ def update_camp_event(google_calendar, sf, camp_code):
 
 def update_and_create_camps_per_week(google, sf, week_code):
     # Get the Camp Codes for the Week
-    camp_codes = sf.get_camps_per_week(week_code, False)
+    camp_codes = sf.get_camps_per_week(week_code, True)
     print(f'[INFO] Found {len(camp_codes)} Camps for {week_code}, namely {", ".join(camp_codes)}')
 
     # Create the Events for each Camp
@@ -75,4 +75,7 @@ def update_and_create_camps_per_week(google, sf, week_code):
                 print(f'[SUCCESS] Event updated for {camp_code}')
         except Exception as e:
             print(f'[ERROR] {e}')
+            return f'[ERROR] {e}', False
             continue
+
+    return "Success", True
