@@ -60,10 +60,12 @@ def update_camp_event(google_calendar, sf, camp_code):
 
     return True
 
-def update_and_create_camps_per_week(google, sf, week_code):
+def update_and_create_camps_per_week(google, sf, week_codes):
     # Get the Camp Codes for the Week
-    camp_codes = sf.get_camps_per_week(week_code, True)
-    print(f'[INFO] Found {len(camp_codes)} Camps for {week_code}, namely {", ".join(camp_codes)}')
+    camp_codes = []
+    for week_code in week_codes:
+        camp_codes += sf.get_camps_per_week(week_code, True)
+    print(f'[INFO] Found {len(camp_codes)} Camps for {week_codes}, namely {", ".join(camp_codes)}')
 
     # Create the Events for each Camp
     for camp_code in camp_codes:

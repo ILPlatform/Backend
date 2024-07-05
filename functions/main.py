@@ -52,15 +52,10 @@ def get_teachers_for_partners(req: https_fn.Request) -> https_fn.Response:
     # Return the response
     return https_fn.Response("\n".join(teachers))
 
-@https_fn.on_request(
-    region='europe-west1',
-    cors=options.CorsOptions(
-        cors_origins="*",
-        cors_methods=["get", "post", "options"]
-    ))
+@https_fn.on_request(region='europe-west1',
+    cors=options.CorsOptions(cors_origins="*", cors_methods=["get", "post", "options"]))
 def get_week_codes(req: https_fn.Request) -> https_fn.Response:
     """HTTPS Cloud Function to get week codes."""
-
     # Verify that the user has sufficient permissions
     message, success = verify_auth(req, auth_level=1)
     if not success:
@@ -73,7 +68,7 @@ def get_week_codes(req: https_fn.Request) -> https_fn.Response:
     logger.log(f"[LOG] Getting week codes")
 
     # Get the week codes from Salesforce
-    week_codes = list(map(lambda x: x["code"], sf.get_camp_weeks()))
+    week_codes = list(map(lambda x: {"code": x["code"], "name": x["period"]}, sf.get_camp_weeks()))
 
     # Return the response
     return {"data": {"response": week_codes, "status": 200}}

@@ -50,6 +50,11 @@ class SFProcessor(SFConnector):
         data = self.sf.query(query)["records"]
         return [d["Camp_Code__c"] for d in data]
 
+    def get_camps_per_week_with_name(self, week_code, confirmed=True):
+        query = self.queries.get_camps_per_week(week_code, confirmed)
+        data = self.sf.query(query)["records"]
+        return [{"code": d["Camp_Code__c"], "name": d["Name"]} for d in data]
+
     def get_teachers_for_partners(self, partner, only_confirmed=True):
         query = self.queries.get_teachers_for_partners(partner, only_confirmed)
         data = self.sf.query_all_iter(query)
