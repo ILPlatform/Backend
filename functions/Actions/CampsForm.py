@@ -14,7 +14,8 @@ def get_camps_form(google, sf, title, week_codes):
     camp_texts = [get_camp_texts(week_code) for week_code in week_codes]
 
     # Check all entries of camp_texts are not empty
-    assert all([camp_texts]), "[ERROR] All week lists must be non-empty"
+    if not all([camp_texts]):
+        return "[ERROR] All week lists must be non-empty", False
 
     update = {
         "requests": [
@@ -49,4 +50,4 @@ def get_camps_form(google, sf, title, week_codes):
 
     form = google.update_form(result["id"], update)
     print(f'[SUCCESS] Form created successfully under link {form["responderUri"]}')
-    return form["responderUri"]
+    return form["responderUri"], True

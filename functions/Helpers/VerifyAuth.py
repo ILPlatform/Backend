@@ -5,9 +5,13 @@ AUTHORIZED_UIDS = {
     1: ["if4o0vOCGVV62JGgevgQXebtJMI2", "x0YZB7Z0ETUT0HzMscMQ6IrataY2"],
     # Daniel
     2: ["if4o0vOCGVV62JGgevgQXebtJMI2"],
+    # No one
+    3: []
 }
 
 def verify_auth(req, auth_level):
+    if auth_level == 0:
+        return "", True
     try:
         authorization = req.headers.get('Authorization')
         token = authorization.split(' ')[1]

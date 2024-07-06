@@ -2,7 +2,7 @@
   "functions": [
     {
       "source": "functions",
-      "codebase": "default",
+      "codebase": "admin",
       "ignore": ["venv", ".git", "firebase-debug.log", "firebase-debug.*.log"]
     }
   ],
