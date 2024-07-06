@@ -10,9 +10,7 @@ from Helpers import firebase_functions_custom, https_fn_custom
 def admin_create_camps_form(data):
     """HTTPS Cloud Function to create camps form."""
     # Initialize the Salesforce client
-    sf, message, success = getSF()
-    if not success:
-        return {"data": {"error": message, "status": 401}}
+    sf = getSF()
 
     # Initialize the Google client
     google = GoogleConnector()
@@ -23,6 +21,4 @@ def admin_create_camps_form(data):
 
     # Create camps form
     message, success = get_camps_form(google, sf, data["title"], data["week_codes"])
-    if not success:
-        return {"data": {"error": message, "status": 400}}
     return {"data": {"response": message, "status": 200}}

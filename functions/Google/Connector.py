@@ -14,7 +14,9 @@ CREDENTIALS_PATH = os.path.join(os.getcwd(), '.googleapi_credentials.json')
 SCOPES = [
   'https://www.googleapis.com/auth/calendar',
   'https://www.googleapis.com/auth/drive',
-  'https://www.googleapis.com/auth/forms.body'
+  'https://www.googleapis.com/auth/forms.body',
+  'https://www.googleapis.com/auth/documents',
+  'https://www.googleapis.com/auth/spreadsheets'
 ]
 DISCOVERY_DOC = "https://forms.googleapis.com/$discovery/rest?version=v1"
 CAMPS_FORM_ID = "1pFYz_J2dwGJ6SGoixtmnILJRfssPJevXaXUWIO73-Dw"
@@ -29,6 +31,8 @@ class GoogleConnector():
         self.__build_calendar()
         self.__build_drive()
         self.__build_forms()
+        self.__build_docs()
+        self.__build_sheets()
 
     def __build_calendar(self):
         try:
@@ -53,6 +57,23 @@ class GoogleConnector():
         except Exception as e:
             self.forms = None
             print(f"[ERROR] Forms not built. Error: {e}")
+
+    def __build_docs(self):
+        try:
+            self.docs = build('docs', 'v1', credentials=self.auth)
+            print("[AUTHENTICATE] Docs authenticated successfully")
+        except Exception as e:
+            self.docs = None
+            print(f"[ERROR] Docs not built. Error: {e}")
+
+    def __build_sheets(self):
+        try:
+            self.sheets = build('sheets', 'v4', credentials=self.auth)
+            print("[AUTHENTICATE] Sheets authenticated successfully")
+        except Exception as e:
+            self.sheets = None
+            print(f"[ERROR] Sheets not built. Error: {e}")
+
 
     # Authorize and return a Google API client
     def __authorize(self):

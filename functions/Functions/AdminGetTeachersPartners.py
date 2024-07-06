@@ -3,13 +3,11 @@ from Salesforce import getSF
 from firebase_functions import logger, https_fn, options
 
 @https_fn_custom()
-@firebase_functions_custom(auth_level=1)
+@firebase_functions_custom(auth_level=2)
 def admin_get_teachers_partners(data):
     """HTTPS Cloud Function to get teacher details for partners."""
     # Initialize the Salesforce client
-    sf, message, success = getSF()
-    if not success:
-        return {"data": {"error": sf, "status": 401}}
+    sf = getSF()
 
     # Grab the parameters
     partner = data["partner"]

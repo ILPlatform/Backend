@@ -67,3 +67,23 @@ class SFProcessor(SFConnector):
         data = self.sf.query(query)["records"][0]
 
         return f'{data["Name"]} ({data["Start_Date__c"]} -> {data["End_Date__c"]})'
+
+    def get_teacher_details(self, email):
+        query = self.queries.get_teacher_details(email)
+        data = self.sf.query(query)["records"][0]
+
+        processed_data = {
+            "name": data.get("Name"),
+            "email": data.get("Email"),
+            "phone": data.get("Phone"),
+            "address": f'{data.get("MailingStreet")}, {data.get("MailingPostalCode")} {data.get("MailingCity")}',
+            "iban": data.get("IBAN__c"),
+            "bic": data.get("BIC_Code__c"),
+            "nn": data.get("National_Registration_Number__c"),
+            "nationality": data.get("Nationality__c"),
+            "birthplace": data.get("Birthplace__c"),
+            "contract_type": data.get("Contract_Type__c"),
+            "contract": float(data.get("Contract_Salary__c") or 0),
+        }
+
+        return processed_data

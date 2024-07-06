@@ -2,3 +2,6 @@ from .AdminGetTeachersPartners import admin_get_teachers_partners
 from .AdminGetWeekCodes import admin_get_week_codes
 from .AdminCreateCampsForm import admin_create_camps_form
 from .AdminUpdateCampsEvents import admin_update_camps_events
+from .AdminCreateTeacherConvention import admin_create_teacher_convention
+from .AdminCreateTeacherAttestationsProvisional import admin_create_teacher_attestations_provisional
+from .AdminCreateTeacherAttestations import admin_create_teacher_attestations

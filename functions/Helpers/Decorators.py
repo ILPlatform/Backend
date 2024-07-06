@@ -35,6 +35,17 @@ def __auth_verifier(auth_level):
         return wrapper
     return decorator
 
+# Decorator to protect the function with a try-except block
+def __protect_try_except(function):
+    @wraps(function)
+    def wrapper(request):
+        # try:
+        return function(request)
+        # except Exception as e:
+        #     pass
+            # return {"data": {"error": str(e), "status": 400}}
+    return wrapper
+
 # Custom decorator which combines the above decorators
 def firebase_functions_custom(auth_level=0):
     def decorator(function):
@@ -42,6 +53,7 @@ def firebase_functions_custom(auth_level=0):
         def wrapper(request):
             @__auth_verifier(auth_level)
             @__get_json_data
+            @__protect_try_except
             def new_function(data):
                 return function(data)
             return new_function(request)
