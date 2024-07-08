@@ -16,10 +16,13 @@ def html_convention(params):
     <p>
         La convention est attachée au lien qui suit.
         Merci de télécharger le document en format pdf, de le signer et de le renvoyer à travers le formulaire
-        <a href="https://forms.gle/UNGTKerziGy4yTdh7">suivant</a>.
+        <a href="https://forms.gle/PinPa1iKWmYjgVrg8">suivant</a>.
     </p>
     <p>
         Lien vers le document: <a href="{params.get('sharableLink')}">Cliquez ici</a>.
+    </p>
+    <p>
+        Pour téléverser le document signé, un code identifiant du document vous sera demandé. Voici votre identifiant unique (qui changera pour chaque document reçu): <b>{params.get('sf_id')}</b>.
     </p>
     <p>
         Un tout grand merci pour le travail fourni ce mois et une belle journée,

@@ -10,6 +10,8 @@ const Home = () => {
       <br />
       <a href="/get_teachers_partners">Get Teachers for Partners</a>
       <br />
+      <a href="/create_teacher_convention">Get Teacher Convention</a>
+      <br />
       <a href="/create_teacher_attestations">Get Teacher Attestations</a>
     </>
   );

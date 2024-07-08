@@ -19,6 +19,11 @@ def https_fn_custom():
 def __get_json_data(function):
     @wraps(function)
     def wrapper(request):
+        # print(request)
+        # print(request.get_json())
+        # print(request.get_json(silent=True))
+        # data = request.get_json(silent=True).get("data")
+        # print(json.loads(request.data.decode('utf8').replace("'", '"')))
         data = json.loads(request.data.decode('utf8').replace("'", '"'))["data"]
         return function(data)
     return wrapper
@@ -39,11 +44,10 @@ def __auth_verifier(auth_level):
 def __protect_try_except(function):
     @wraps(function)
     def wrapper(request):
-        # try:
-        return function(request)
-        # except Exception as e:
-        #     pass
-            # return {"data": {"error": str(e), "status": 400}}
+        try:
+            return function(request)
+        except Exception as e:
+            return {"data": {"error": str(e), "status": 400}}
     return wrapper
 
 # Custom decorator which combines the above decorators

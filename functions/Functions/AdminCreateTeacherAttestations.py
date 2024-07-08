@@ -6,7 +6,7 @@ from Emails import send_convention
 from Google import Events
 from pprint import pprint
 from Actions import generate_confirmation_text, get_teacher_dict, update_payment_sheet
-from Google.Document import TimesheetDocument
+from Google import TimesheetDocument
 from Emails import send_attestation_teacher, send_attestation_admin
 
 BLACKLIST_EMAILS = [

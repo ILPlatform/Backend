@@ -3,7 +3,7 @@ import React from "react";
 import GenericForm from "./GenericForm";
 
 const CreateTeacherConvention = () => {
-  const [data, setData] = React.useState({ email: "" });
+  const [data, setData] = React.useState({ email: "", contract: false, end_date: "" });
 
   return (
     <GenericForm
@@ -24,6 +24,30 @@ const CreateTeacherConvention = () => {
               />
             </label>
           </div>
+          <div className="selectfields">
+            <label>
+              Type:{" "}
+              <select onChange={(e) => setData({ ...data, contract: e.target.value })}>
+                <option value="false">Convention</option>
+                <option value="true">Contract</option>
+              </select>
+            </label>
+          </div>
+          {data.contract === "true" ? (
+            <div className="textfields">
+              <label>
+                End Date:{" "}
+                <input
+                  type="text"
+                  value={data.end_date}
+                  onChange={(e) => setData({ ...data, end_date: e.target.value })}
+                  placeholder="Ex: 2024-08-31"
+                />
+              </label>
+            </div>
+          ) : (
+            ""
+          )}
         </>
       }
     />

@@ -8,6 +8,7 @@ PRESTATION_TEMPLATE_ID = os.getenv('PRESTATION_TEMPLATE_ID')
 CONVENTION_TEMPLATE_ID = os.getenv('CONVENTION_TEMPLATE_ID')
 DOCUMENTS_BY_BOT_ID = os.getenv('DOCUMENTS_BY_BOT_ID')
 PAYMENTS_TEMPLATE_ID = os.getenv('PAYMENTS_TEMPLATE_ID')
+CONTRACT_TEMPLATE_ID = os.getenv('CONTRACT_TEMPLATE_ID')
 
 class Document():
     def __init__(self, google):
@@ -107,6 +108,9 @@ class ConventionDocument(Document):
             requests = [
                 {'replaceAllText': {'containsText': {'text': '{NAME}'}, 'replaceText': self.teacher.get('name')}},
                 {'replaceAllText': {'containsText': {'text': '{REG_NUMBER}'}, 'replaceText': self.teacher.get('nn')}},
+                {'replaceAllText': {'containsText': {'text': '{BIRTHPLACE}'}, 'replaceText': self.teacher.get('birthplace')}},
+                {'replaceAllText': {'containsText': {'text': '{BIRTHDATE}'}, 'replaceText': self.teacher.get('birthdate')}},
+                {'replaceAllText': {'containsText': {'text': '{NATIONALITY}'}, 'replaceText': self.teacher.get('nationality')}},
                 {'replaceAllText': {'containsText': {'text': '{ADDRESS}'}, 'replaceText': self.teacher.get('address')}},
                 {'replaceAllText': {'containsText': {'text': '{TODAY}'}, 'replaceText': str(date.today())}},
                 {'replaceAllText': {'containsText': {'text': '{END_DATE}'}, 'replaceText': "2024-08-31"}},
@@ -120,6 +124,42 @@ class ConventionDocument(Document):
 
         except Exception as e:
             raise ValueError(f"[ERROR] {self.teacher.get('name')} - Error In Filling Out File: {e}")
+
+class ContractDocument(Document):
+    def __init__(self, google, teacher, end_date="2024-08-31"):
+        Document.__init__(self, google)
+        self.teacher = teacher
+        self.end_date = end_date
+
+        file_id = CONTRACT_TEMPLATE_ID
+        name = f"Contract ILPlatform {teacher.get('name')}"
+        log_details = teacher.get('name')
+        self.log_details = log_details
+        self.document_id = self._Document__copy_document(file_id, name, log_details)
+
+    def fill(self):
+        try:
+            # Create requests to replace text
+            requests = [
+                {'replaceAllText': {'containsText': {'text': '{NAME}'}, 'replaceText': self.teacher.get('name')}},
+                {'replaceAllText': {'containsText': {'text': '{REG_NUMBER}'}, 'replaceText': self.teacher.get('nn')}},
+                {'replaceAllText': {'containsText': {'text': '{ADDRESS}'}, 'replaceText': self.teacher.get('address')}},
+                {'replaceAllText': {'containsText': {'text': '{BIRTHPLACE}'}, 'replaceText': self.teacher.get('birthplace')}},
+                {'replaceAllText': {'containsText': {'text': '{BIRTHDATE}'}, 'replaceText': self.teacher.get('birthdate')}},
+                {'replaceAllText': {'containsText': {'text': '{NATIONALITY}'}, 'replaceText': self.teacher.get('nationality')}},
+                {'replaceAllText': {'containsText': {'text': '{TODAY}'}, 'replaceText': str(date.today())}},
+                {'replaceAllText': {'containsText': {'text': '{END_DATE}'}, 'replaceText': self.end_date}},
+                {'replaceAllText': {'containsText': {'text': '{IBAN}'}, 'replaceText': self.teacher.get('iban')}},
+                {'replaceAllText': {'containsText': {'text': '{BIC}'}, 'replaceText': self.teacher.get('bic')}},
+            ]
+
+            # Send the batchUpdate request
+            self.google.docs.documents().batchUpdate(documentId=self.document_id, body={'requests': requests}).execute()
+            print(f"[SUCCESS] {self.teacher.get('name')} - Document Filled Out Successfully")
+
+        except Exception as e:
+            raise ValueError(f"[ERROR] {self.teacher.get('name')} - Error In Filling Out File: {e}")
+
 
 class PaymentsDocument(Document):
     def __init__(self, google, total_text, payments_text, month, year):

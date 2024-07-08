@@ -2,6 +2,8 @@
 from .SFConnector import SFConnector
 from .SFQueries import SFQueries
 
+import os
+
 class SFProcessor(SFConnector):
     def __init__(self, SF_USERNAME, SF_PASSWORD, SF_SECURITY_TOKEN) -> None:
         super().__init__(SF_USERNAME, SF_PASSWORD, SF_SECURITY_TOKEN)
@@ -72,7 +74,10 @@ class SFProcessor(SFConnector):
         query = self.queries.get_teacher_details(email)
         data = self.sf.query(query)["records"][0]
 
+        nn = data.get("National_Registration_Number__c").replace(".", "")
+
         processed_data = {
+            "id": data.get("Id"),
             "name": data.get("Name"),
             "email": data.get("Email"),
             "phone": data.get("Phone"),
@@ -84,6 +89,22 @@ class SFProcessor(SFConnector):
             "birthplace": data.get("Birthplace__c"),
             "contract_type": data.get("Contract_Type__c"),
             "contract": float(data.get("Contract_Salary__c") or 0),
+            "birthdate": f"{nn[4:6]}/{nn[2:4]}/{nn[0:2]}"
         }
 
         return processed_data
+
+    def create_contract(self, teacher_id, start, end, contract_type, link):
+        contract = self.sf.Contract.create({
+            "AccountId": os.getenv("SF_TEACHERS_ACCOUNT_ID"),
+            "RecordTypeId": os.getenv("SF_TEACHER_CONTRACT_RECORD_TYPE_ID"),
+            "Teacher__c": teacher_id,
+            "StartDate": start,
+            "Contract_End_Date__c": end,
+            "Contract_Type__c": contract_type,
+            "Unsigned_Contract__c": link
+        })
+        return list(list(contract.items())[0])[1]
+
+    def update_contract(self, contract_id, signed_link):
+        self.sf.Contract.update(contract_id, {"Signed_Contract__c": signed_link})

@@ -11,7 +11,8 @@ def send_convention(teacher):
     # Setup template parameters
     params = {
         'name': teacher.get('name').split(' ')[0],
-        'sharableLink': teacher.get('link')
+        'sharableLink': teacher.get('link'),
+        'sf_id': teacher.get('sf_id')
     }
 
     # Setup email parameters
