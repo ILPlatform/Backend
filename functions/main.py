@@ -12,9 +12,3 @@ app = initialize_app()
 
 # Import the functions
 from Functions import admin_get_week_codes, admin_create_camps_form, admin_update_camps_events, admin_get_teachers_partners, admin_create_teacher_convention, admin_create_teacher_attestations, admin_update_teacher_contract_signed
-
-@https_fn_custom()
-def form_trigger(request):
-    payload = request.get_json(silent=True)
-    print(f"Payload was: {payload}")
-    return "OK"

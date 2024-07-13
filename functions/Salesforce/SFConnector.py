@@ -14,3 +14,6 @@ class SFConnector:
 
     def update_opportunity(self, id, data):
         return self.sf.Opportunity.update(id, data)
+
+    def update_picklist(self, id, data):
+        return self.sf.Picklist__c.update(id, data)

@@ -1,3 +1,4 @@
+from Emails import send_email_error
 from .VerifyAuth import verify_auth
 from firebase_functions import https_fn, options
 import json
@@ -5,6 +6,7 @@ from Salesforce import getSF
 from types import FunctionType
 import sys
 from functools import wraps
+import os
 
 # Custom decorator to allow CORS in the Cloud Function
 def https_fn_custom():
@@ -47,7 +49,11 @@ def __protect_try_except(function):
         try:
             return function(request)
         except Exception as e:
-            return {"data": {"error": str(e), "status": 400}}
+            if os.getenv("FUNCTIONS_EMULATOR") == True:
+                raise Exception(e)
+            else:
+                send_email_error(e)
+                return {"data": {"error": str(e), "status": 400}}
     return wrapper
 
 # Custom decorator which combines the above decorators

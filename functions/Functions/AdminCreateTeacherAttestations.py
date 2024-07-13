@@ -1,12 +1,11 @@
 from Salesforce import getSF
 from firebase_functions import logger, https_fn
-from Google import GoogleConnector, ConventionDocument
+from Google import GoogleConnector, TimesheetDocument
 from Helpers import firebase_functions_custom, https_fn_custom
 from Emails import send_convention
 from Google import Events
 from pprint import pprint
 from Actions import generate_confirmation_text, get_teacher_dict, update_payment_sheet
-from Google import TimesheetDocument
 from Emails import send_attestation_teacher, send_attestation_admin
 
 BLACKLIST_EMAILS = [

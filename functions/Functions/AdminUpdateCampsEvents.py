@@ -1,6 +1,6 @@
 from Helpers import firebase_functions_custom, https_fn_custom
 from Salesforce import getSF
-from Actions.CampsEvents import update_and_create_camps_per_week
+from Actions import update_and_create_camps_per_week
 from Google.Connector import GoogleConnector
 from firebase_functions import https_fn, options
 
@@ -14,6 +14,10 @@ def admin_update_camps_events(data):
     # Initialize the Google client
     google = GoogleConnector()
 
-    # Log the request
+    # Update Calendar Events
     message, success = update_and_create_camps_per_week(google, sf, data["week_codes"])
+
+    # # Create Picture Folders
+    # create_camp_pictures(google, sf, data["week_codes"])
+
     return {"data": {"response": message, "status": 200}}

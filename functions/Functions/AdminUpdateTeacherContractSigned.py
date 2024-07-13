@@ -1,7 +1,7 @@
 from Salesforce import getSF
 from firebase_functions import logger, https_fn
 from Actions.CampsForm import get_camps_form
-from Google import GoogleConnector, ConventionDocument, ContractDocument
+from Google import GoogleConnector
 from Helpers import firebase_functions_custom, https_fn_custom
 from Emails import send_convention
 

@@ -1,3 +1,3 @@
-from .Document import ConventionDocument, ContractDocument, TimesheetDocument
+from .Document import ContractDocument, TimesheetDocument
 from .Connector import GoogleConnector
 from .Events import Events

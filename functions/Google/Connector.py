@@ -21,6 +21,7 @@ SCOPES = [
 DISCOVERY_DOC = "https://forms.googleapis.com/$discovery/rest?version=v1"
 CAMPS_FORM_ID = "1pFYz_J2dwGJ6SGoixtmnILJRfssPJevXaXUWIO73-Dw"
 CALENDAR_CAMPS_ID = "c_b9780e1464a9cd0d8468505fba7ade320c1b833f29aa947605d11b5cde92b80a@group.calendar.google.com"
+DRIVE_CAMPS_PHOTOS_ID = os.getenv("DRIVE_CAMPS_PHOTOS_ID")
 
 class GoogleConnector():
     def __init__(self):
@@ -128,3 +129,35 @@ class GoogleConnector():
         form = self.forms.forms().get(formId=form_id).execute()
 
         return form
+
+    def create_camp_pictures_folder(self, name, parent=None):
+        file_metadata = {
+            'name': name,
+            'mimeType': 'application/vnd.google-apps.folder'
+        }
+        file = self.drive.files().create(body=file_metadata, fields='id, parents').execute()
+        previous_parents = ",".join(file.get("parents"))
+        file = self.drive.files().update(
+                    fileId=file.get("id"),
+                    addParents=parent or DRIVE_CAMPS_PHOTOS_ID,
+                    removeParents=previous_parents,
+                    fields="id",
+                    # supportsAllDrives=True,
+                    # supportsTeamDrives=True
+                ).execute()
+        return file.get("id")
+
+    def update_camp_pictures_folder(self, id, name, parent=None):
+        file = self.drive.files().get(fileId=id, fields='id, parents').execute()
+        file_metadata = {
+            'name': name,
+        }
+        previous_parents = ",".join(file.get("parents"))
+        file = self.drive.files().update(
+                    body=file_metadata,
+                    fileId=id,
+                    addParents=parent or DRIVE_CAMPS_PHOTOS_ID,
+                    removeParents=previous_parents,
+                    fields="id",
+                ).execute()
+        return file.get("id")

@@ -43,6 +43,31 @@ def create_camp_event(google_calendar, sf, camp_code):
 
     return True
 
+def create_camp_pictures(google, sf, camp_code):
+    # Get the Camp Details
+    camp_info = sf.get_camp_details(camp_code)
+
+    if camp_info.get("picture_grand_parent_id") == None:
+        created_folder_id = google.create_camp_pictures_folder(f"{camp_info.get('holiday_name')}")
+        sf.update_picklist(camp_info["holiday_id"], {"Google_Drive_Pictures_ID__c": created_folder_id})
+        camp_info["picture_grand_parent_id"] = created_folder_id
+
+    if camp_info.get("picture_parent_id") == None:
+        created_folder_id = google.create_camp_pictures_folder(f"{camp_info.get('picture_parent_name')}", parent=camp_info["picture_grand_parent_id"])
+        sf.update_picklist(camp_info["week_id"], {"Google_Drive_Pictures_ID__c": created_folder_id})
+        camp_info["picture_parent_id"] = created_folder_id
+    else:
+        google.update_camp_pictures_folder(camp_info["picture_parent_id"], camp_info["picture_parent_name"], parent=camp_info["picture_grand_parent_id"])
+
+    if camp_info["pictures_id"] == None:
+        # Create the Google Folder
+        created_folder_id = google.create_camp_pictures_folder(f"{camp_info.get('pictures_name')}", parent=camp_info["picture_parent_id"])
+
+        # Update the Salesforce Opportunity with the Google Event ID
+        sf.update_opportunity(camp_info["id"], {"Google_Drive_Pictures__c": created_folder_id})
+    else:
+        google.update_camp_pictures_folder(camp_info["pictures_id"], camp_info["pictures_name"], parent=camp_info["picture_parent_id"])
+
 def update_camp_event(google_calendar, sf, camp_code):
     # Get the Camp Details
     camp_info = sf.get_camp_details(camp_code)
@@ -75,9 +100,10 @@ def update_and_create_camps_per_week(google, sf, week_codes):
             else:
                 update_camp_event(google, sf, camp_code)
                 print(f'[SUCCESS] Event updated for {camp_code}')
+
+            # Create the Google Drive Folder for the Camp Pictures
+            create_camp_pictures(google, sf, camp_code)
         except Exception as e:
-            print(f'[ERROR] {e}')
-            return f'[ERROR] {e}', False
-            continue
+            raise ValueError(f'[ERROR] {e}')
 
     return "Success", True

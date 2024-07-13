@@ -17,8 +17,8 @@ def admin_create_camps_form(data):
 
     # Check if the week_codes are provided
     if data["week_codes"] is None:
-        return {"data": {"error": "No week_codes or title provided", "status": 400}}
+        raise ValueError("No week_codes or title provided")
 
     # Create camps form
-    message, success = get_camps_form(google, sf, data["title"], data["week_codes"])
+    message = get_camps_form(google, sf, data["title"], data["week_codes"])
     return {"data": {"response": message, "status": 200}}
