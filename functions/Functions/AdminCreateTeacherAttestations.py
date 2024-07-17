@@ -33,7 +33,7 @@ def admin_create_teacher_attestations(data):
         raise ValueError("No year or month provided")
 
     # Get events
-    events = Events(google, year, month, BLACKLIST_EMAILS).get_events()
+    events = Events(google, year, month, BLACKLIST_EMAILS).get_events(sf)
 
     # Get teacher details
     teacher_dict = get_teacher_dict(sf, events)

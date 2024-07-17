@@ -10,23 +10,27 @@ import os
 
 # Custom decorator to allow CORS in the Cloud Function
 def https_fn_custom():
-    return https_fn.on_request(
-    region='europe-west1',
-    cors=options.CorsOptions(
-        cors_origins="*",
-        cors_methods=["get", "post", "options"]
-    ))
+    if os.getenv("FUNCTIONS_EMULATOR") == "true":
+        return https_fn.on_request(
+        region='europe-west1',
+        cors=options.CorsOptions(
+            cors_origins=["*"],
+            cors_methods=["get", "post", "options"]
+        ))
+    else:
+        return https_fn.on_request(
+        region='europe-west1',
+        cors=options.CorsOptions(
+            cors_origins=["https://admin.ilplatform.be", "https://independentlearningplatform.lightning.force.com",
+            "https://independentlearningplatform--internbox.sandbox.lightning.force.com"],
+            cors_methods=["get", "post", "options"]
+        ))
 
 # Decorator to get the JSON data from the request
 def __get_json_data(function):
     @wraps(function)
     def wrapper(request):
-        # print(request)
-        # print(request.get_json())
-        # print(request.get_json(silent=True))
-        # data = request.get_json(silent=True).get("data")
-        # print(json.loads(request.data.decode('utf8').replace("'", '"')))
-        data = json.loads(request.data.decode('utf8').replace("'", '"'))["data"]
+        data = json.loads(request.data.decode('utf8').replace("'", '"')).get("data", {})
         return function(data)
     return wrapper
 
@@ -49,7 +53,7 @@ def __protect_try_except(function):
         try:
             return function(request)
         except Exception as e:
-            if os.getenv("FUNCTIONS_EMULATOR") == True:
+            if os.getenv("FUNCTIONS_EMULATOR") == "true":
                 raise Exception(e)
             else:
                 send_email_error(e)

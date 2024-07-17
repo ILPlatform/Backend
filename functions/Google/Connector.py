@@ -20,7 +20,7 @@ SCOPES = [
 ]
 DISCOVERY_DOC = "https://forms.googleapis.com/$discovery/rest?version=v1"
 CAMPS_FORM_ID = "1pFYz_J2dwGJ6SGoixtmnILJRfssPJevXaXUWIO73-Dw"
-CALENDAR_CAMPS_ID = "c_b9780e1464a9cd0d8468505fba7ade320c1b833f29aa947605d11b5cde92b80a@group.calendar.google.com"
+CALENDAR_CAMPS_ID = os.getenv("CALENDAR_CAMPS_ID")
 DRIVE_CAMPS_PHOTOS_ID = os.getenv("DRIVE_CAMPS_PHOTOS_ID")
 
 class GoogleConnector():
@@ -108,6 +108,7 @@ class GoogleConnector():
             exit()
 
     def create_event(self, event):
+        print("CAMPS ID: ", CALENDAR_CAMPS_ID)
         return self.calendar.events().insert(calendarId=CALENDAR_CAMPS_ID, body=event).execute()
 
     def update_event(self, event_id, event):

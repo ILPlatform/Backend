@@ -71,3 +71,11 @@ class SFQueries:
             WHERE Email='{email}'
             """
         return query
+
+    def get_additional_payments(self, year, month):
+        query = f"""
+            SELECT Beneficary__r.Email, Amount__c, Name
+            FROM Payment__c
+            WHERE Year__c={year} AND Month__c={month}
+            """
+        return query

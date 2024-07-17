@@ -15,8 +15,6 @@ def get_teacher_dict(sf, events):
         filtered_events = list(filter(lambda event: teacher in event.get("teachers") and event.get("held"), events))
         teacher_dict.get(teacher).update({"events": filtered_events})
 
-    pprint(teacher_dict)
-
     # Compute total amount per teacher
     for teacher_email in teacher_dict:
         teacher = teacher_dict.get(teacher_email)

@@ -116,3 +116,17 @@ class SFProcessor(SFConnector):
 
     def update_contract(self, contract_id, signed_link):
         self.sf.Contract.update(contract_id, {"Signed_Contract__c": signed_link})
+
+    def get_additional_payments(self, year, month):
+        query = self.queries.get_additional_payments(year, month)
+        data = self.sf.query_all_iter(query)
+
+        processed_data = [{
+            'teachers': [d.get("Beneficary__r").get("Email")],
+            'held': True,
+            'minutes': 0,
+            'amount': d["Amount__c"],
+            'nice_name': f'    {d["Name"]} ({d["Amount__c"]}€)'
+        } for d in data]
+
+        return processed_data

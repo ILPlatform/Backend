@@ -16,9 +16,12 @@ class Events():
         self.month = month
         self.blacklist = [*blacklist, CALENDAR_CLASSES_ID, CALENDAR_CAMPS_ID]
 
-    def get_events(self):
+    def get_events(self, sf):
+        # Get First and Last Day of Month
         first_day = datetime(self.year, self.month, 1).isoformat()
         last_day = (datetime(self.year, self.month, 1) + relativedelta(months=1, days=0)).isoformat()
+
+        # Get Classes Events
         events_classes_result = self.Client.calendar.events().list(
             calendarId=CALENDAR_CLASSES_ID,
             timeMin=first_day + 'Z',
@@ -26,6 +29,10 @@ class Events():
             singleEvents=True,
             orderBy='startTime'
         ).execute()
+        events_classes = events_classes_result.get('items', [])
+        events_classes = self.__process_google_events([event for event in events_classes if 'start' in event and 'dateTime' in event['start']])
+
+        # Get Camp Events
         events_camps_result = self.Client.calendar.events().list(
             calendarId=CALENDAR_CAMPS_ID,
             timeMin=first_day + 'Z',
@@ -33,12 +40,19 @@ class Events():
             singleEvents=True,
             orderBy='startTime'
         ).execute()
-        events_classes = events_classes_result.get('items', [])
         events_camps = events_camps_result.get('items', [])
-        events = events_classes + events_camps
-        return self.__process_events([event for event in events if 'start' in event and 'dateTime' in event['start']])
+        events_camps = self.__process_google_events([event for event in events_camps if 'start' in event and 'dateTime' in event['start']])
 
-    def __process_events(self, events):
+        # Get Additional Payments from SF
+        events_extra = sf.get_additional_payments(self.year, self.month)
+
+        # Combine Events
+        events = events_classes + events_camps + events_extra
+
+        # Process Events
+        return events
+
+    def __process_google_events(self, events):
         processed_events = []
         for event in events:
             not_match_list = lambda email: not any([re.compile(black).match(email) for black in self.blacklist])
@@ -60,8 +74,6 @@ class Events():
                 nice_name = f"    [{code}] {title} ({start}, {minutes}min, {amount}€)"
                 processed_events.append({
                     'teachers': teachers,
-                    'start': start,
-                    'code': code,
                     'held': held,
                     'minutes': minutes,
                     'amount': amount,
@@ -81,6 +93,6 @@ class Events():
             'O': 12 / 60,
             'S': 15 / 60
         }
-        if not code[4] or code[4] not in price_per_minute:
+        if not code[0] or code[0] not in price_per_minute:
             raise ValueError(f"ERROR - Code `{code}` not correct!")
-        return price_per_minute[code[4]] * timespan
+        return price_per_minute[code[0]] * timespan
