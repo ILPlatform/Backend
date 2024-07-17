@@ -23,6 +23,12 @@ source venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
-```
+# Currently available features
 
-```
+## Firebase Functions
+
+**List to be made**
+
+## Google Script Apps
+
+**List to be made**
