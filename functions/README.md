@@ -1,4 +1,29 @@
-### `.env` file
+# Functions
+
+## Running Emulator
+
+**To be written**
+
+## Deployment
+
+**To be written**
+
+## Installing Modules
+
+In order to install a module in the backend, add it to `functions/requirements/txt` and run the following;
+
+```
+cd functions
+python3 -m venv venv
+source venv/bin/activate
+pip3 install -r requirements.txt
+```
+
+## Available Functions
+
+**List to be made**
+
+## Environment File
 
 The `.env` file is used to store the environment variables. The `.env` file is not included in the repository for security reasons. The `.env` file should be created in the `functions` folder and should contain the following environment variables:
 
