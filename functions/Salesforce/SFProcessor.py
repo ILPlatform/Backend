@@ -5,8 +5,8 @@ from .SFQueries import SFQueries
 import os
 
 class SFProcessor(SFConnector):
-    def __init__(self, SF_USERNAME, SF_PASSWORD, SF_SECURITY_TOKEN) -> None:
-        super().__init__(SF_USERNAME, SF_PASSWORD, SF_SECURITY_TOKEN)
+    def __init__(self, SF_USERNAME, SF_PASSWORD, SF_SECURITY_TOKEN, SF_DOMAIN) -> None:
+        super().__init__(SF_USERNAME, SF_PASSWORD, SF_SECURITY_TOKEN, SF_DOMAIN)
         self.queries = SFQueries()
 
     def get_camp_details(self, code, confirmed=True):
