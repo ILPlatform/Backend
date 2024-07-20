@@ -32,7 +32,7 @@ class SFProcessor(SFConnector):
             "pictures_name": f'{data.get("Account").get("Name")} ({data.get("Time_Schedule__r").get("Time_Slot__c", "")[3:]})',
             "summary": f'{code} - Stage {data["Account"]["Name"]} [{data["Ages_Real__c"] if data["Ages_Real__c"] != "" else "???"} ans]',
             "teacher_text": f'{data["Time_Schedule__r"]["Name"]} {data["Account"]["Name"]} ({address}) [{data["Ages_Real__c"] if data["Ages_Real__c"] != "" else "???"} ans]',
-            "teacher_email": data["Teacher__r"]["Email"] if data["Teacher__r"] else None,
+            "teacher_email": data["Teacher__r"]["Email__c"] if data["Teacher__r"] else None,
             "start": f'{data["Week__r"]["Start_Date__c"]}T{data["Time_Schedule__r"]["Start_Pay_Time__c"][:-1]}',
             "end_day1": f'{data["Week__r"]["Start_Date__c"]}T{data["Time_Schedule__r"]["End_Pay_Time__c"][:-1]}',
             "address": address,
@@ -69,7 +69,7 @@ class SFProcessor(SFConnector):
         query = self.queries.get_teachers_for_partners(partner, only_confirmed)
         data = self.sf.query_all_iter(query)
 
-        processed_data = [f'{d["Week__r"]["Name"]} {d["Time_Schedule__r"]["Name"]}, {d["Account"]["Name"]} -> {d["Teacher__r"]["Name"] if d["Teacher__r"] else "???"} ({d["Teacher__r"]["Phone"] if d["Teacher__r"] else "???"})' for d in data]
+        processed_data = [f'{d["Week__r"]["Name"]} {d["Time_Schedule__r"]["Name"]}, {d["Account"]["Name"]} -> {d["Teacher__r"]["Name"] if d["Teacher__r"] else "???"} ({d["Teacher__r"]["Phone__c"] if d["Teacher__r"] else "???"})' for d in data]
         return processed_data
 
     def get_week_long_name(self, week_code):
@@ -82,17 +82,17 @@ class SFProcessor(SFConnector):
         query = self.queries.get_teacher_details(email)
         data = self.sf.query(query)["records"][0]
 
-        nn = data.get("National_Registration_Number__c").replace(".", "")
+        nn = data.get("Registration_Number__c").replace(".", "")
 
         processed_data = {
             "id": data.get("Id"),
-            "name": data.get("Name"),
-            "email": data.get("Email"),
-            "phone": data.get("Phone"),
-            "address": f'{data.get("MailingStreet")}, {data.get("MailingPostalCode")} {data.get("MailingCity")}',
+            "name": data.get("Full_Name__c"),
+            "email": data.get("Email__c"),
+            "phone": data.get("Phone__c"),
+            "address": f'{data.get("Address__Street__s")}, {data.get("Address__PostalCode__s")} {data.get("Address__City__s")}',
             "iban": data.get("IBAN__c"),
-            "bic": data.get("BIC_Code__c"),
-            "nn": data.get("National_Registration_Number__c"),
+            "bic": data.get("BIC__c"),
+            "nn": data.get("Registration_Number__c"),
             "nationality": data.get("Nationality__c"),
             "birthplace": data.get("Birthplace__c"),
             "contract_type": data.get("Contract_Type__c"),

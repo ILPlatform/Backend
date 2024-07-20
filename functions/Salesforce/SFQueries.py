@@ -7,7 +7,7 @@ class SFQueries:
 
     def get_camp_details(self, code):
         query = f"""
-            SELECT Teacher__r.Email, Week__r.Name, Week__r.Id, Week__r.Start_Date__c, Week__r.End_Date__c, Account.Name, Account.BillingAddress, Ages_Real__c, Time_Schedule__r.Start_Pay_Time__c, Time_Schedule__r.Time_Slot__c ,Time_Schedule__r.End_Pay_Time__c, Time_Schedule__r.Description__c, Description, Id, Google_Event__c, Time_Schedule__r.Name, Google_Drive_Pictures__c, Week__r.Holiday__r.Google_Drive_Pictures_ID__c, Week__r.Holiday__r.Name, Week__r.Holiday__r.Id, Week__r.Google_Drive_Pictures_ID__c
+            SELECT Teacher__r.Email__c, Week__r.Name, Week__r.Id, Week__r.Start_Date__c, Week__r.End_Date__c, Account.Name, Account.BillingAddress, Ages_Real__c, Time_Schedule__r.Start_Pay_Time__c, Time_Schedule__r.Time_Slot__c ,Time_Schedule__r.End_Pay_Time__c, Time_Schedule__r.Description__c, Description, Id, Google_Event__c, Time_Schedule__r.Name, Google_Drive_Pictures__c, Week__r.Holiday__r.Google_Drive_Pictures_ID__c, Week__r.Holiday__r.Name, Week__r.Holiday__r.Id, Week__r.Google_Drive_Pictures_ID__c
             FROM Opportunity
             WHERE Camp_Code__c='{code}'
             """
@@ -49,7 +49,7 @@ class SFQueries:
     def get_teachers_for_partners(self, partner, only_confirmed):
         confirmed_query =  "AND StageName='Confirmed'" if only_confirmed else ""
         query = f"""
-            SELECT Week__r.Name, Account.Name, Teacher__r.Name, Teacher__r.Phone, Partner_Organisation__c, Time_Schedule__r.Name
+            SELECT Week__r.Name, Account.Name, Teacher__r.Name, Teacher__r.Phone__c, Partner_Organisation__c, Time_Schedule__r.Name
             FROM Opportunity
             WHERE Partner_Organisation__c LIKE '%{partner}%' {confirmed_query}
             ORDER BY Week__r.Name ASC, Account.Name ASC, Time_Schedule__r.Name DESC
@@ -66,9 +66,9 @@ class SFQueries:
 
     def get_teacher_details(self, email):
         query = f"""
-            SELECT Id, Name, Phone, Email, MailingStreet, MailingCity, MailingPostalCode, IBAN__c, BIC_Code__c, Birthplace__c, Nationality__c, National_Registration_Number__c, Contract_Type__c
-            FROM Contact
-            WHERE Email='{email}'
+            SELECT Id, Full_Name__c, Phone__c, Email__c, Address__Street__s, Address__City__s, Address__PostalCode__s, IBAN__c, BIC__c, Birthplace__c, Nationality__c, Registration_Number__c, Contract_Type__c
+            FROM Employee__c
+            WHERE Email__c='{email}'
             """
         return query
 

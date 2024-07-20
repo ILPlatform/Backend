@@ -10,6 +10,8 @@ source venv/bin/activate
 pip3 install -r requirements.txt
 ```
 
+**Something about generating the Google credential files!**
+
 In order to run the emulator, you need to run the following;
 
 ```
