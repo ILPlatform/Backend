@@ -66,7 +66,7 @@ class SFQueries:
 
     def get_teacher_details(self, email):
         query = f"""
-            SELECT Id, Full_Name__c, Phone__c, Email__c, Address__Street__s, Address__City__s, Address__PostalCode__s, IBAN__c, BIC__c, Birthplace__c, Nationality__c, Registration_Number__c, Contract_Type__c
+            SELECT Id, Full_Name__c, Phone__c, Email__c, Address__Street__s, Address__City__s, Address__PostalCode__s, IBAN__c, BIC__c, Birthplace__c, Nationality__c, Registration_Number__c, Contract_Type__c, Contract_Salary__c
             FROM Employee__c
             WHERE Email__c='{email}'
             """
