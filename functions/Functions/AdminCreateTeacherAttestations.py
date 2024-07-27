@@ -16,7 +16,7 @@ BLACKLIST_EMAILS = [
   'chris.kafrouni@gmail.com'
 ]
 
-@https_fn_custom()
+@https_fn_custom(timeout_sec=540)
 @firebase_functions_custom(auth_level=2)
 def admin_create_teacher_attestations(data):
     """HTTPS Cloud Function to create monthly attestations. This version runs once the proposal has been confirmed."""

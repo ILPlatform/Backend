@@ -122,7 +122,7 @@ class SFProcessor(SFConnector):
         data = self.sf.query_all_iter(query)
 
         processed_data = [{
-            'teachers': [d.get("Beneficary__r").get("Email")],
+            'teachers': [d.get("Beneficiary__r").get("Email__c")],
             'held': True,
             'minutes': 0,
             'amount': d["Amount__c"],

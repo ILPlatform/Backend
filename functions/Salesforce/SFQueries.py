@@ -74,7 +74,7 @@ class SFQueries:
 
     def get_additional_payments(self, year, month):
         query = f"""
-            SELECT Beneficary__r.Email, Amount__c, Name
+            SELECT Beneficiary__r.Email__c, Amount__c, Name
             FROM Payment__c
             WHERE Year__c={year} AND Month__c={month}
             """

@@ -9,14 +9,15 @@ from functools import wraps
 import os
 
 # Custom decorator to allow CORS in the Cloud Function
-def https_fn_custom():
+def https_fn_custom(timeout_sec=60):
     if os.getenv("FUNCTIONS_EMULATOR") == "true":
         return https_fn.on_request(
         region='europe-west1',
         cors=options.CorsOptions(
             cors_origins=["*"],
             cors_methods=["get", "post", "options"]
-        ))
+        ),
+        timeout_sec=timeout_sec)
     else:
         return https_fn.on_request(
         region='europe-west1',
@@ -24,7 +25,8 @@ def https_fn_custom():
             cors_origins=["https://admin.ilplatform.be", "https://independentlearningplatform.lightning.force.com",
             "https://independentlearningplatform--internbox.sandbox.lightning.force.com"],
             cors_methods=["get", "post", "options"]
-        ))
+        ),
+        timeout_sec=timeout_sec)
 
 # Decorator to get the JSON data from the request
 def __get_json_data(function):
