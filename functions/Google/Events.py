@@ -10,6 +10,9 @@ CALENDAR_CLASSES_ID = os.getenv('CALENDAR_CLASSES_ID')
 CALENDAR_CAMPS_ID = os.getenv('CALENDAR_CAMPS_ID')
 
 class Events():
+    CALENDAR_CLASSES_ID = os.getenv('CALENDAR_CLASSES_ID')
+    CALENDAR_CAMPS_ID = os.getenv('CALENDAR_CAMPS_ID')
+
     def __init__(self, Client, year, month, blacklist):
         self.Client = Client
         self.year = year

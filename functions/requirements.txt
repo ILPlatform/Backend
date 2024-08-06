@@ -1,4 +1,4 @@
-firebase_functions~=0.4.1
+firebase_functions
 simple_salesforce
 google_auth_oauthlib
 oauth2client

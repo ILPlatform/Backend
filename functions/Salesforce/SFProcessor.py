@@ -9,18 +9,14 @@ class SFProcessor(SFConnector):
         super().__init__(SF_USERNAME, SF_PASSWORD, SF_SECURITY_TOKEN, SF_DOMAIN)
         self.queries = SFQueries()
 
-    def get_camp_details(self, code, confirmed=True):
-        if confirmed:
-            query = self.queries.get_camp_details(code)
-        else:
-            query = self.queries.get_possible_camp_details(code)
-        data = self.sf.query(query)["records"][0]
+    def __process_camp_details(self, data):
+        # print(data)
 
         nl = '\n\n'
         address = f'{data["Account"]["BillingAddress"]["street"]}, {data["Account"]["BillingAddress"]["postalCode"]} {data["Account"]["BillingAddress"]["city"]}, {data["Account"]["BillingAddress"]["country"]}'
         processed_data = {
             "id": data["Id"],
-            "code": code,
+            "code": data["Camp_Code__c"],
             "event_id": data["Google_Event__c"],
             "picture_grand_parent_id": data.get("Week__r").get("Holiday__r").get("Google_Drive_Pictures_ID__c"),
             "picture_parent_id": data.get("Week__r").get("Google_Drive_Pictures_ID__c"),
@@ -30,16 +26,37 @@ class SFProcessor(SFConnector):
             "holiday_id": data.get("Week__r").get("Holiday__r").get("Id"),
             "pictures_id": data["Google_Drive_Pictures__c"],
             "pictures_name": f'{data.get("Account").get("Name")} ({data.get("Time_Schedule__r").get("Time_Slot__c", "")[3:]})',
-            "summary": f'{code} - Stage {data["Account"]["Name"]} [{data["Ages_Real__c"] if data["Ages_Real__c"] != "" else "???"} ans]',
+            "summary": f'{data["Camp_Code__c"]} - Stage {data["Account"]["Name"]} [{data["Ages_Real__c"] if data["Ages_Real__c"] != "" else "???"} ans]',
             "teacher_text": f'{data["Time_Schedule__r"]["Name"]} {data["Account"]["Name"]} ({address}) [{data["Ages_Real__c"] if data["Ages_Real__c"] != "" else "???"} ans]',
             "teacher_email": data["Teacher__r"]["Email__c"] if data["Teacher__r"] else None,
+            "start_time": data["Time_Schedule__r"]["Start_Pay_Time__c"][:-1],
             "start": f'{data["Week__r"]["Start_Date__c"]}T{data["Time_Schedule__r"]["Start_Pay_Time__c"][:-1]}',
             "end_day1": f'{data["Week__r"]["Start_Date__c"]}T{data["Time_Schedule__r"]["End_Pay_Time__c"][:-1]}',
             "address": address,
-            "description": f'{"".join(["Notes importantes: ", data["Description"], nl]) if data["Description"] else ""}{data["Time_Schedule__r"]["Description__c"]}'
+            "description": f'{"".join(["Notes importantes: ", data["Description"], nl]) if data["Description"] else ""}{data["Time_Schedule__r"]["Description__c"]}',
+            "excluded_day": data.get("Week__r").get("Excluded_Day__c"),
         }
+        return processed_data
+
+    def get_camp_details(self, code, confirmed=True):
+        if confirmed:
+            query = self.queries.get_camp_details(code)
+        else:
+            query = self.queries.get_possible_camp_details(code)
+        data = self.sf.query(query)["records"][0]
+
+        processed_data = self.__process_camp_details(data)
 
         return processed_data
+
+    def get_all_camp_details(self, week_codes):
+        query = self.queries.get_all_camp_details(week_codes)
+        # print(query)
+        results = self.sf.query_all_iter(query)
+        # for r in results:
+        #     print(r)
+        processed = [self.__process_camp_details(r) for r in results]
+        return processed
 
     def get_camp_weeks(self):
         query = self.queries.get_camp_weeks()

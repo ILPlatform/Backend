@@ -1,3 +1,5 @@
+#!/usr/bin/env python3.11
+
 # Firebase imports
 from firebase_admin import initialize_app
 

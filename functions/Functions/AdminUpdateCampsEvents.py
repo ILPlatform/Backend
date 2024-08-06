@@ -4,7 +4,7 @@ from Actions import update_and_create_camps_per_week
 from Google.Connector import GoogleConnector
 from firebase_functions import https_fn, options
 
-@https_fn_custom()
+@https_fn_custom(timeout_sec=540)
 @firebase_functions_custom(auth_level=2)
 def admin_update_camps_events(data):
     """HTTPS Cloud Function to update calendar events for camps."""

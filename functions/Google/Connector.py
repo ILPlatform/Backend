@@ -24,6 +24,8 @@ CALENDAR_CAMPS_ID = os.getenv("CALENDAR_CAMPS_ID")
 DRIVE_CAMPS_PHOTOS_ID = os.getenv("DRIVE_CAMPS_PHOTOS_ID")
 
 class GoogleConnector():
+    CALENDAR_CAMPS_ID = os.getenv("CALENDAR_CAMPS_ID")
+
     def __init__(self):
         self.auth = self.__authorize()
         self.__build_services()
@@ -132,19 +134,20 @@ class GoogleConnector():
         return form
 
     def create_camp_pictures_folder(self, name, parent=None):
+        # Create the folder
         file_metadata = {
             'name': name,
             'mimeType': 'application/vnd.google-apps.folder'
         }
         file = self.drive.files().create(body=file_metadata, fields='id, parents').execute()
+
+        # Move the folder
         previous_parents = ",".join(file.get("parents"))
         file = self.drive.files().update(
                     fileId=file.get("id"),
                     addParents=parent or DRIVE_CAMPS_PHOTOS_ID,
                     removeParents=previous_parents,
                     fields="id",
-                    # supportsAllDrives=True,
-                    # supportsTeamDrives=True
                 ).execute()
         return file.get("id")
 
