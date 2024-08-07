@@ -32,6 +32,7 @@ class SFProcessor(SFConnector):
             "start_time": data["Time_Schedule__r"]["Start_Pay_Time__c"][:-1],
             "start": f'{data["Week__r"]["Start_Date__c"]}T{data["Time_Schedule__r"]["Start_Pay_Time__c"][:-1]}',
             "end_day1": f'{data["Week__r"]["Start_Date__c"]}T{data["Time_Schedule__r"]["End_Pay_Time__c"][:-1]}',
+            "start_day1": f'{(data["Week__r"]["Start_Date__c"] + "T" + data.get("Time_Schedule__r", {}).get("Start_Pay_Time_Day_1__c")[:-1]) if data.get("Time_Schedule__r", {}).get("Start_Pay_Time_Day_1__c") else (data["Week__r"]["Start_Date__c"] + "T" + data["Time_Schedule__r"]["Start_Pay_Time__c"][:-1])}',
             "address": address,
             "description": f'{"".join(["Notes importantes: ", data["Description"], nl]) if data["Description"] else ""}{data["Time_Schedule__r"]["Description__c"]}',
             "excluded_day": data.get("Week__r").get("Excluded_Day__c"),

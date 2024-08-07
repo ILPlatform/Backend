@@ -1,0 +1,41 @@
+<!-- 
+    getFormComponent
+    LWC calling Firebase Function to generate form for teachers to indicate their availabilities.
+    The form is generated for the selected weeks and given the indicated title.
+-->
+
+<template>
+    <!-- If not logged in, show login component -->
+    <template if:false={isLoggedIn}>
+        <c-login-component onloginsuccess={handleLoginSuccess}></c-login-component>
+    </template>
+
+    <!-- If logged in, show entire component -->
+    <template if:true={isLoggedIn}>
+        <fieldset class="slds-form-element slds-form-element_compound" disabled={buttonClicked}>
+
+            <!-- Title of form -->
+            <lightning-input type="text" name="title" onchange={handleText} label="Form Title: Stages ILPlatform - "></lightning-input>
+            <br />
+
+            <!-- List of checkboxes with weeks -->
+            <div class="slds-grid slds-wrap slds-gutters">
+                <template for:each={weekCodes} for:item="weekCode">
+                    <div class="slds-col slds-size_1-of-5" key={weekCode.Week_Code__c}>
+                        <lightning-input type="checkbox" name={weekCode.Week_Code__c} onchange={handleChecked} label={weekCode.Name}></lightning-input>
+                    </div>
+                </template>
+            </div>
+            <br />
+
+            <!-- Confirm button -->
+            <lightning-button label="Generate Form" onclick={generateForm} class="slds-m-top_small"></lightning-button>
+        </fieldset>
+
+        <!-- Response of API call -->
+        <div if:true={updateMessage}>
+            <p>{updateMessage}</p>
+        </div>
+        <a lwc:dom="manual" class="slds-button slds-button_link link" href={link} target="_blank"></a>
+    </template>
+</template>

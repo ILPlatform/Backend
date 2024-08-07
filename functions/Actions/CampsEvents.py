@@ -28,7 +28,7 @@ def __camp_event(google, sf, camp_info, batch1, batch2, batch3):
     event = __generate_camp_event(camp_info)
 
     # Function to filter the instances to find the excluded days
-    excluded_days = camp_info.get("excluded_day").split(",") if camp_info.get("excluded_days") else []
+    excluded_days = camp_info.get("excluded_day").split(",") if camp_info.get("excluded_day") else []
     is_excluded = lambda x: x.get("start").get("dateTime")[:10] in excluded_days
 
     # Callback for batch request to store event_id and get individual instances
@@ -41,16 +41,27 @@ def __camp_event(google, sf, camp_info, batch1, batch2, batch3):
 
             batch2.add(google.calendar.events().instances(calendarId=google.CALENDAR_CAMPS_ID, eventId=response['id']), callback=callback2)
 
-    # Callback for batch request to get individual instances and delete excluded instances
+    # Callback for batch request to delete excluded instances
     def callback2(request_id, response, exception):
         if exception:
             print(f'[ERROR] In batch3: {exception}')
         else:
-            for instance in filter(is_excluded, response['items']):
-                instance["status"] = "cancelled"
-                batch3.add(google.calendar.events().update(calendarId=google.CALENDAR_CAMPS_ID, eventId=instance['id'], body=instance, sendUpdates="all"), callback=callback3)
+            # Keep track of first non excluded day
+            first_non_exluded_day = True
 
-    # Callback for batch request to delete excluded instances
+            # Loop through the instances (sorted by start date)
+            for instance in sorted(response['items'], key=lambda item: item["start"]["dateTime"]):
+                if is_excluded(instance):
+                    # Delete the excluded instances
+                    instance["status"] = "cancelled"
+                    batch3.add(google.calendar.events().update(calendarId=google.CALENDAR_CAMPS_ID, eventId=instance['id'], body=instance, sendUpdates="all"), callback=callback3)
+                elif first_non_exluded_day:
+                    # Update the start date of the first instance
+                    instance["start"]["dateTime"] = camp_info["start_day1"]
+                    batch3.add(google.calendar.events().update(calendarId=google.CALENDAR_CAMPS_ID, eventId=instance['id'], body=instance, sendUpdates="all"), callback=callback3)
+                    first_non_exluded_day = False
+
+    # Callback for batch request to print final status
     def callback3(request_id, response, exception):
         if exception:
             print(f'[ERROR] In batch3: {exception}')
@@ -63,8 +74,6 @@ def __camp_event(google, sf, camp_info, batch1, batch2, batch3):
     else:
         # Update the Google Event
         batch1.add(google.calendar.events().update(calendarId=google.CALENDAR_CAMPS_ID, eventId=camp_info.get("event_id"), body=event, sendUpdates="all"), callback=callback1)
-
-    return True
 
 def __camp_pictures(google, sf, camp_info):
     # If holiday specific folder does not exist, create it

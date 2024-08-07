@@ -7,7 +7,7 @@ class SFQueries:
 
     def get_camp_details(self, code):
         query = f"""
-            SELECT Teacher__r.Email__c, Week__r.Name, Week__r.Id, Week__r.Start_Date__c, Week__r.End_Date__c, Account.Name, Account.BillingAddress, Ages_Real__c, Time_Schedule__r.Start_Pay_Time__c, Time_Schedule__r.Time_Slot__c ,Time_Schedule__r.End_Pay_Time__c, Time_Schedule__r.Description__c, Description, Id, Google_Event__c, Time_Schedule__r.Name, Google_Drive_Pictures__c, Week__r.Holiday__r.Google_Drive_Pictures_ID__c, Week__r.Holiday__r.Name, Week__r.Holiday__r.Id, Week__r.Google_Drive_Pictures_ID__c, Week__r.Excluded_Day__c
+            SELECT Camp_Code__c, Teacher__r.Email__c, Week__r.Name, Week__r.Id, Week__r.Start_Date__c, Week__r.End_Date__c, Account.Name, Account.BillingAddress, Ages_Real__c, Time_Schedule__r.Start_Pay_Time__c, Time_Schedule__r.Time_Slot__c ,Time_Schedule__r.End_Pay_Time__c, Time_Schedule__r.Start_Pay_Time_Day_1__c, Time_Schedule__r.Description__c, Description, Id, Google_Event__c, Time_Schedule__r.Name, Google_Drive_Pictures__c, Week__r.Holiday__r.Google_Drive_Pictures_ID__c, Week__r.Holiday__r.Name, Week__r.Holiday__r.Id, Week__r.Google_Drive_Pictures_ID__c, Week__r.Excluded_Day__c
             FROM Opportunity
             WHERE Camp_Code__c='{code}'
             """
@@ -15,7 +15,7 @@ class SFQueries:
 
     def get_all_camp_details(self, week_codes):
         query = f"""
-            SELECT Camp_Code__c, Teacher__r.Email__c, Week__r.Name, Week__r.Id, Week__r.Start_Date__c, Week__r.End_Date__c, Account.Name, Account.BillingAddress, Ages_Real__c, Time_Schedule__r.Start_Pay_Time__c, Time_Schedule__r.Time_Slot__c ,Time_Schedule__r.End_Pay_Time__c, Time_Schedule__r.Description__c, Description, Id, Google_Event__c, Time_Schedule__r.Name, Google_Drive_Pictures__c, Week__r.Holiday__r.Google_Drive_Pictures_ID__c, Week__r.Holiday__r.Name, Week__r.Holiday__r.Id, Week__r.Google_Drive_Pictures_ID__c, Week__r.Excluded_Day__c
+            SELECT Camp_Code__c, Teacher__r.Email__c, Week__r.Name, Week__r.Id, Week__r.Start_Date__c, Week__r.End_Date__c, Account.Name, Account.BillingAddress, Ages_Real__c, Time_Schedule__r.Start_Pay_Time__c, Time_Schedule__r.Time_Slot__c ,Time_Schedule__r.End_Pay_Time__c, Time_Schedule__r.Start_Pay_Time_Day_1__c, Time_Schedule__r.Description__c, Description, Id, Google_Event__c, Time_Schedule__r.Name, Google_Drive_Pictures__c, Week__r.Holiday__r.Google_Drive_Pictures_ID__c, Week__r.Holiday__r.Name, Week__r.Holiday__r.Id, Week__r.Google_Drive_Pictures_ID__c, Week__r.Excluded_Day__c
             FROM Opportunity
             WHERE Week__r.Week_Code__c IN ({','.join(list(map(lambda x: "'" + x + "'", week_codes)))})
                 AND StageName='Confirmed'

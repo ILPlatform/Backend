@@ -1,0 +1,25 @@
+<template>
+    <!-- If not logged in, show login component -->
+    <template if:false={isLoggedIn}>
+        <c-login-component onloginsuccess={handleLoginSuccess}></c-login-component>
+    </template>
+
+    <!-- If logged in, show entire component -->
+    <template if:true={isLoggedIn}>
+        <fieldset class="slds-form-element slds-form-element_compound" disabled={buttonClicked}>
+            <div class="slds-grid slds-wrap slds-gutters">
+                <template for:each={weekCodes} for:item="weekCode">
+                    <div class="slds-col slds-size_1-of-5" key={weekCode.Week_Code__c}>
+                        <lightning-input type="checkbox" name={weekCode.Week_Code__c} onchange={handleChecked} label={weekCode.Name}></lightning-input>
+                    </div>
+                </template>
+            </div>
+            <br />
+            <lightning-button label="Update Events" onclick={updateEvents} class="slds-m-top_small"></lightning-button>
+        </fieldset>
+        <br />
+        <div if:true={updateMessage}>
+            <p>{updateMessage}</p>
+        </div>
+    </template>
+</template>

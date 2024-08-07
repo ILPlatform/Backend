@@ -4,9 +4,9 @@ const Home = () => {
   return (
     <>
       <h1>Home</h1>
-      <a href="/create_camps_form">Create Camps Form</a>
+      <a href="/create_camps_form">Create Camps Form (Deprecated, on Salesforce)</a>
       <br />
-      <a href="/update_camps_events">Update Camps Events</a>
+      <a href="/update_camps_events">Update Camps Events (Deprecated, on Salesforce)</a>
       <br />
       <a href="/get_teachers_partners">Get Teachers for Partners</a>
       <br />

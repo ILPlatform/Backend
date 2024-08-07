@@ -1,18 +1,25 @@
-# Salesforce DX Project: Next Steps
+# Lightning Web Components for Salesforce
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
+This project includes a set of Lightning Web Components (LWCs) designed to facilitate various functionalities within Salesforce. Notably, the `getFormComponent` and `updateEventsComponent` can be included as standalone components in apps, specifically on the Lightning Home Page.
 
-## How Do You Plan to Deploy Your Changes?
+## Components
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+### loginComponent
+**Location**: `salesforce/force-app/main/default/lwc/loginComponent`  
+**Former Names**: None  
+**Description**: This reusable component provides a login modal for users to enter their email and password. It handles the authentication process by calling the Google Toolkit API and returns the token, which it can use to authenticate further actions.
 
-## Configure Your Salesforce DX Project
+### getFormComponent
+**Location**: `salesforce/force-app/main/default/lwc/getFormComponent`  
+**Former Names**: `adminGenerateForm`  
+**Description**: This component allows users to generate a form by providing a title and selecting specific weeks from a list of checkboxes. If the user is not logged in, it displays a login button. Upon clicking, a login modal appears to enter credentials. Once logged in, the form generation functionality is enabled.
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+### updateEventsComponent
+**Location**: `salesforce/force-app/main/default/lwc/updateEventsComponent`  
+**Former Names**: None  
+**Description**: This component allows users to update events by selecting specific weeks from a list of checkboxes. If the user is not logged in, it displays a login button. Upon clicking, a login modal appears to enter credentials. Once logged in, the event update functionality is enabled.
 
-## Read All About It
-
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+### adminFormGenerateButtonFromPicklist
+**Location**: `salesforce/force-app/main/default/lwc/adminFormGenerateButtonFromPicklist`  
+**Former Names**: `adminFormGenerateFromPicklist`  
+**Description**: This component is intended to generate a form using a picklist for selection. Note: This component is currently a work in progress and does not function as expected.

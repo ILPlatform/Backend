@@ -14,12 +14,9 @@ def verify_auth(req, auth_level):
         return "", True
     try:
         authorization = req.headers.get('Authorization')
-        # print(authorization)
         token = authorization.split(' ')[1]
         decoded_token = auth.verify_id_token(token)
         uid = decoded_token["uid"]
-        print(token)
-        print(uid)
         if uid not in AUTHORIZED_UIDS[auth_level]:
             return f"User {uid} does not have access to the application. Please contact an admin for further information.", False
         return uid, True
