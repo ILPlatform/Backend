@@ -41,7 +41,7 @@ def __camp_event(google, sf, camp_info, batch1, batch2, batch3):
 
             batch2.add(google.calendar.events().instances(calendarId=google.CALENDAR_CAMPS_ID, eventId=response['id']), callback=callback2)
 
-    # Callback for batch request to delete excluded instances
+    # Callback for batch request to delete excluded instances, update first day and update replacements
     def callback2(request_id, response, exception):
         if exception:
             print(f'[ERROR] In batch3: {exception}')
@@ -51,15 +51,33 @@ def __camp_event(google, sf, camp_info, batch1, batch2, batch3):
 
             # Loop through the instances (sorted by start date)
             for instance in sorted(response['items'], key=lambda item: item["start"]["dateTime"]):
+                updated = False
                 if is_excluded(instance):
                     # Delete the excluded instances
                     instance["status"] = "cancelled"
-                    batch3.add(google.calendar.events().update(calendarId=google.CALENDAR_CAMPS_ID, eventId=instance['id'], body=instance, sendUpdates="all"), callback=callback3)
+                    updated = True
                 elif first_non_exluded_day:
                     # Update the start date of the first instance
                     instance["start"]["dateTime"] = camp_info["start_day1"]
-                    batch3.add(google.calendar.events().update(calendarId=google.CALENDAR_CAMPS_ID, eventId=instance['id'], body=instance, sendUpdates="all"), callback=callback3)
                     first_non_exluded_day = False
+                    updated = True
+
+                # Find the replacement day, if any
+                replacement = next((c for c in camp_info.get("replacements") if c["date"] == instance["start"]["dateTime"][:10]), None)
+
+                # Update the attendees for the replacement day
+                if replacement:
+                    instance["attendees"] = [{"email": replacement["email"]}]
+                    updated = True
+
+                # Update back to original teacher if no replacement but incorrect teacher (so there used to be a replacement but got solved)
+                elif instance.get("attendees") and len(instance["attendees"]) > 0 and instance["attendees"][0].get("email") != camp_info["teacher_email"]:
+                    instance["attendees"] = [{"email": camp_info["teacher_email"]}]
+                    updated = True
+
+                # Only update the instance if it was modified
+                if updated:
+                    batch3.add(google.calendar.events().update(calendarId=google.CALENDAR_CAMPS_ID, eventId=instance['id'], body=instance, sendUpdates="all"), callback=callback3)
 
     # Callback for batch request to print final status
     def callback3(request_id, response, exception):
