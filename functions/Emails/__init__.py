@@ -1,3 +1,7 @@
 from .SendEmailConvention import send_convention
 from .SendEmailAttestation import send_attestation_teacher, send_attestation_admin
 from .SendEmailError import send_email_error
+from .SendEmailReplacementsOneTime import send_email_replacement_onetime
+from .SendEmailNewDocument import send_email_new_document
+from .SendEmailAdmin import send_email_admin
+from .SendEmailUser import send_email_user

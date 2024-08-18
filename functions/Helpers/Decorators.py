@@ -22,8 +22,11 @@ def https_fn_custom(timeout_sec=60):
         return https_fn.on_request(
         region='europe-west1',
         cors=options.CorsOptions(
-            cors_origins=["https://admin.ilplatform.be", "https://independentlearningplatform.lightning.force.com",
-            "https://independentlearningplatform--internbox.sandbox.lightning.force.com"],
+            cors_origins=[
+                "https://admin.ilplatform.be",
+                "https://curriculum.ilplatform.be", "https://independentlearningplatform.lightning.force.com",
+                "https://independentlearningplatform--internbox.sandbox.lightning.force.com"
+            ],
             cors_methods=["get", "post", "options"]
         ),
         timeout_sec=timeout_sec)
@@ -32,7 +35,15 @@ def https_fn_custom(timeout_sec=60):
 def __get_json_data(function):
     @wraps(function)
     def wrapper(request):
-        data = json.loads(request.data.decode('utf8').replace("'", '"')).get("data", {})
+        data = json.loads(request.data.decode('utf8').replace("'", '"')).get("data", {}) or {}
+
+        # Add the uid to the data
+        user_details, logged_in = verify_auth(request)
+        if logged_in:
+            data["uid"] = user_details.get("uid")
+            data["user_email"] = user_details.get("email")
+            data["admin_role"] = user_details.get("admin_role")
+
         return function(data)
     return wrapper
 

@@ -7,9 +7,10 @@ from Google import Events
 from pprint import pprint
 from Actions import generate_confirmation_text, get_teacher_dict, update_payment_sheet
 from Emails import send_attestation_teacher, send_attestation_admin
+from firebase_admin import firestore, auth
 
 BLACKLIST_EMAILS = [
-  '.*@ilplatform.be',
+  # '.*@ilplatform.be',
   'luca.paraschi@gmail.com',
   'mihneataranu@gmail.com',
   'alexandra-demt@hotmail.com',
@@ -25,6 +26,9 @@ def admin_create_teacher_attestations(data):
 
     # Initialize the Google client
     google = GoogleConnector()
+
+    # Initialize Firebase Firestore
+    db = firestore.client()
 
     # Check if the week_codes are provided
     year = data["year"]
@@ -55,7 +59,7 @@ def admin_create_teacher_attestations(data):
     # Update the payment sheet
     update_payment_sheet(google, teacher_dict, year, month)
 
-    # Create the timesheets and send the emails
+    # Create the timesheets, send the emails and add the document to Firestore
     for teacher_email in teacher_dict:
         teacher = teacher_dict.get(teacher_email)
         Timesheet = TimesheetDocument(google, teacher, year, month)
@@ -64,7 +68,33 @@ def admin_create_teacher_attestations(data):
         teacher.update({"link": Timesheet.get_download_link()})
         send_attestation_teacher(teacher, year, month, True if len(teacher_dict) == 1 else False)
 
+
+
+        # Add the document to Firestore
+        db.collection("Documents").add({
+            "uid": teacher.get("uid"),
+            "name": teacher.get("name"),
+            "year": year,
+            "month": month,
+            "type": "Attestation",
+            "description": f"Attestation - {year}/{month}",
+            "url": teacher.get("link"),
+            "timestamp": firestore.SERVER_TIMESTAMP,
+            "to_sign": True,
+            "signed": False
+        })
+
+
     # Send the confirmation email to the admin
     send_attestation_admin(return_string, year, month)
 
     return {"data": {"response": "Success", "status": 200}}
+
+def get_user_uid_by_email(email):
+    try:
+        # Get user by email
+        user = auth.get_user_by_email(email)
+        return user.uid
+    except Exception as e:
+        raise ValueError(f"Error fetching user data: {e}")
+        return None

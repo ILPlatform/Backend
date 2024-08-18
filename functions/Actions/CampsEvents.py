@@ -86,6 +86,10 @@ def __camp_event(google, sf, camp_info, batch1, batch2, batch3):
         else:
             print(f'[INFO] Successfully updated events for {camp_info["code"]}')
 
+    # Update the Opportunity Name if it is different from the Code
+    if camp_info.get("code") != camp_info.get("name"):
+        sf.sf.Opportunity.update(camp_info["id"], {"Name": camp_info["code"]})
+
     if not camp_info.get("event_id"):
         # Create the Google Event
         batch1.add(google.calendar.events().insert(calendarId=google.CALENDAR_CAMPS_ID, body=event, sendUpdates="all"), callback=callback1)

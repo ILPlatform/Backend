@@ -14,14 +14,8 @@ def html_attestation_teacher(params):
         soit avec la création de vos attestations ou avec la procédure en général.
     </p>
     <p>
-        Les prestations / l'attestation de {params.get('month')} {params.get('year')} sont attachés au lien qui suit.
-        Merci de télécharger le document en format pdf, de le signer et de le renvoyer à travers le formulaire
-        <a href="https://forms.gle/fnR8YSwZY8LtDq3z9">suivant</a> avant le <b>6 {params.get('nextMonth')} {params.get('nextYear')}</b>,
-        et le paiement sera traité avant le 9 {params.get('nextMonth')} {params.get('nextYear')}.
-        Si le document nous parvient après cette date, le paiement sera effectué avec les paiements du mois suivant.
-    </p>
-    <p>
-        Lien vers le document: <a href="{params.get('sharableLink')}">Cliquez ici</a>.
+        Les prestations / l'attestation de {params.get('month')} {params.get('year')} sont disponibles sur le <a href="https://curriculum.ilplatform.be">site curriculum</a>, sous "My Account" > "Documents". Tu y retrouveras un bouton "Sign", qui te permets de téléverser la version signée de ton document. Pourvu que ce document nous parvient au plus tard le 6 {params.get('nextMonth')} {params.get('nextYear')}, le paiement sera traité avant le 9 {params.get('nextMonth')} {params.get('nextYear')}.
+        Si le document nous parvient après cette date, le paiement risque d'être effectué avec les paiements du mois suivant.
     </p>
     <p>
         Un tout grand merci pour le travail fourni ce mois et une belle journée,

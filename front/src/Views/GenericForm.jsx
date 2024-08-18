@@ -16,7 +16,7 @@ const GenericForm = ({ formChild, displayResponse, endpoint, data }) => {
       setButtonClicked(true);
       let res = await callFunction(endpoint)(data);
       if (res["data"]["status"] === 200) setResponse(res["data"]["response"]);
-      else setError(res["data"]["error"]);
+      else setError(res["data"]["response"]);
       setLoading(false);
     } catch (error) {
       alert(`Firebase ERROR: ${error.message}. Contact Admin.`);

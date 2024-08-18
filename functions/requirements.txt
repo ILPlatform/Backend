@@ -4,3 +4,4 @@ google_auth_oauthlib
 oauth2client
 python-dotenv
 python-dateutil
+pandas

@@ -19,6 +19,8 @@ import CreateTeacherAttestations from "./Views/CreateTeacherAttestations";
 // Components
 import RequireAuth from "./RequireAuth";
 import NavBar from "./Components/Navbar";
+import UpdateClassesEvents from "./Views/UpdateClassesEvents";
+import ReplacementsOneTime from "./Views/ReplacementsOneTime";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
@@ -32,9 +34,12 @@ root.render(
 
           <Route path="/create_camps_form" exact Component={CreateCampsForm} />
           <Route path="/update_camps_events" exact Component={UpdateCampsEvents} />
+          <Route path="/update_classes_events" exact Component={UpdateClassesEvents} />
           <Route path="/get_teachers_partners" exact Component={GetTeachersPartners} />
           <Route path="/create_teacher_convention" exact Component={CreateTeacherConvention} />
           <Route path="/create_teacher_attestations" exact Component={CreateTeacherAttestations} />
+
+          <Route path="/replacements_one_time" exact Component={ReplacementsOneTime} />
 
           <Route path="*" Component={Error} />
         </Routes>

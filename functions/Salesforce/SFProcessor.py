@@ -3,6 +3,7 @@ from .SFConnector import SFConnector
 from .SFQueries import SFQueries
 
 import os
+from pprint import pprint
 
 class SFProcessor(SFConnector):
     def __init__(self, SF_USERNAME, SF_PASSWORD, SF_SECURITY_TOKEN, SF_DOMAIN) -> None:
@@ -15,6 +16,7 @@ class SFProcessor(SFConnector):
         processed_data = {
             "id": data["Id"],
             "code": data["Camp_Code__c"],
+            "name": data["Name"],
             "event_id": data["Google_Event__c"],
             "picture_grand_parent_id": data.get("Week__r").get("Holiday__r").get("Google_Drive_Pictures_ID__c"),
             "picture_parent_id": data.get("Week__r").get("Google_Drive_Pictures_ID__c"),
@@ -54,6 +56,70 @@ class SFProcessor(SFConnector):
         results = self.sf.query_all_iter(query)
         processed = [self.__process_camp_details(r) for r in results]
         return processed
+
+    def __process_class_details(self, data):
+        nl = '\n\n'
+        address = f'{data["Account"]["BillingAddress"]["street"]}, {data["Account"]["BillingAddress"]["postalCode"]} {data["Account"]["BillingAddress"]["city"]}, {data["Account"]["BillingAddress"]["country"]}'
+        processed_data = {
+            "id": data["Id"],
+            "code": data["Code__c"],
+            "name": data["Name"],
+            "event": {
+                "id": data["Google_Event__c"],
+                "school": data["Account"]["Name"],
+                "summary": f'{data["Code__c"]} - {data["Account"]["Name"]} [{data["Ages_Real__c"] if data.get("Ages_Real__c") and data.get("Ages_Real__c") != "" else "???"} ans]',
+                "email": data["Teacher__r"]["Email__c"] if data["Teacher__r"] else None,
+                "start_time": data["Start_Time__c"][:-1],
+                "end_time": data["End_Time__c"][:-1],
+                "address": address,
+                "start_date": data["Yearly_Schedule__r"]["Start_Date__c"],
+                "end_date": data["Yearly_Schedule__r"]["End_Date__c"],
+                "day": data["Day_of_Week__c"],
+                "additional_invite": data.get("Additional_Invite__c"),
+                "online": data.get("Account").get("Online__c"),
+            },
+            "holidays": {
+                "weeks": data["Yearly_Schedule__r"]["Associated_Calendar__r"]["Holiday_Weeks__c"],
+                "days": data["Yearly_Schedule__r"]["Associated_Calendar__r"]["Holiday_Days__c"],
+            },
+            "replacements": {
+                "one_time": [{
+                    "date": r.get("Date__c"),
+                    "email": r["Teacher__r"].get("Email__c") if r.get("Teacher__r") else None
+                } for r in filter(lambda x: x.get("RecordTypeId") == "012P5000001QASzIAO", (data.get("Replacements__r") or {}).get('records', []))],
+                "permanent": [{
+                    "date": r.get("Date__c"),
+                    "email": r["Teacher__r"].get("Email__c") if r.get("Teacher__r") else None
+                } for r in filter(lambda x: x.get("RecordTypeId") == "012P5000001QAUbIAO", (data.get("Replacements__r") or {}).get('records', []))],
+            }
+        }
+        print(processed_data)
+        return processed_data
+
+    def get_all_class_details(self, year_code):
+        query = self.queries.get_all_class_details(year_code)
+        results = self.sf.query_all_iter(query)
+        processed = [self.__process_class_details(r) for r in results]
+        return processed
+
+    def get_all_class_details2(self, class_details):
+        query = self.queries.get_all_class_details2(class_details)
+        results = self.sf.query_all_iter(query)
+        results_list = list(results)
+        if len(results_list) == 0:
+            return None
+        else:
+            return self.__process_class_details(results_list[0])
+
+    def get_all_class_details3(self, class_id):
+        query = self.queries.get_all_class_details3(class_id)
+        results = self.sf.query_all_iter(query)
+        results_list = list(results)
+        if len(results_list) == 0:
+            return None
+        else:
+            return self.__process_class_details(results_list[0])
+
 
     def get_camp_weeks(self):
         query = self.queries.get_camp_weeks()
@@ -100,6 +166,7 @@ class SFProcessor(SFConnector):
 
         processed_data = {
             "id": data.get("Id"),
+            "uid": data.get("Firebase_UID__c"),
             "name": data.get("Full_Name__c"),
             "email": data.get("Email__c"),
             "phone": data.get("Phone__c"),
