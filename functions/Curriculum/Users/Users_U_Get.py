@@ -57,6 +57,14 @@ def users_U_get(data):
     # Get all contracts of the given user
     contracts = db.collection("Documents").where(filter=FieldFilter("uid", "==", uid)).where(filter=FieldFilter("signed", "==", False)).stream()
 
+    # Flag if the user has entries that are none that are not other_phone or t_shirt_size
+    settings_require_update = False
+    print(user.get("birthplace"))
+    for key, value in user.items():
+        if value is None and key not in ["other_phone", "t_shirt_size"]:
+            settings_require_update = True
+
+
     # Compute number of unsigned contracts
     unsigned_contracts = 0
     for contract in contracts:
@@ -67,6 +75,7 @@ def users_U_get(data):
         "data": {
             "response": {
                 "nb_documents": unsigned_contracts,
+                "settings_require_update": settings_require_update,
                 "details": user
             },
             "status": 200
