@@ -8,7 +8,7 @@ from Salesforce import getSF
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=1)
-def users_U_update(data):
+def users_u_update(data):
     # Initialize DB and SF
     sf = getSF()
 

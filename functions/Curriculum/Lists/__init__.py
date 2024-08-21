@@ -1,4 +1,4 @@
-from .Lists_A_GetClassCodes import lists_A_get_class_codes
-from .Lists_A_GetUsers import lists_A_get_users
+from .Lists_A_GetClassCodes import lists_a_get_class_codes
+from .Lists_A_GetUsers import lists_a_get_users
 
-from .Lists_U_GetClassCodes import lists_U_get_class_codes
+from .Lists_U_GetClassCodes import lists_u_get_class_codes

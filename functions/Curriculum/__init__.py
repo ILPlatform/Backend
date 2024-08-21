@@ -1,5 +1,8 @@
-from .CurriculumGetUser import curriculum_get_user
+# from .CurriculumGetUser import curriculum_get_user
 
 from .Documents import *
 from .Lists import *
 from .Users import *
+from .Classes import *
+from .Attestations import *
+from .Customers import *

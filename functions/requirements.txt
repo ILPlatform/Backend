@@ -5,3 +5,5 @@ oauth2client
 python-dotenv
 python-dateutil
 pandas
+asyncio
+aiohttp

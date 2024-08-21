@@ -3,17 +3,16 @@ from Helpers import firebase_functions_custom, https_fn_custom
 from Google.Connector import GoogleConnector
 from firebase_functions import https_fn, options
 from datetime import datetime
-from firebase_admin import firestore, auth
+from firebase_admin import auth
 from Salesforce import getSF
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=1)
-def lists_U_get_class_codes(data):
+def lists_u_get_class_codes(data):
     # Get the parameters
     uid = data.get("uid")
 
     # Initialize DB and SF
-    db = firestore.client()
     sf = getSF()
 
     # Get the user

@@ -9,7 +9,7 @@ from functools import wraps
 import os
 
 # Custom decorator to allow CORS in the Cloud Function
-def https_fn_custom(timeout_sec=60):
+def https_fn_custom(timeout_sec=60, access=False):
     if os.getenv("FUNCTIONS_EMULATOR") == "true":
         return https_fn.on_request(
         region='europe-west1',
@@ -26,7 +26,7 @@ def https_fn_custom(timeout_sec=60):
                 "https://admin.ilplatform.be",
                 "https://curriculum.ilplatform.be", "https://independentlearningplatform.lightning.force.com",
                 "https://independentlearningplatform--internbox.sandbox.lightning.force.com"
-            ],
+            ] if not access else ["*"],
             cors_methods=["get", "post", "options"]
         ),
         timeout_sec=timeout_sec)

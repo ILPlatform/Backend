@@ -3,16 +3,14 @@ from Helpers import firebase_functions_custom, https_fn_custom
 from Google.Connector import GoogleConnector
 from firebase_functions import https_fn, options
 from datetime import datetime
-from firebase_admin import firestore, auth
+from firebase_admin import auth
 from Salesforce import getSF
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=2)
-def users_A_get_all(data):
+def users_a_get_all(data):
     # Initialize DB and SF
-    db = firestore.client()
     sf = getSF()
-
 
     # Get all users from SF
     sf_results = sf.sf.query_all_iter(f"""

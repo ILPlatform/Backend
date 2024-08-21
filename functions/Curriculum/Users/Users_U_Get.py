@@ -8,10 +8,10 @@ from Salesforce import getSF
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=1)
-def users_U_get(data):
+def users_u_get(data):
     # Initialize DB and SF
-    db = firestore.client()
     sf = getSF()
+    google = GoogleConnector()
 
     # Get the parameters
     uid = data.get("uid")
@@ -28,7 +28,13 @@ def users_U_get(data):
             Nationality__c, Birthplace__c, Registration_Number__c,
             T_Shirt_Size__c,
             IBAN__c, BIC__c,
-            Address__Street__s, Address__City__s, Address__PostalCode__s
+            Address__Street__s, Address__City__s, Address__PostalCode__s,
+            Image_URL__c,
+            (
+                SELECT Id
+                FROM Documents__r
+                WHERE Signed__c = False AND Deleted__c = False
+            )
         FROM Employee__c
         WHERE Firebase_UID__c='{uid}'
     """).get("records", [{}])[0]
@@ -52,24 +58,18 @@ def users_U_get(data):
         "address_street": result.get("Address__Street__s"),
         "address_city": result.get("Address__City__s"),
         "address_zip": result.get("Address__PostalCode__s"),
+        "image_url": result.get("Image_URL__c")
     }
-
-    # Get all contracts of the given user
-    contracts = db.collection("Documents").where(filter=FieldFilter("uid", "==", uid)).where(filter=FieldFilter("signed", "==", False)).stream()
 
     # Flag if the user has entries that are none that are not other_phone or t_shirt_size
     settings_require_update = False
-    print(user.get("birthplace"))
     for key, value in user.items():
         if value is None and key not in ["other_phone", "t_shirt_size"]:
             settings_require_update = True
 
 
     # Compute number of unsigned contracts
-    unsigned_contracts = 0
-    for contract in contracts:
-        if not contract.to_dict().get("deleted"):
-            unsigned_contracts += 1
+    unsigned_contracts = result.get("Documents__r", {}).get("totalSize", 0) if result.get("Documents__r") else 0
 
     return {
         "data": {

@@ -8,7 +8,7 @@ from Salesforce import getSF
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=10)
-def users_A_update_roles(data):
+def users_a_update_roles(data):
     # Get the parameters
     user_uid = data.get("user_uid")
     roles = data.get("roles")

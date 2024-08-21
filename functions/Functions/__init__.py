@@ -3,7 +3,7 @@ from .AdminGetWeekCodes import admin_get_week_codes
 from .AdminCreateCampsForm import admin_create_camps_form
 from .AdminUpdateCampsEvents import admin_update_camps_events
 from .AdminCreateTeacherConvention import admin_create_teacher_convention
-from .AdminCreateTeacherAttestations import admin_create_teacher_attestations
+# from .AdminCreateTeacherAttestations import admin_create_teacher_attestations
 from .AdminUpdateTeacherContractSigned import admin_update_teacher_contract_signed
 from .AdminUpdateClassesEvents import admin_update_classes_events
 from .AdminUpdateSingleClassEvents import admin_update_single_class_events

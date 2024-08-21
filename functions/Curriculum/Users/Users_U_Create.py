@@ -5,10 +5,11 @@ from firebase_functions import https_fn, options
 from datetime import datetime
 from firebase_admin import auth, firestore
 from Salesforce import getSF
+from Emails import send_email_admin
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=1)
-def users_U_create(data):
+def users_u_create(data):
     # Initialize SF
     sf = getSF()
 
@@ -62,4 +63,27 @@ def users_U_create(data):
 
     # Create the user in Salesforce
     sf.sf.Employee__c.create(create_data)
+
+    # Send an email to admins to notify them of the new user
+    send_email_admin("New Teacher Registration", f"""
+        <p>Dear Admin,</p>
+        <p>A new teacher has registered on the platform. Please review the details below:</p>
+        <ul>
+            <li><b>Name:</b> {create_data.get("Name")} {create_data.get("Last_Name__c")}</li>
+            <li><b>Email:</b> {create_data.get("Email__c")}</li>
+            <li><b>Phone:</b> {create_data.get("Phone__c")}</li>
+            <li><b>Other Phone:</b> {create_data.get("Other_Phone__c")}</li>
+            <li><b>Nationality:</b> {create_data.get("Nationality__c")}</li>
+            <li><b>Birthplace:</b> {create_data.get("Birthplace__c")}</li>
+            <li><b>Registration Number:</b> {create_data.get("Registration_Number__c")}</li>
+            <li><b>T-Shirt Size:</b> {create_data.get("T_Shirt_Size__c")}</li>
+            <li><b>IBAN:</b> {create_data.get("IBAN__c")}</li>
+            <li><b>BIC:</b> {create_data.get("BIC__c")}</li>
+            <li><b>Address:</b> {create_data.get("Address__Street__s")}, {create_data.get("Address__PostalCode__s")} {create_data.get("Address__City__s")}</li>
+            <li><b>Accepts Image:</b> {create_data.get("Accepts_Image__c")}</li>
+            <li><b>Image URL:</b> {create_data.get("Image_URL__c")}</li>
+        </ul>
+        <p>Best regards,<br></p>
+        """)
+
     return {"data": {"response": "User created successfully", "status": 200}}
