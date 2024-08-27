@@ -6,3 +6,5 @@ from .Users import *
 from .Classes import *
 from .Attestations import *
 from .Customers import *
+from .Forms import *
+from .Interviews import *

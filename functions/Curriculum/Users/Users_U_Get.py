@@ -64,9 +64,8 @@ def users_u_get(data):
     # Flag if the user has entries that are none that are not other_phone or t_shirt_size
     settings_require_update = False
     for key, value in user.items():
-        if value is None and key not in ["other_phone", "t_shirt_size"]:
+        if value is None and key not in ["other_phone", "t_shirt_size", "image_url"]:
             settings_require_update = True
-
 
     # Compute number of unsigned contracts
     unsigned_contracts = result.get("Documents__r", {}).get("totalSize", 0) if result.get("Documents__r") else 0

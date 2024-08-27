@@ -4,6 +4,8 @@ from .SFQueries import SFQueries
 
 import os
 from pprint import pprint
+from datetime import datetime, timedelta
+
 
 class SFProcessor(SFConnector):
     def __init__(self, SF_USERNAME, SF_PASSWORD, SF_SECURITY_TOKEN, SF_DOMAIN) -> None:
@@ -60,6 +62,8 @@ class SFProcessor(SFConnector):
     def __process_class_details(self, data):
         nl = '\n\n'
         address = f'{data["Account"]["BillingAddress"]["street"]}, {data["Account"]["BillingAddress"]["postalCode"]} {data["Account"]["BillingAddress"]["city"]}, {data["Account"]["BillingAddress"]["country"]}'
+
+
         processed_data = {
             "id": data["Id"],
             "code": data["Code__c"],
@@ -81,6 +85,8 @@ class SFProcessor(SFConnector):
             "holidays": {
                 "weeks": data["Yearly_Schedule__r"]["Associated_Calendar__r"]["Holiday_Weeks__c"],
                 "days": data["Yearly_Schedule__r"]["Associated_Calendar__r"]["Holiday_Days__c"],
+                "overwrite_cancelled_ys": data["Yearly_Schedule__r"]["Overwrite_Cancelled__c"],
+                "overwrite_cancelled": data["Overwrite_Cancelled__c"],
             },
             "replacements": {
                 "one_time": [{
@@ -91,7 +97,7 @@ class SFProcessor(SFConnector):
                     "date": r.get("Date__c"),
                     "email": r["Teacher__r"].get("Email__c") if r.get("Teacher__r") else None
                 } for r in filter(lambda x: x.get("RecordTypeId") == "012P5000001QAUbIAO", (data.get("Replacements__r") or {}).get('records', []))],
-            }
+            },
         }
         print(processed_data)
         return processed_data

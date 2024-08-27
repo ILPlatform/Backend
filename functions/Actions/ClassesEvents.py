@@ -91,7 +91,7 @@ def __generate_class_event(class_info):
             'timeZone': 'Europe/Brussels',
         },
         'recurrence': [
-            f'RRULE:FREQ=WEEKLY;UNTIL={class_info["event"]["end_date"].replace("-", "")}T000000Z'
+            f'RRULE:FREQ=WEEKLY;UNTIL={class_info["event"]["end_date"].replace("-", "")}T235959Z'
         ],
         'attendees': [
             {'email': class_info["event"]["email"]} if class_info["event"]["email"] else None,
@@ -114,8 +114,10 @@ def __class_event(google, sf, class_info, batch1, batch2, batch3):
     event = __generate_class_event(class_info)
     weeks = class_info.get("holidays").get("weeks").splitlines() if class_info.get("holidays").get("weeks") else []
     days = list(map(lambda d: datetime.strptime(d, "%d/%m/%Y").strftime("%Y-%m-%d"), class_info.get("holidays").get("days").splitlines() if class_info.get("holidays").get("days") else []))
+    days_oc_ys = list(map(lambda d: datetime.strptime(d, "%d/%m/%Y").strftime("%Y-%m-%d"), class_info.get("holidays").get("overwrite_cancelled_ys").splitlines() if class_info.get("holidays").get("overwrite_cancelled_ys") else []))
+    days_oc = list(map(lambda d: datetime.strptime(d, "%d/%m/%Y").strftime("%Y-%m-%d"), class_info.get("holidays").get("overwrite_cancelled").splitlines() if class_info.get("holidays").get("overwrite_cancelled") else []))
     holiday_weeks = generate_date_list_from_intervals(weeks)
-    is_holiday = lambda instance: instance["start"]["dateTime"][:10] in holiday_weeks or instance["start"]["dateTime"][:10] in days
+    is_holiday = lambda instance: instance["start"]["dateTime"][:10] in holiday_weeks or instance["start"]["dateTime"][:10] in days or instance["start"]["dateTime"][:10] in days_oc_ys or instance["start"]["dateTime"][:10] in days_oc
 
     # Callback for batch request to store event_id and get individual instances
     def callback1(request_id, response, exception):
@@ -171,6 +173,9 @@ def __class_event(google, sf, class_info, batch1, batch2, batch3):
                 replacements_one_time = class_info.get("replacements").get("one_time") or []
                 replacement_one_time = next((c for c in replacements_one_time if c["date"] == instance["start"]["dateTime"][:10]), None)
 
+                # Find the instance_email
+                instance_email = instance["attendees"][0]["email"] if instance.get("attendees") and len(instance["attendees"]) > 0 and instance["attendees"][0].get("email") else None
+
                 # Update the attendees for the one-time replacement day
                 if replacement_one_time:
                     if (not instance.get("attendees") or (instance.get("attendees") and len(instance.get("attendees")) == 0)) and replacement_one_time["email"]:
@@ -205,7 +210,7 @@ def __class_event(google, sf, class_info, batch1, batch2, batch3):
                         updated = True
 
                     # If there is no one-time replacement and the teacher is not the permanent teacher, update the attendees
-                    if instance.get("attendees") and len(instance["attendees"]) > 0 and instance["attendees"][0].get("email") != permenant_email:
+                    if instance_email and instance_email != permenant_email:
                         if permenant_email:
                             instance["attendees"] = [
                                 {"email": permenant_email},

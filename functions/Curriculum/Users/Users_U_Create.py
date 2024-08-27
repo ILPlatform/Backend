@@ -8,16 +8,15 @@ from Salesforce import getSF
 from Emails import send_email_admin
 
 @https_fn_custom()
-@firebase_functions_custom(auth_level=1)
+@firebase_functions_custom(auth_level=0)
 def users_u_create(data):
     # Initialize SF
     sf = getSF()
 
     # Get the parameters
-    uid = data.get("uid")
     details = data.get("details")
-    if not uid or not details:
-        return {"data": {"response": "User UID and details are required", "status": 400}}
+    if not details:
+        return {"data": {"response": "User details are required", "status": 400}}
 
     # Check user provided consent
     if not details.get("consent"):

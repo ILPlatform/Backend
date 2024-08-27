@@ -17,7 +17,7 @@ def classes_a_get_all(data):
         SELECT
             Id, Code__c, Day_of_Week__c, Start_Time__c, End_Time__c, Account.Name,
             Yearly_Schedule__r.Start_Date__c, Yearly_Schedule__r.End_Date__c,
-            Teacher__r.Full_Name__c, Teacher__r.Firebase_UID__c,
+            Teacher__r.Id, Teacher__r.Full_Name__c, Teacher__r.Firebase_UID__c,
             Google_Event__c
         FROM Opportunity
         WHERE RecordTypeId = '012060000003OPWAA2'
@@ -33,6 +33,7 @@ def classes_a_get_all(data):
         "start_date": code.get("Yearly_Schedule__r").get("Start_Date__c") if code.get("Yearly_Schedule__r") else None,
         "end_date": code.get("Yearly_Schedule__r").get("End_Date__c") if code.get("Yearly_Schedule__r") else None,
         "teacher_name": code.get("Teacher__r").get("Full_Name__c") if code.get("Teacher__r") else None,
+        "teacher_id": code.get("Teacher__r").get("Id") if code.get("Teacher__r") else None,
         "teacher_uid": code.get("Teacher__r").get("Firebase_UID__c") if code.get("Teacher__r") else None,
         "event_id": code.get("Google_Event__c")
     } for code in result]

@@ -26,7 +26,7 @@ DRIVE_CAMPS_PHOTOS_ID = os.getenv("DRIVE_CAMPS_PHOTOS_ID")
 class GoogleConnector():
     CALENDAR_CAMPS_ID = os.getenv("CALENDAR_CAMPS_ID")
     CALENDAR_CLASSES_ID = os.getenv("CALENDAR_CLASSES_ID")
-
+    CLASSES_FORM_ID = os.getenv("CLASSES_FORM_ID")
 
     def __init__(self):
         self.auth = self.__authorize()
