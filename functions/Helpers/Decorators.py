@@ -7,6 +7,7 @@ from types import FunctionType
 import sys
 from functools import wraps
 import os
+import re
 
 # Custom decorator to allow CORS in the Cloud Function
 def https_fn_custom(timeout_sec=60, access=False):

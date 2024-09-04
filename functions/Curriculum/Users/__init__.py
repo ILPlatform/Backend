@@ -6,3 +6,4 @@ from .Users_A_GetAll import users_a_get_all
 from .Users_A_ResetPassword import users_a_reset_password
 from .Users_U_ResetPassword import users_u_reset_password
 from .Users_A_Create import users_a_create
+from .Users_E_GetImages import users_e_get_images

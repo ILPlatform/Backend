@@ -94,7 +94,6 @@ class SFQueries:
 
         FROM Opportunity
         WHERE Id = '{class_id}'
-              AND StageName='Confirmed'
         """
         return query
 

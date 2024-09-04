@@ -279,6 +279,8 @@ def update_and_create_classes_per_week(google, sf, year_code=None, class_code=No
     elif class_id:
         # Get the class details for the specified class
         class_info = sf.get_all_class_details3(class_id)
+        print(class_info)
+
         try:
             __class_event(google, sf, class_info, batch1, batch2, batch3)
         except Exception as e:

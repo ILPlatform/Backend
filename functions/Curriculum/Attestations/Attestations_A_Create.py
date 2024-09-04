@@ -13,8 +13,6 @@ BLACKLIST_EMAILS = [
   # '.*@ilplatform.be',
   'luca.paraschi@gmail.com',
   'mihneataranu@gmail.com',
-  'alexandra-demt@hotmail.com',
-  'chris.kafrouni@gmail.com'
 ]
 
 @https_fn_custom(timeout_sec=540)
