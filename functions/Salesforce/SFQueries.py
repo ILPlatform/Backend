@@ -41,7 +41,7 @@ class SFQueries:
                 Yearly_Schedule__r.Associated_Calendar__r.Holiday_Weeks__c, Yearly_Schedule__r.Associated_Calendar__r.Holiday_Days__c,
                 Yearly_Schedule__r.Overwrite_Cancelled__c,
                 Overwrite_Cancelled__c, Additional_Invite__c,
-                Google_Event__c,
+                Google_Event__c, Ages_Announced__c,
                 (
                     SELECT Teacher__r.Email__c, Date__c, RecordTypeId
                     FROM Replacements__r
@@ -50,7 +50,7 @@ class SFQueries:
 
         FROM Opportunity
         WHERE Calendar__r.Year_Code__c='{year_code}'
-              AND StageName='Confirmed'
+            AND StageName!='Cancelled'
         """
         return query
 
@@ -63,7 +63,7 @@ class SFQueries:
                 Yearly_Schedule__r.Associated_Calendar__r.Holiday_Weeks__c, Yearly_Schedule__r.Associated_Calendar__r.Holiday_Days__c,
                 Yearly_Schedule__r.Overwrite_Cancelled__c,
                 Overwrite_Cancelled__c, Additional_Invite__c,
-                Google_Event__c,
+                Google_Event__c, Ages_Announced__c,
                 (
                     SELECT Teacher__r.Email__c, Date__c, RecordTypeId
                     FROM Replacements__r
@@ -72,7 +72,7 @@ class SFQueries:
 
         FROM Opportunity
         WHERE Code__c='{week_code}'
-              AND StageName='Confirmed'
+            AND StageName!='Cancelled'
         """
         return query
 
@@ -85,7 +85,7 @@ class SFQueries:
                 Yearly_Schedule__r.Associated_Calendar__r.Holiday_Weeks__c, Yearly_Schedule__r.Associated_Calendar__r.Holiday_Days__c,
                 Yearly_Schedule__r.Overwrite_Cancelled__c,
                 Overwrite_Cancelled__c, Additional_Invite__c,
-                Google_Event__c,
+                Google_Event__c, Ages_Announced__c,
                 (
                     SELECT Teacher__r.Email__c, Date__c, RecordTypeId
                     FROM Replacements__r
@@ -94,6 +94,7 @@ class SFQueries:
 
         FROM Opportunity
         WHERE Id = '{class_id}'
+            AND StageName!='Cancelled'
         """
         return query
 

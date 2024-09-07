@@ -21,6 +21,7 @@ def classes_a_get_all(data):
             Google_Event__c
         FROM Opportunity
         WHERE RecordTypeId = '012060000003OPWAA2'
+            AND StageName!='Cancelled'
     """)
 
     # Process the result

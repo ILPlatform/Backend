@@ -71,7 +71,7 @@ class SFProcessor(SFConnector):
             "event": {
                 "id": data["Google_Event__c"],
                 "school": data["Account"]["Name"],
-                "summary": f'{data["Code__c"]} - {data["Account"]["Name"]} [{data["Ages_Real__c"] if data.get("Ages_Real__c") and data.get("Ages_Real__c") != "" else "???"} ans]',
+                "summary": f'{data["Code__c"]} - {data["Account"]["Name"]} [{data["Ages_Announced__c"] if data.get("Ages_Announced__c") and data.get("Ages_Announced__c") != "" else "???"}]',
                 "email": data["Teacher__r"]["Email__c"] if data["Teacher__r"] else None,
                 "start_time": data["Start_Time__c"][:-1],
                 "end_time": data["End_Time__c"][:-1],

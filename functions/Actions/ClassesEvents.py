@@ -178,6 +178,7 @@ def __class_event(google, sf, class_info, batch1, batch2, batch3):
 
                 # Update the attendees for the one-time replacement day
                 if replacement_one_time:
+                    sendUpdates = "all"
                     if (not instance.get("attendees") or (instance.get("attendees") and len(instance.get("attendees")) == 0)) and replacement_one_time["email"]:
                         instance["attendees"] = [
                             {"email": replacement_one_time["email"]},
