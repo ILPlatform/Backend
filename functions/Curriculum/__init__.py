@@ -8,3 +8,4 @@ from .Attestations import *
 from .Customers import *
 from .Forms import *
 from .Interviews import *
+from .Events import *
