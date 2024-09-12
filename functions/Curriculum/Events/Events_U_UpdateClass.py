@@ -28,6 +28,7 @@ def events_u_update_class(data):
             Yearly_Schedule__r.Start_Date__c, Yearly_Schedule__r.End_Date__c,
             Yearly_Schedule__r.Associated_Calendar__r.Holiday_Weeks__c, Yearly_Schedule__r.Associated_Calendar__r.Holiday_Days__c,
             Yearly_Schedule__r.Overwrite_Cancelled__c,
+            Yearly_Schedule__r.Attendance_Description__c,
             Overwrite_Cancelled__c, Additional_Invite__c,
             Google_Event__c, Ages_Announced__c,
             (
@@ -95,7 +96,7 @@ def events_u_update_class(data):
         teacher_schedule[course_day] = permanent_teacher
 
     # Step 5: Process replacements and update teacher for relevant dates
-    replacements = class_data.get('Replacements__r', {}).get("records", []) or []
+    replacements = class_data['Replacements__r']["records"] if class_data.get('Replacements__r') else []
     # Sort replacements by date
     sorted_replacements = sorted(replacements, key=lambda r: datetime.datetime.strptime(r.get('Date__c'), '%Y-%m-%d').date())
 
@@ -125,7 +126,8 @@ def events_u_update_class(data):
                 teacher_schedule_one_time[replacement_date] = new_teacher
 
     ## Step 4: Add additional invitees
-    teacher_schedule_one_time = {k: v + class_data['Additional_Invite__c'].split(",") for k, v in teacher_schedule_one_time.items()}
+    if class_data['Additional_Invite__c']:
+        teacher_schedule_one_time = {k: v + class_data['Additional_Invite__c'].split(",") for k, v in teacher_schedule_one_time.items()}
 
     # Loop through replacements looking for additional invitees
     for replacement in sorted_replacements:
@@ -136,7 +138,7 @@ def events_u_update_class(data):
 
                 # Only replace for that specific day
                 if replacement_date in course_days:
-                    teacher_schedule_one_time[replacement_date] += [additional_invitee]
+                    teacher_schedule_one_time[replacement_date] = [*teacher_schedule_one_time[replacement_date], additional_invitee]
 
     ## Step 5: Generate the Google Calendar events
     # Create Batch Requests
@@ -169,7 +171,7 @@ def events_u_update_class(data):
                 # Check if the date should be held
                 if instance_date not in course_days:
                     instance["status"] = "cancelled"
-                    batch3.add(google.calendar.events().update(calendarId=google.CALENDAR_CLASSES_ID, eventId=instance['id'], body=instance, sendUpdates=True), callback=callback3)
+                    batch3.add(google.calendar.events().update(calendarId=google.CALENDAR_CLASSES_ID, eventId=instance['id'], body=instance, sendUpdates="none"), callback=callback3)
 
                 # Check if the attendees should be updated
                 elif set(teacher_schedule_one_time.get(instance_date, [])) != set(list(map(lambda x: x.get("email"), instance.get("attendees", [])))):
@@ -196,28 +198,35 @@ def events_u_update_class(data):
             print(f'[INFO] Successfully updated events for {class_data["Code__c"]}')
 
     # Define the event details
-    start_date = datetime.datetime.strptime(class_data["Yearly_Schedule__r"]["Start_Date__c"], '%Y-%m-%d').date()
+    start_date = course_days[0]
     start_time = datetime.datetime.strptime(class_data["Start_Time__c"][:-1], "%H:%M:%S.%f").time()
     end_time = datetime.datetime.strptime(class_data["End_Time__c"][:-1], "%H:%M:%S.%f").time()
-    start_datetime = datetime.datetime.combine(start_date, start_time).isoformat() + "+02:00"
-    end_datetime = datetime.datetime.combine(start_date, end_time).isoformat() + "+02:00"
+    start_datetime = datetime.datetime.combine(start_date, start_time)
+    if not class_data["Account"]["Online__c"]:
+        start_datetime -= datetime.timedelta(minutes=15)
+    start_datetime_iso = start_datetime.isoformat() + "+02:00"
+    end_datetime = datetime.datetime.combine(start_date, end_time) # + datetime.timedelta(minutes=15)
+    end_datetime_iso = end_datetime.isoformat() + "+02:00"
     event = {
         'summary': f'{class_data["Code__c"]} - {class_data["Account"]["Name"]} [{class_data["Ages_Announced__c"] if class_data.get("Ages_Announced__c") and class_data.get("Ages_Announced__c") != "" else "???"}]',
         'location': f'{class_data["Account"]["BillingAddress"]["street"]}, {class_data["Account"]["BillingAddress"]["postalCode"]} {class_data["Account"]["BillingAddress"]["city"]}, {class_data["Account"]["BillingAddress"]["country"]}',
-        'description': "",
+        'description':
+            f"Horaire de cours: {class_data['Start_Time__c'][:5]} - {class_data['End_Time__c'][:5]}. Arrivée attendue 15 minutes avant pour préparer la salle.\n\n" + \
+            f"Procédure de présences: {class_data['Yearly_Schedule__r']['Attendance_Description__c']}",
         'start': {
-            'dateTime': start_datetime,
+            'dateTime': start_datetime_iso,
             'timeZone': 'Europe/Brussels',
         },
         'end': {
-            'dateTime': end_datetime,
+            'dateTime': end_datetime_iso,
             'timeZone': 'Europe/Brussels',
         },
         'recurrence': [
             f'RRULE:FREQ=WEEKLY;UNTIL={class_data["Yearly_Schedule__r"]["End_Date__c"].replace("-", "")}T235959Z'
         ],
         'attendees': [
-            {'email': email} for email in teacher_schedule_one_time[course_days[0]]
+            {'email': class_data["Teacher__r"]["Email"]} if class_data.get("Teacher__r") else None,
+            {'email': class_data["Additional_Invite__c"]} if class_data.get("Additional_Invite__c") else None
         ],
         "conferenceData": {
             "createRequest": {
@@ -235,7 +244,7 @@ def events_u_update_class(data):
         batch1.add(google.calendar.events().insert(calendarId=google.CALENDAR_CLASSES_ID, body=event, sendUpdates="all", conferenceDataVersion=1), callback=callback1)
     else:
         # Update the Google Event
-        batch1.add(google.calendar.events().update(calendarId=google.CALENDAR_CLASSES_ID, eventId=class_data["Google_Event__c"], body=event, sendUpdates="all", conferenceDataVersion=1), callback=callback1)
+        batch1.add(google.calendar.events().update(calendarId=google.CALENDAR_CLASSES_ID, eventId=class_data["Google_Event__c"], body=event, sendUpdates="none", conferenceDataVersion=1), callback=callback1)
 
     # Execute the Batch Requests
     batch1.execute()

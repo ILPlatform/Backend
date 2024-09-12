@@ -42,7 +42,7 @@ def users_a_get_all(data):
             "email": sf_user.get("Email__c"),
             "name": sf_user.get("Full_Name__c"),
             "claims": firebase_user.get("claims"),
-            "phone": sf_user.get("Phone__c"),
+            "phone": sf_user.get("Phone__c").replace("+", "").replace(" ", "") if sf_user.get("Phone__c") else None,
             "last_sign_in": firebase_user.get("last_sign_in"),
             "image_url": sf_user.get("Image_URL__c")
         }

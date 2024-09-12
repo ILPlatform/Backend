@@ -6,7 +6,7 @@ from datetime import datetime
 from firebase_admin import auth
 from Salesforce import getSF
 
-@https_fn_custom()
+@https_fn_custom(access=True)
 @firebase_functions_custom(auth_level=0)
 def users_e_get_images(data):
     # Initialize DB and SF
