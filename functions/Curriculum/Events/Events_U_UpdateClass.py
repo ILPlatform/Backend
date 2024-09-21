@@ -225,7 +225,7 @@ def events_u_update_class(data):
             f'RRULE:FREQ=WEEKLY;UNTIL={class_data["Yearly_Schedule__r"]["End_Date__c"].replace("-", "")}T235959Z'
         ],
         'attendees': [
-            {'email': class_data["Teacher__r"]["Email"]} if class_data.get("Teacher__r") else None,
+            {'email': class_data["Teacher__r"]["Email__c"]} if class_data.get("Teacher__r") else None,
             {'email': class_data["Additional_Invite__c"]} if class_data.get("Additional_Invite__c") else None
         ],
         "conferenceData": {
