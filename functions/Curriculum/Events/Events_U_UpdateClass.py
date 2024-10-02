@@ -63,7 +63,8 @@ def events_u_update_class(data):
 
     # Parse holiday days
     holiday_days = class_data['Yearly_Schedule__r']['Associated_Calendar__r']['Holiday_Days__c']
-    holiday_days_set = set(datetime.datetime.strptime(day.strip(), '%d/%m/%Y').date() for day in holiday_days.splitlines())
+    print(holiday_days)
+    holiday_days_set = set(datetime.datetime.strptime(day.strip(), '%d/%m/%Y').date() for day in holiday_days.splitlines()) if holiday_days else set()
 
     # Parse overwrite cancelled days
     overwrite_cancelled_1 = class_data['Yearly_Schedule__r']['Overwrite_Cancelled__c'] or ""

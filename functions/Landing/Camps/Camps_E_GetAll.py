@@ -19,7 +19,7 @@ def camps_e_get_all(data):
     # Salesforce SOQL query
     response = sf.sf.query_all(f'''
     SELECT
-        Id, Start_Date__c, End_Date__c, Number_of_Days__c, Excluded_Day__c,
+        Id, Name, Start_Date__c, End_Date__c, Number_of_Days__c, Excluded_Day__c,
         (
             SELECT Id, Account.Name, Price__c, Registration_Link__c, Ages_Announced__c, Parent_Organisation_Name__c
             FROM Opportunities__r
@@ -54,6 +54,7 @@ def camps_e_get_all(data):
 
             formatted_data[period_key] = {
                 "period": period_key,
+                "name": record.get('Name', "N/A"),
                 "start": record.get('Start_Date__c', "N/A"),
                 "end": record.get('End_Date__c', "N/A"),
                 "days": int(record.get('Number_of_Days__c', 5)),
