@@ -2,3 +2,4 @@ from .Classes_A_GetAll import classes_a_get_all
 from .Classes_A_UpdateNames import classes_a_update_names
 from .Classes_A_UpdateTeacher import classes_a_update_teacher
 from .Classes_A_GetInfo import classes_a_get_info
+from .Classes_A_GetInvoicingDetails import classes_a_get_invoicing_details

@@ -1,6 +1,10 @@
 import datetime
 
 def getSchedule(class_data):
+    # If no start date is specified, no schedule exists
+    if not class_data['Yearly_Schedule__r'] or not class_data['Yearly_Schedule__r']['Start_Date__c']:
+        return {}
+
     ## Step 1: Get all class dates
     # Parse dates and other inputs from class_data
     start_date = datetime.datetime.strptime(class_data['Yearly_Schedule__r']['Start_Date__c'], '%Y-%m-%d').date()

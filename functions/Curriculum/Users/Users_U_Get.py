@@ -5,6 +5,7 @@ from firebase_functions import https_fn, options
 from datetime import datetime
 from firebase_admin import firestore
 from Salesforce import getSF
+from firebase_admin import auth
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=1)

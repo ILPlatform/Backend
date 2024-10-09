@@ -6,6 +6,7 @@ from firebase_admin import auth
     # 2 - Admin (replacements) authentication required
     # 3 - Admin (documents) authentication required
     # 4 - Admin (interviews) authentication required
+    # 5 - Admin (invoicing) authentication required
     # 10 - Super Admin
 def verify_auth(req, auth_level=1):
     if auth_level == 0:
@@ -15,6 +16,9 @@ def verify_auth(req, auth_level=1):
         token = authorization.split(' ')[1]
         decoded_token = auth.verify_id_token(token, check_revoked=True)
         uid = decoded_token["uid"]
+
+        if "super_admin" in decoded_token.get("roles"):
+            return {"uid": uid, "email": decoded_token["email"]}, True
 
         if auth_level == 2 and not "replacements" in decoded_token.get("roles"):
             return f"User {uid} does not have access to the (replacements) application. Please contact an admin for further information.", False
