@@ -21,12 +21,17 @@ def camps_e_get_all(data):
     SELECT
         Id, Name, Start_Date__c, End_Date__c, Number_of_Days__c, Excluded_Day__c,
         (
-            SELECT Id, Account.Name, Price__c, Registration_Link__c, Ages_Announced__c, Parent_Organisation_Name__c
+            SELECT
+                Id, Account.Name, Price__c, Registration_Link__c, Ages_Announced__c,
+                Parent_Organisation_Name__c,
+                Account.BillingAddress
             FROM Opportunities__r
         )
     FROM Picklist__c
     WHERE RecordTypeId = '012P5000001CUEfIAO'
     ''')
+
+    print(response)
 
     # Function to format Salesforce data into the required JSON structure
     def format_camps_data(records):
@@ -48,7 +53,8 @@ def camps_e_get_all(data):
                         "partner": opp.get("Parent_Organisation_Name__c"),
                         "school": opp["Account"]["Name"] if opp.get("Account") else None,
                         "price": f"{int(opp['Price__c'])}€",
-                        "register": opp['Registration_Link__c']
+                        "register": opp['Registration_Link__c'],
+                        "address": f"{opp['Account']['BillingAddress']['street']}, {opp['Account']['BillingAddress']['postalCode']} {opp['Account']['BillingAddress']['city']}, {opp['Account']['BillingAddress']['country']}" if opp.get("Account").get("BillingAddress") else None
                     }
                     camps.append(camp)
 
