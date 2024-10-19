@@ -17,7 +17,7 @@ def verify_auth(req, auth_level=1):
         decoded_token = auth.verify_id_token(token, check_revoked=True)
         uid = decoded_token["uid"]
 
-        if "super_admin" in decoded_token.get("roles"):
+        if decoded_token.get("roles") and "super_admin" in decoded_token.get("roles"):
             return {"uid": uid, "email": decoded_token["email"]}, True
 
         if auth_level == 2 and not "replacements" in decoded_token.get("roles"):

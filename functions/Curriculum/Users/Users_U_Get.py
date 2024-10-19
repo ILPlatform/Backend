@@ -16,6 +16,7 @@ def users_u_get(data):
 
     # Get the parameters
     uid = data.get("uid")
+    user_email = data.get("user_email")
 
     # Give user claims
     if not uid and not user_email:
