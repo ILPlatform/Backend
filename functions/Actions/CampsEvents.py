@@ -142,3 +142,32 @@ def update_and_create_camps_per_week(google, sf, week_codes):
     batch3.execute()
 
     return "Success", True
+
+def update_and_create_camps(google, sf, camp_id):
+    week_code = sf.sf.query(f"SELECT Week__r.Week_Code__c FROM Opportunity WHERE Id = '{camp_id}'")["records"][0]["Week__r"]["Week_Code__c"]
+    # Get the camp details for the specified weeks
+    camps = [x for x in sf.get_all_camp_details([week_code]) if x["id"] == camp_id]
+
+    # Create Batch Requests
+    # batch1: Create or Update the Event
+    batch1 = google.calendar.new_batch_http_request()
+    # batch2: Get the Instances of the Event
+    batch2 = google.calendar.new_batch_http_request()
+    # batch3: Delete the Excluded Instances
+    batch3 = google.calendar.new_batch_http_request()
+
+    # Create the Events and the Pictures folder for each Camp
+    for camp_info in camps:
+        try:
+            __camp_event(google, sf, camp_info, batch1, batch2, batch3)
+            __camp_pictures(google, sf, camp_info)
+            print(f'[SUCCESS] Event created for {camp_info.get("code")}')
+        except Exception as e:
+            raise ValueError(f'[ERROR] {e}')
+
+    # Execute the Batch Requests
+    batch1.execute()
+    batch2.execute()
+    batch3.execute()
+
+    return "Success", True

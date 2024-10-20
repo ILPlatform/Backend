@@ -31,7 +31,7 @@ def users_u_get(data):
             T_Shirt_Size__c,
             IBAN__c, BIC__c,
             Address__Street__s, Address__City__s, Address__PostalCode__s,
-            Image_URL__c,
+            Image_URL__c, Criminal_Record__c,
             (
                 SELECT Id
                 FROM Documents__r
@@ -60,7 +60,8 @@ def users_u_get(data):
         "address_street": result.get("Address__Street__s"),
         "address_city": result.get("Address__City__s"),
         "address_zip": result.get("Address__PostalCode__s"),
-        "image_url": result.get("Image_URL__c")
+        "image_url": result.get("Image_URL__c"),
+        "criminal_url": result.get("Criminal_Record__c")
     }
 
     # Flag if the user has entries that are none that are not other_phone or t_shirt_size

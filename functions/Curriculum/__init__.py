@@ -9,3 +9,4 @@ from .Customers import *
 from .Forms import *
 from .Interviews import *
 from .Events import *
+from .Camps import *

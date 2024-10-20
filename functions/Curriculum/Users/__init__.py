@@ -7,3 +7,5 @@ from .Users_A_ResetPassword import users_a_reset_password
 from .Users_U_ResetPassword import users_u_reset_password
 from .Users_A_Create import users_a_create
 from .Users_E_GetImages import users_e_get_images
+from .Users_U_UpdatePicture import users_u_update_picture
+from .Users_U_UpdateCriminal import users_u_update_criminal

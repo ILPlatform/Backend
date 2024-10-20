@@ -15,7 +15,7 @@ def users_a_get_all(data):
     # Get all users from SF
     sf_results = sf.sf.query_all_iter(f"""
         SELECT
-            Id, Email__c, Full_Name__c, Firebase_UID__c, Phone__c, Image_URL__c
+            Id, Email__c, Full_Name__c, Firebase_UID__c, Phone__c, Image_URL__c, Criminal_Record__c
         FROM Employee__c
     """)
 
@@ -44,7 +44,8 @@ def users_a_get_all(data):
             "claims": firebase_user.get("claims"),
             "phone": sf_user.get("Phone__c").replace("+", "").replace(" ", "") if sf_user.get("Phone__c") else None,
             "last_sign_in": firebase_user.get("last_sign_in"),
-            "image_url": sf_user.get("Image_URL__c")
+            "image_url": sf_user.get("Image_URL__c"),
+            "criminal": sf_user.get("Criminal_Record__c")
         }
 
     return {"data": {"response": list(map(get_user_data, sf_results)), "status": 200}}
