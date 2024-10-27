@@ -118,9 +118,9 @@ def events_u_update_class(data):
     start_datetime = datetime.datetime.combine(start_date, start_time)
     if not class_data["Account"]["Online__c"]:
         start_datetime -= datetime.timedelta(minutes=15)
-    start_datetime_iso = start_datetime.isoformat() + "+02:00"
+    start_datetime_iso = start_datetime.isoformat()
     end_datetime = datetime.datetime.combine(start_date, end_time) # + datetime.timedelta(minutes=15)
-    end_datetime_iso = end_datetime.isoformat() + "+02:00"
+    end_datetime_iso = end_datetime.isoformat()
     event = {
         'summary': f'{class_data["Code__c"]} - {class_data["Account"]["Name"]} [{class_data["Ages_Announced__c"] if class_data.get("Ages_Announced__c") and class_data.get("Ages_Announced__c") != "" else "???"}]',
         'location': f'{class_data["Account"]["BillingAddress"]["street"]}, {class_data["Account"]["BillingAddress"]["postalCode"]} {class_data["Account"]["BillingAddress"]["city"]}, {class_data["Account"]["BillingAddress"]["country"]}',
@@ -152,6 +152,7 @@ def events_u_update_class(data):
         } if class_data["Account"]["Online__c"] else None,
         'sendUpdates': 'all'
     }
+    print(event)
 
     if not class_data.get("Google_Event__c"):
         # Create the Google Event
