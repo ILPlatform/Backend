@@ -1,3 +1,5 @@
+import datetime
+
 def __generate_camp_event(camp_info):
     # Create the Google Event Details
     nl = '\n\n'
@@ -29,6 +31,9 @@ def __camp_event(google, sf, camp_info, batch1, batch2, batch3):
 
     # Function to filter the instances to find the excluded days
     excluded_days = camp_info.get("excluded_day").split(",") if camp_info.get("excluded_day") else []
+    if camp_info.get("overwrite_cancelled"):
+        for day in camp_info.get("overwrite_cancelled").split("\n"):
+            excluded_days.append(datetime.datetime.strptime(day, "%d/%m/%Y").strftime("%Y-%m-%d"))
     is_excluded = lambda x: x.get("start").get("dateTime")[:10] in excluded_days
 
     # Callback for batch request to store event_id and get individual instances
