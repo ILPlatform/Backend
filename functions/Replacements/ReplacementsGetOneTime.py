@@ -17,7 +17,7 @@ def replacements_get_one_time(data):
     results = sf.sf.query_all_iter(f"""
         SELECT
             Id, CreatedDate, Date__c, RecordTypeId,
-            Teacher__r.Name, Teacher__r.Last_Name__c,
+            Teacher__r.Name, Teacher__r.Last_Name__c, Teacher__r.Id,
             Teacher_Old__r.Name, Teacher_Old__r.Last_Name__c,
             Opportunity__r.Code__c, Opportunity__r.Start_Time__c, Opportunity__r.End_Time__c, Opportunity__r.Account.Name, Opportunity__r.Day_of_Week__c, Opportunity__r.Id
         FROM Replacement__c
@@ -31,6 +31,7 @@ def replacements_get_one_time(data):
         "id": result.get("Id"),
         "code": result.get("Opportunity__r").get("Code__c"),
         "class_id": result.get("Opportunity__r").get("Id"),
+        "teacher_id": result.get("Teacher__r").get("Id") if result.get("Teacher__r") else None,
         "school": result.get("Opportunity__r").get("Account").get("Name"),
         "created_timestamp": result.get("CreatedDate"),
         "date": result.get("Date__c"),

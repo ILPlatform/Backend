@@ -1,2 +1,3 @@
-from .AdditionalAGetAll import additional_a_get_all
-from .AdditionalACreate import additional_a_create
+from .Additional_A_GetAll import additional_a_get_all
+from .Additional_A_Create import additional_a_create
+from .Additional_A_Delete import additional_a_delete
