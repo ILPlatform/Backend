@@ -9,7 +9,7 @@ GMAIL_PASSWORD = os.getenv("GMAIL_PASSWORD")
 if os.getenv("FUNCTIONS_EMULATOR") == "true":
     GMAIL_ADMIN_TO = "daniel@ilplatform.be"
 else:
-    GMAIL_ADMIN_TO = "daniel@ilplatform.be,eimantas@ilplatform.be"
+    GMAIL_ADMIN_TO = "daniel@ilplatform.be"
 
 # SMTP setup
 def create_smtp_transport():

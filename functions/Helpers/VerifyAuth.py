@@ -3,6 +3,7 @@ from firebase_admin import auth
 # Auth levels:
     # 0 - No authentication required
     # 1 - User authentication required
+    # 1.5 - User (curriculum) authenatication required
     # 2 - Admin (replacements) authentication required
     # 3 - Admin (documents) authentication required
     # 4 - Admin (interviews) authentication required
@@ -20,6 +21,8 @@ def verify_auth(req, auth_level=1):
         if decoded_token.get("roles") and "super_admin" in decoded_token.get("roles"):
             return {"uid": uid, "email": decoded_token["email"]}, True
 
+        if auth_level == 1.5 and "no_curriculum" in decoded_token.get("roles"):
+            return f"User {uid} does not have access to the (curriculum) application. Please contact an admin for further information.", False
         if auth_level == 2 and not "replacements" in decoded_token.get("roles"):
             return f"User {uid} does not have access to the (replacements) application. Please contact an admin for further information.", False
         if auth_level == 3 and not "documents" in decoded_token.get("roles"):

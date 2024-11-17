@@ -1,5 +1,3 @@
-
-
 from Helpers import firebase_functions_custom, https_fn_custom
 from Salesforce import getSF
 from Actions import update_and_create_classes_per_week
@@ -11,19 +9,16 @@ from datetime import datetime
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=2)
-def replacements_delete(data):
-    # Get the parameters
-    replacement_id = data.get("id")
-
+def additional_a_create(data):
     # Initialize the Salesforce client
     sf = getSF()
 
-    print("Deleting", replacement_id, "from Salesforce.")
-
-    try:
-        # Delete the one-time replacements
-        sf.sf.Replacement__c.update(replacement_id, {"Deleted__c": True})
-    except Exception as e:
-        return {"data": {"response": f"Error deleting replacement: {e}", "status": 400}}
+    # Create a new additional teacher object on SF
+    sf.sf.Replacement__c.create({
+        "RecordTypeId": "012P5000001YwypIAC",
+        "Teacher__c": data["teacher_id"],
+        "Date__c": data["date"],
+        "Opportunity__c": data["class_id"]
+    })
 
     return {"data": {"response": "Success", "status": 200}}
