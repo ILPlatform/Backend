@@ -18,8 +18,6 @@ def replacements_delete(data):
     # Initialize the Salesforce client
     sf = getSF()
 
-    print("Deleting", replacement_id, "from Salesforce.")
-
     try:
         # Delete the one-time replacements
         sf.sf.Replacement__c.update(replacement_id, {"Deleted__c": True})
