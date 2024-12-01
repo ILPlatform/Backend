@@ -65,7 +65,7 @@ def attestations_a_create(data):
         send_attestation_teacher(teacher, year, month, True if len(teacher_dict) == 1 else False)
 
         # Add the document to Salesforce
-        sf.sf.Document__c.create({
+        document = sf.sf.Document__c.create({
             "Year__c": year,
             "Month__c": month,
             "Teacher__c": teacher.get("id"),
@@ -74,6 +74,17 @@ def attestations_a_create(data):
             "Unsigned_URL__c": teacher.get("link"),
             "RecordTypeId": "012P5000001T8MbIAK",
             "To_Sign__c": True,
+        })
+
+        # Add payment to SF
+        sf.sf.Payment__c.create({
+          "Document__c": document.get("id"),
+          "Year__c": year,
+          "Month__c": month,
+          "RecordTypeId": "012P5000001tRevIAE",
+          "Paid__c": False,
+          "Beneficiary__c": teacher.get("id"),
+          "Amount__c": teacher.get('total_amount')
         })
 
     # Send the confirmation email to the admin

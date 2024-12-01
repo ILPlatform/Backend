@@ -163,6 +163,6 @@ class SFQueries:
         query = f"""
             SELECT Beneficiary__r.Email__c, Amount__c, Name
             FROM Payment__c
-            WHERE Year__c={year} AND Month__c={month}
+            WHERE Year__c={year} AND Month__c={month} AND RecordTypeId=NULL
             """
         return query

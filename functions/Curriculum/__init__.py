@@ -11,3 +11,4 @@ from .Interviews import *
 from .Events import *
 from .Camps import *
 from .Additional import *
+from .Payments import *
