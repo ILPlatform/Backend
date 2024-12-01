@@ -14,8 +14,8 @@ def users_a_update_roles(data):
     roles = data.get("roles")
     if not user_uid:
         return {"data": {"response": "User UID is required", "status": 400}}
-    if "super_admin" in roles:
-        return {"data": {"response": "Cannot assign super admin role", "status": 400}}
+    # if "super_admin" in roles:
+    #     return {"data": {"response": "Cannot assign super admin role", "status": 400}}
 
     # Give user claims
     auth.set_custom_user_claims(user_uid, {"roles": roles})

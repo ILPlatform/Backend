@@ -23,6 +23,7 @@ def users_a_get_all(data):
     firebase_results = [{
         "uid": user.uid,
         "claims": user.custom_claims,
+        "roles": user.custom_claims.get("roles") if user.custom_claims else None,
         "last_sign_in": user.user_metadata.last_sign_in_timestamp
     } for user in auth.list_users().iterate_all()]
 
@@ -42,6 +43,7 @@ def users_a_get_all(data):
             "email": sf_user.get("Email__c"),
             "name": sf_user.get("Full_Name__c"),
             "claims": firebase_user.get("claims"),
+            "roles": firebase_user.get("roles"),
             "phone": sf_user.get("Phone__c").replace("+", "").replace(" ", "") if sf_user.get("Phone__c") else None,
             "last_sign_in": firebase_user.get("last_sign_in"),
             "image_url": sf_user.get("Image_URL__c"),

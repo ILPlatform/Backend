@@ -84,6 +84,7 @@ def events_u_update_class(data):
 
                 # Check if the date should be held
                 if instance_date not in course_days:
+                    print("SHOULD BE CANCELLED")
                     instance["status"] = "cancelled"
                     batch3.add(google.calendar.events().update(calendarId=google.CALENDAR_CLASSES_ID, eventId=instance['id'], body=instance, sendUpdates="none"), callback=callback3)
 
