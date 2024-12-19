@@ -13,8 +13,8 @@ def replacements_solve(data):
     # Get parameters
     replacement_id = data.get("replacement_id")
     teacher_id = data.get("teacher_id")
-    if not replacement_id or not teacher_id:
-        return {"data": {"response": "Replacement ID and Teacher ID are required", "status": 400}}
+    if not replacement_id:
+        return {"data": {"response": "Replacement ID is required", "status": 400}}
 
     # Initialize the Salesforce client
     sf = getSF()

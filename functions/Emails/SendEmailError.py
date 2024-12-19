@@ -15,14 +15,14 @@ def send_email_error(error):
     msg = MIMEMultipart()
     msg['From'] = GMAIL_SENDER
     msg['Reply-to'] = GMAIL_REPLY_TO
-    msg['To'] = GMAIL_REPLY_TO
+    msg['To'] = GMAIL_ADMIN_TO
     msg['Subject'] = subject
     msg.attach(MIMEText(html_error(error), 'html'))
 
     # Send the email
     server = create_smtp_transport()
     try:
-        server.sendmail(GMAIL_SENDER, GMAIL_REPLY_TO, msg.as_string())
+        server.sendmail(GMAIL_SENDER, GMAIL_ADMIN_TO, msg.as_string())
         print(f"[SUCCESS] Error Email Sent Successfully")
     except Exception as e:
         raise ConnectionError(f"[ERROR] Error in sending email: {e}")
