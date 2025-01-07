@@ -10,7 +10,7 @@ from datetime import datetime
 # from Emails.SendEmailReplacementsOneTime import send_email_replacement_onetime, send_email_replacement_onetime_admin
 
 @https_fn_custom()
-@firebase_functions_custom(auth_level=2)
+@firebase_functions_custom(auth_level=1)
 def replacements_get_all_user(data):
     # Get the parameters
     user_email = data.get("user_email")

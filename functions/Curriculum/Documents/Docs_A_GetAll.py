@@ -19,7 +19,7 @@ def docs_a_get_all(data):
         SELECT
             Id, CreatedDate,
             Description__c, Signed__c, Unsigned_URL__c, Signed_URL__c, Type__c, Deleted__c, To_Sign__c, Signed_Timestamp__c,
-            Teacher__r.Name, Teacher__r.Firebase_UID__c
+            Teacher__r.Name, Teacher__r.Firebase_UID__c, Teacher__r.Id
         FROM Document__c
         WHERE Deleted__c = False
         """)
@@ -27,6 +27,7 @@ def docs_a_get_all(data):
     # Process the contracts
     return_value = [{
         "id": document.get("Id"),
+        "employee_id": document.get("Teacher__r", {}).get("Id") if document.get("Teacher__r") else None,
         "uid": document.get("Teacher__r", {}).get("Firebase_UID__c") if document.get("Teacher__r") else None,
         "name": document.get("Teacher__r", {}).get("Name") if document.get("Teacher__r") else None,
         "timestamp": document.get("CreatedDate"),

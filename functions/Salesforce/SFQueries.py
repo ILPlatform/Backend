@@ -163,6 +163,9 @@ class SFQueries:
         query = f"""
             SELECT Beneficiary__r.Email__c, Amount__c, Name
             FROM Payment__c
-            WHERE Year__c={year} AND Month__c={month} AND (RecordTypeId=NULL OR RecordTypeId='012P5000001tcX7')
+            WHERE Year__c={year}
+                AND Month__c={month}
+                AND (RecordTypeId=NULL OR RecordTypeId='012P5000001tcX7')
+                AND Deleted__c=False
             """
         return query
