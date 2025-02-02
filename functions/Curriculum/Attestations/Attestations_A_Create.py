@@ -1,5 +1,5 @@
 from Salesforce import getSF
-from firebase_functions import logger, https_fn
+from firebase_functions import logger, https_fn, storage_fn, options
 from Google import GoogleConnector, TimesheetDocument
 from Helpers import firebase_functions_custom, https_fn_custom
 from Emails import send_convention
@@ -15,7 +15,8 @@ BLACKLIST_EMAILS = [
   'mihneataranu@gmail.com',
 ]
 
-@https_fn_custom(timeout_sec=540)
+# @storage_fn.on_object_finalized(timeout_sec=540, memory=options.MemoryOption.GB_1)
+@https_fn_custom(timeout_sec=540, memory=1024)
 @firebase_functions_custom(auth_level=2)
 def attestations_a_create(data):
     """HTTPS Cloud Function to create monthly attestations. This version runs once the proposal has been confirmed."""

@@ -229,8 +229,9 @@ def __class_event(google, sf, class_info, batch1, batch2, batch3):
                             sendUpdates = "none"
 
                 # Only update the instance if it was modified
+                # TODO: Make sure the "sendUpdates" works better
                 if updated:
-                    batch3.add(google.calendar.events().update(calendarId=google.CALENDAR_CLASSES_ID, eventId=instance['id'], body=instance, sendUpdates=sendUpdates), callback=callback3)
+                    batch3.add(google.calendar.events().update(calendarId=google.CALENDAR_CLASSES_ID, eventId=instance['id'], body=instance, sendUpdates="all"), callback=callback3)
 
     # Callback for batch request to print final status
     def callback3(request_id, response, exception):

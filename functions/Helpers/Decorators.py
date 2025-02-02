@@ -10,7 +10,7 @@ import os
 import re
 
 # Custom decorator to allow CORS in the Cloud Function
-def https_fn_custom(timeout_sec=60, access=False):
+def https_fn_custom(timeout_sec=60, memory=256, access=False):
     if os.getenv("FUNCTIONS_EMULATOR") == "true":
         return https_fn.on_request(
         region='europe-west1',
@@ -18,7 +18,8 @@ def https_fn_custom(timeout_sec=60, access=False):
             cors_origins=["*"],
             cors_methods=["get", "post", "options"]
         ),
-        timeout_sec=timeout_sec)
+        timeout_sec=timeout_sec,
+        memory=memory)
     else:
         return https_fn.on_request(
         region='europe-west1',
