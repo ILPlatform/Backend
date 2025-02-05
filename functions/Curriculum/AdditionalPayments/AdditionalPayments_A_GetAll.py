@@ -14,27 +14,11 @@ def additional_payments_a_get_all(data):
 
     # Get all payments from SF
     sf_results = list(sf.sf.query_all_iter(f"""
-        SELECT
-            Id, Name, Amount__c, Year__c, Month__c,
-            Beneficiary__r.Id, Beneficiary__r.Full_Name__c,
-            CreatedDate
+        SELECT FIELDS(ALL), Beneficiary__r.Full_Name__c
         FROM Payment__c
         WHERE (RecordTypeId = '012P5000001tcX7IAI' OR RecordTypeId = NULL)
             AND Deleted__c = False
+        LIMIT 200
     """))
 
-    # Process the results
-    results = [
-        {
-            "id": payment.get("Id"),
-            "amount": payment.get("Amount__c"),
-            "year": payment.get("Year__c"),
-            "month": payment.get("Month__c"),
-            "description": payment.get("Name"),
-            "beneficiary_id": payment.get("Beneficiary__r").get("Id"),
-            "beneficiary_name": payment.get("Beneficiary__r").get("Full_Name__c"),
-            "created_date": payment.get("CreatedDate")
-        } for payment in sf_results
-    ]
-
-    return {"data": {"response": results, "status": 200}}
+    return {"data": {"response": sf_results, "status": 200}}

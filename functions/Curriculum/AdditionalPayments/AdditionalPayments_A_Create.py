@@ -14,16 +14,13 @@ def additional_payments_a_create(data):
     sf = getSF()
 
     # Get all payments from SF
-    sf_data = {
-        "Amount__c": data.get("amount"),
-        "Year__c": data.get("year"),
-        "Month__c": data.get("month"),
-        "Name": data.get("description"),
-        "Beneficiary__c": data.get("beneficiary_id"),
+    payment = data.get("details")
+    payment.update({
         "RecordTypeId": "012P5000001tcX7IAI"
-    }
+    })
 
     # Create the payment
-    sf.sf.Payment__c.create(sf_data)
+    payment = sf.sf.Payment__c.create(payment)
 
-    return {"data": {"response": "Success", "status": 200}}
+    # Return the payment ID
+    return {"data": {"response": {"Id": payment.get("id")}, "status": 200}}

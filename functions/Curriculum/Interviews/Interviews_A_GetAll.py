@@ -16,10 +16,10 @@ def interviews_a_get_all(data):
 
     # Get all contracts
     interviews = sf.sf.query_all_iter(f"""
-        SELECT
-            Id, Date_Time__c, Name__c, Email__c
+        SELECT FIELDS(ALL)
         FROM Note__c
         WHERE RecordTypeId = '012P5000001UtMf'
+        LIMIT 200
         """)
 
     return {"data": {"response": list(interviews), "status": 200}}

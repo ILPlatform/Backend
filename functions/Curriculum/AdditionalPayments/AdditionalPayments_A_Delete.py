@@ -13,9 +13,13 @@ def additional_payments_a_delete(data):
     # Initialize DB and SF
     sf = getSF()
 
-    print(data)
+    # Retrieve the payment details
+    payment = data.get("details")
+    if not payment or not payment.get("Id"):
+        return {"data": {"response": "Payment details are required", "status": 400}}
 
     # Delete the payment
-    sf.sf.Payment__c.update(data.get("id"), {"Deleted__c": True})
+    sf.sf.Payment__c.update(payment.get("Id"), {"Deleted__c": True})
 
+    # Return the response
     return {"data": {"response": "Success", "status": 200}}

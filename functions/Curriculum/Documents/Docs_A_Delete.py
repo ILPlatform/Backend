@@ -15,12 +15,11 @@ def docs_a_delete(data):
     sf = getSF()
 
     # Get the parameters
-    document_id = data.get('document_id')
-
-    if not document_id:
-        return {"data": {"response": "Document UID is required", "status": 400}}
+    document = data.get('details')
+    if not document or not document.get("Id"):
+        return {"data": {"response": "Document ID is required", "status": 400}}
 
     # Create a document in the database
-    sf.sf.Document__c.update(document_id, {"Deleted__c": True})
+    sf.sf.Document__c.update(document.get("Id"), {"Deleted__c": True})
 
     return {"data": {"response": "Success", "status": 200}}

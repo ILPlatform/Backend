@@ -184,6 +184,7 @@ class SFProcessor(SFConnector):
             "nationality": data.get("Nationality__c"),
             "birthplace": data.get("Birthplace__c"),
             "contract_type": data.get("Contract_Type__c"),
+            "Contract_Type__c": data.get("Contract_Type__c"),
             "contract": float(data.get("Contract_Salary__c") or 0),
             "birthdate": f"{nn[4:6]}/{nn[2:4]}/{nn[0:2]}"
         }

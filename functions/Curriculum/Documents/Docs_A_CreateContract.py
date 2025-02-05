@@ -28,7 +28,11 @@ def docs_a_create_contract(data):
         raise ValueError("No end_date provided for contract")
 
     # Get teacher email
-    teacher_email = sf.sf.query(f"SELECT Email__c FROM Employee__c WHERE Id='{teacher_id}'").get("records")[0].get("Email__c")
+    teacher_email = sf.sf.query(f"""
+        SELECT Email__c
+        FROM Employee__c
+        WHERE Id='{teacher_id}'
+    """).get("records")[0].get("Email__c")
 
     # Get teacher details
     teacher_details = sf.get_teacher_details(teacher_email)
@@ -39,7 +43,7 @@ def docs_a_create_contract(data):
     link = document.get_download_link()
 
     # Create contract record on Salesforce
-    sf.sf.Document__c.create({
+    document = sf.sf.Document__c.create({
         "Description__c": type,
         "Teacher__c": teacher_details.get("id"),
         "Type__c": type,
@@ -64,4 +68,7 @@ def docs_a_create_contract(data):
         </p>
         """)
 
-    return {"data": {"response": link, "status": 200}}
+    return {"data": {"response": {
+        "Id": document.get("id"),
+        "Unsigned_URL__c": link,
+    }, "status": 200}}

@@ -18,9 +18,9 @@ def payments_a_get_all(data):
             Id, Amount__c, Year__c, Month__c, Paid__c,
             Beneficiary__r.Id, Beneficiary__r.Full_Name__c,
             Document__r.Id, CreatedDate,
-            Contract__c, Updated__c
+            Contract__c, Updated__c, Type_of_Payment__c
         FROM Payment__c
-        WHERE RecordTypeId = '012P5000001tRevIAE'
+        WHERE RecordTypeId = '012P5000001tRevIAE' and Deleted__c = False
     """))
 
     # Get all documents from SF
@@ -52,6 +52,12 @@ def payments_a_get_all(data):
         for doc in sf_docs
     }
 
+    is_manager = lambda x: x.get('Type_of_Payment__c') == "Manager Salary"
+    is_contract = lambda x: x.get('Type_of_Payment__c') == "Student Contract"
+    is_signed = lambda x: docs.get(x.get('Document__r').get('Id')).get('signed') if x.get('Document__r') else False
+    is_signed2 = lambda x: is_signed(x) or is_manager(x)
+    is_updated = lambda x: x.get('Updated__c')
+
     # Combine documents and payments
     for payment in sorted(sf_results, key=lambda x: x.get('CreatedDate'), reverse=True):
         results[payment.get('Beneficiary__r').get('Id')]["pays"].append({
@@ -61,11 +67,11 @@ def payments_a_get_all(data):
             "amount": payment.get('Amount__c'),
             "to_pay":
                 not payment.get('Paid__c')
-                    and docs.get(payment.get('Document__r').get('Id')).get('signed')
-                    and not (payment.get('Contract__c') and not payment.get('Updated__c')),
-            "to_update": docs.get(payment.get('Document__r').get('Id')).get('signed') and payment.get('Contract__c') and not payment.get('Updated__c'),
+                    and is_signed2(payment)
+                    and (not is_contract(payment) and not is_updated(payment)),
+            "to_update": is_signed(payment) and is_contract(payment) and not is_updated(payment),
             "paid": payment.get('Paid__c'),
-            "contract": payment.get('Contract__c'),
+            "contract_type": payment.get('Type_of_Payment__c'),
         })
 
 

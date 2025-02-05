@@ -1,10 +1,6 @@
 # Function to create a new document in the database. Requires document admin level.
 
 from Helpers import firebase_functions_custom, https_fn_custom
-from Google.Connector import GoogleConnector
-from firebase_functions import https_fn, options
-from datetime import datetime
-from google.cloud.firestore_v1.base_query import FieldFilter
 from Salesforce import getSF
 from Emails import send_email_user
 
@@ -15,43 +11,39 @@ def docs_a_create_custom(data):
     sf = getSF()
 
     # Get the parameters
-    teacher_id = data.get("teacher_id")
-    url = data.get("url")
-    to_sign = data.get("to_sign")
-    type = data.get("type")
-    year = data.get("year")
-    month = data.get("month")
+    details = data.get("details")
+    print(details)
+    if not (details and
+            details.get("Teacher__c") and
+            details.get("Year__c") and
+            details.get("Month__c") and
+            details.get("Type__c") and
+            details.get("Unsigned_URL__c") and
+            details.get("Description__c")):
+        return {"data": {"response": "Teacher ID, URL, to_sign, type, year and month are required", "status": 400}}
 
-    if not teacher_id:
-        return {"data": {"response": "Teacher ID is required", "status": 400}}
-    if not url or not type or not year or not month:
-        return {"data": {"response": "URL, to_sign, type, year and month are required", "status": 400}}
-
-    # Get the user's name from SF
-    result = sf.sf.query(f"SELECT Full_Name__c, Email__c, Id FROM Employee__c WHERE Id = '{teacher_id}'")
-    if not result["records"]:
+    # Get the user's emails from SF
+    result = sf.sf.query(f"""
+        SELECT Full_Name__c, Email__c, Id
+        FROM Employee__c
+        WHERE Id = '{details["Teacher__c"]}'
+    """)
+    if not result.get("records"):
         return {"data": {"response": "User not found", "status": 400}}
-    user_email = result.get("records")[0].get("Email__c")
+    result = result.get("records")[0]
+
+    details.update({"RecordTypeId": "012P5000001T9P7IAK"})
 
     # Create the document
-    sf.sf.Document__c.create({
-        "Description__c": f"{type} {year}/{month}",
-        "Teacher__c": teacher_id,
-        "Type__c": type,
-        "Year__c": year,
-        "Month__c": month,
-        "Unsigned_URL__c": url,
-        "To_Sign__c": to_sign,
-        "RecordTypeId": "012P5000001T9P7IAK"
-    })
+    document = sf.sf.Document__c.create(details)
 
     # Send email to the user
-    send_email_user(user_email, "New Document Available", f"""
+    send_email_user(result.get("Email__c"), "New Document Available", f"""
         <p>
-            Bonjour,
+            Bonjour {result.get("Full_Name__c")},
         </p>
         <p>
-            Un nouveau document ({type} {year}/{month}) est disponible pour toi. Tu peux le retrouver sur le <a href="https://curriculum.ilplatform.be">site curriculum</a>, sous "My Account" > "Documents".
+            Un nouveau document ({details["Description__c"]}) est disponible pour toi. Tu peux le retrouver sur le <a href="https://curriculum.ilplatform.be">site curriculum</a>, sous "My Account" > "Documents".
         </p>
         <p>
             Merci de ne pas répondre à cet email. Si tu as des questions, merci de nous contacter via WhatsApp ou via <a href="mailto:daniel@ilplatform.be">daniel@ilplatform.be</a>.
@@ -61,4 +53,6 @@ def docs_a_create_custom(data):
         </p>
         """)
 
-    return {"data": {"response": "Success", "status": 200}}
+    return {"data": {"response": {
+        "Id": document.get("Id"),
+    }, "status": 200}}

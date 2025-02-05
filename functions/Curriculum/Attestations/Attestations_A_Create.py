@@ -78,6 +78,7 @@ def attestations_a_create(data):
         })
 
         # Add payment to SF
+        print("IMPORTANT", teacher.get("Contract_Type__c"))
         sf.sf.Payment__c.create({
           "Document__c": document.get("id"),
           "Year__c": year,
@@ -85,6 +86,7 @@ def attestations_a_create(data):
           "RecordTypeId": "012P5000001tRevIAE",
           "Paid__c": False,
           "Beneficiary__c": teacher.get("id"),
+          "Type_of_Payment__c": teacher.get("Contract_Type__c"),
           "Amount__c": teacher.get('total_amount')
         })
 

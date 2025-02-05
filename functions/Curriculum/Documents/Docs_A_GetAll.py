@@ -16,27 +16,25 @@ def docs_a_get_all(data):
 
     # Get all contracts
     documents = sf.sf.query_all_iter(f"""
-        SELECT
-            Id, CreatedDate,
-            Description__c, Signed__c, Unsigned_URL__c, Signed_URL__c, Type__c, Deleted__c, To_Sign__c, Signed_Timestamp__c,
-            Teacher__r.Name, Teacher__r.Firebase_UID__c, Teacher__r.Id
+        SELECT FIELDS(ALL), Teacher__r.Name
         FROM Document__c
         WHERE Deleted__c = False
+        LIMIT 200
         """)
 
     # Process the contracts
-    return_value = [{
-        "id": document.get("Id"),
-        "employee_id": document.get("Teacher__r", {}).get("Id") if document.get("Teacher__r") else None,
-        "uid": document.get("Teacher__r", {}).get("Firebase_UID__c") if document.get("Teacher__r") else None,
-        "name": document.get("Teacher__r", {}).get("Name") if document.get("Teacher__r") else None,
-        "timestamp": document.get("CreatedDate"),
-        "description": document.get("Description__c"),
-        "signed": document.get("Signed__c"),
-        "url": document.get("Unsigned_URL__c"),
-        "signed_url": document.get("Signed_URL__c"),
-        "signed_timestamp": document.get("Signed_Timestamp__c"),
-        "to_sign": document.get("To_Sign__c"),
-    } for document in documents]
+    # return_value = [{
+    #     "id": document.get("Id"),
+    #     "employee_id": document.get("Teacher__r", {}).get("Id") if document.get("Teacher__r") else None,
+    #     "uid": document.get("Teacher__r", {}).get("Firebase_UID__c") if document.get("Teacher__r") else None,
+    #     # "name": document.get("Teacher__r", {}).get("Name") if document.get("Teacher__r") else None,
+    #     "CreatedDate": document.get("CreatedDate"),
+    #     "Description__c": document.get("Description__c"),
+    #     "signed": document.get("Signed__c"),
+    #     "url": document.get("Unsigned_URL__c"),
+    #     "signed_url": document.get("Signed_URL__c"),
+    #     "Signed_Timestamp__c": document.get("Signed_Timestamp__c"),
+    #     "to_sign": document.get("To_Sign__c"),
+    # } for document in documents]
 
-    return {"data": {"response": return_value, "status": 200}}
+    return {"data": {"response": list(documents), "status": 200}}
