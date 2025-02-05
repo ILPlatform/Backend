@@ -1,5 +1,3 @@
-# Function to create a new document in the database. Requires document admin level.
-
 from Helpers import firebase_functions_custom, https_fn_custom
 from Salesforce import getSF
 from Emails import send_email_user
@@ -16,11 +14,9 @@ def docs_a_create_custom(data):
     if not (details and
             details.get("Teacher__c") and
             details.get("Year__c") and
-            details.get("Month__c") and
-            details.get("Type__c") and
             details.get("Unsigned_URL__c") and
             details.get("Description__c")):
-        return {"data": {"response": "Teacher ID, URL, to_sign, type, year and month are required", "status": 400}}
+        return {"data": {"response": "Missing parameters", "status": 400}}
 
     # Get the user's emails from SF
     result = sf.sf.query(f"""
@@ -32,18 +28,20 @@ def docs_a_create_custom(data):
         return {"data": {"response": "User not found", "status": 400}}
     result = result.get("records")[0]
 
+    # Add the record type
     details.update({"RecordTypeId": "012P5000001T9P7IAK"})
 
     # Create the document
     document = sf.sf.Document__c.create(details)
 
     # Send email to the user
-    send_email_user(result.get("Email__c"), "New Document Available", f"""
+    send_email_user(result.get("Email__c"), "Nouveau Document Disponible", f"""
         <p>
             Bonjour {result.get("Full_Name__c")},
         </p>
         <p>
-            Un nouveau document ({details["Description__c"]}) est disponible pour toi. Tu peux le retrouver sur le <a href="https://curriculum.ilplatform.be">site curriculum</a>, sous "My Account" > "Documents".
+            Un nouveau document ({details["Description__c"]}) est disponible pour toi. Tu peux le retrouver sur le <a href="https://curriculum.ilplatform.be">site curriculum</a>, sous "My Account" > "Documents", ou en pièce
+            jointe à cet email.
         </p>
         <p>
             Merci de ne pas répondre à cet email. Si tu as des questions, merci de nous contacter via WhatsApp ou via <a href="mailto:daniel@ilplatform.be">daniel@ilplatform.be</a>.
@@ -51,8 +49,6 @@ def docs_a_create_custom(data):
         <p>
             Merci et bien à toi,
         </p>
-        """)
+        """, file_url=details["Unsigned_URL__c"], file_name=details["Description__c"])
 
-    return {"data": {"response": {
-        "Id": document.get("Id"),
-    }, "status": 200}}
+    return {"data": {"response": {"Id": document.get("Id")}, "status": 200}}
