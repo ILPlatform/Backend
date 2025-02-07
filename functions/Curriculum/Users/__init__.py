@@ -9,3 +9,4 @@ from .Users_A_Create import users_a_create
 from .Users_E_GetImages import users_e_get_images
 from .Users_U_UpdatePicture import users_u_update_picture
 from .Users_U_UpdateCriminal import users_u_update_criminal
+from .Users_A_Get import users_a_get

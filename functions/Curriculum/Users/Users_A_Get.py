@@ -8,21 +8,25 @@ from Salesforce import getSF
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=2)
-def lists_a_get_users(data):
+def users_a_get(data):
     # Initialize DB and SF
     sf = getSF()
 
+    # print(data.get("Id"))
+
     # Get all users from SF
-    sf_results = sf.sf.query_all_iter(f"""
-        SELECT
-            Id, Email__c, Full_Name__c, Firebase_UID__c, Phone__c
+    sf_results = list(sf.sf.query_all_iter(f"""
+        SELECT FIELDS(ALL)
         FROM Employee__c
-    """)
+        {"WHERE Id = '" + data.get("Id") + "'" if data.get("Id") else ""}
+        LIMIT 200
+    """))
 
     # Get all users from Firebase
     firebase_results = [{
         "uid": user.uid,
         "claims": user.custom_claims,
+        "roles": user.custom_claims.get("roles") if user.custom_claims else None,
         "last_sign_in": user.user_metadata.last_sign_in_timestamp
     } for user in auth.list_users().iterate_all()]
 
@@ -36,15 +40,18 @@ def lists_a_get_users(data):
     # Process joint data
     def get_user_data(sf_user):
         firebase_user = get_firebase_user(sf_user)
+        # print(sf_user)
         return sf_user | {
-            "id": sf_user.get("Id"),
             "uid": firebase_user.get("uid"),
-            "email": sf_user.get("Email__c"),
-            "name": sf_user.get("Full_Name__c"),
             "claims": firebase_user.get("claims"),
-            "phone": sf_user.get("Phone__c"),
+            "roles": firebase_user.get("roles"),
+            "phone": sf_user.get("Phone__c").replace("+", "").replace(" ", "") if sf_user.get("Phone__c") else None,
             "last_sign_in": firebase_user.get("last_sign_in"),
-            "image_url": sf_user.get("Image_URL__c")
         }
 
-    return {"data": {"response": list(map(get_user_data, sf_results)), "status": 200}}
+    if data.get("Id"):
+        return_value = get_user_data(sf_results[0])
+    else:
+        return_value = list(map(get_user_data, sf_results))
+
+    return {"data": {"response": return_value, "status": 200}}

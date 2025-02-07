@@ -20,7 +20,7 @@ def lists_a_get_class_codes(data):
     """)
 
     # Process the result
-    codes = [{
+    codes = [code | {
         "id": code.get("Id"),
         "code": code.get("Code__c"),
         "day_of_week": code.get("Day_of_Week__c"),

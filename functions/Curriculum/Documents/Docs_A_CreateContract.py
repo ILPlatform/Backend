@@ -1,6 +1,6 @@
 from Salesforce import getSF
 from Google import GoogleConnector, ContractDocument
-from Helpers import firebase_functions_custom, https_fn_custom
+from Helpers import firebase_functions_custom, https_fn_custom, safe_create
 from Emails import send_email_user
 
 @https_fn_custom()
@@ -44,7 +44,7 @@ def docs_a_create_contract(data):
     })
 
     # Create contract record on Salesforce
-    document = sf.sf.Document__c.create(details)
+    document = safe_create(sf.sf.Document__c, details)
 
     # Send email to the user
     send_email_user(teacher_details.get("email"), "New Document Available", f"""

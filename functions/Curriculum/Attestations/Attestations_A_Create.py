@@ -9,6 +9,8 @@ from Actions import generate_confirmation_text, get_teacher_dict, update_payment
 from Emails import send_attestation_teacher, send_attestation_admin
 from firebase_admin import firestore, auth
 
+from .GenerateTimesheet import generate_timesheet
+
 BLACKLIST_EMAILS = [
   # '.*@ilplatform.be',
   'luca.paraschi@gmail.com',
@@ -59,36 +61,7 @@ def attestations_a_create(data):
     # Create the timesheets, send the emails and add the document to Firestore
     for teacher_email in teacher_dict:
         teacher = teacher_dict.get(teacher_email)
-        Timesheet = TimesheetDocument(google, teacher, year, month)
-        Timesheet.fill()
-
-        teacher.update({"link": Timesheet.get_download_link()})
-        send_attestation_teacher(teacher, year, month, True if len(teacher_dict) == 1 else False)
-
-        # Add the document to Salesforce
-        document = sf.sf.Document__c.create({
-            "Year__c": year,
-            "Month__c": month,
-            "Teacher__c": teacher.get("id"),
-            "Type__c": "Attestation",
-            "Description__c": f"Attestation - {year}/{month}",
-            "Unsigned_URL__c": teacher.get("link"),
-            "RecordTypeId": "012P5000001T8MbIAK",
-            "To_Sign__c": True,
-        })
-
-        # Add payment to SF
-        print("IMPORTANT", teacher.get("Contract_Type__c"))
-        sf.sf.Payment__c.create({
-          "Document__c": document.get("id"),
-          "Year__c": year,
-          "Month__c": month,
-          "RecordTypeId": "012P5000001tRevIAE",
-          "Paid__c": False,
-          "Beneficiary__c": teacher.get("id"),
-          "Type_of_Payment__c": teacher.get("Contract_Type__c"),
-          "Amount__c": teacher.get('total_amount')
-        })
+        generate_timesheet(google, sf, teacher, year, month)
 
     # Send the confirmation email to the admin
     send_attestation_admin(return_string, year, month)

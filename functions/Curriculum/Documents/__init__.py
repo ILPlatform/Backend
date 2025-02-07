@@ -8,4 +8,4 @@ from .Docs_A_CreateCustom import docs_a_create_custom
 
 # User functions
 from .Docs_U_Get import docs_u_get
-from .Docs_U_UpdateSigned import docs_u_update_signed
+from .Docs_U_UploadSigned import docs_u_upload_signed

@@ -10,22 +10,13 @@ from Emails import send_email_user
 @https_fn_custom()
 @firebase_functions_custom(auth_level=2)
 def users_a_reset_password(data):
-    # Setup Salesforce
-    sf = getSF()
-
-    # Get the parameters
-    user_id = data.get("user_id")
-
     # Give user claims
-    if not user_id:
+    if not data.get("Firebase_UID__c"):
         return {"data": {"response": "User UID is required", "status": 400}}
 
     # Get the email of the user
-    user = auth.get_user(user_id)
+    user = auth.get_user(data["Firebase_UID__c"])
     user_email = user.email
-
-    # Get the user's name
-    user_name = sf.sf.query(f"SELECT Name FROM Employee__c WHERE Firebase_UID__c = '{user_id}'")["records"][0].get("Name")
 
     # Generate password reset link
     reset_link = auth.generate_password_reset_link(user_email)
@@ -33,7 +24,7 @@ def users_a_reset_password(data):
     # Send email to the user
     send_email_user(user_email, "Reset your Password for ILPlatform",
         f"""
-        <p>Hello {user_name},</p>
+        <p>Hello,</p>
         <p>Your password has been successfully reset. To continue, please follow the steps below:</p>
         <ol>
             <li><strong>Change your password:</strong> Click on the following link to set a new password: <a href="{reset_link}">Change my password</a>.</li>
@@ -43,9 +34,4 @@ def users_a_reset_password(data):
         <p>Thank you and best regards,</p>
         """)
 
-    return {
-        "data": {
-            "response": "Success",
-            "status": 200
-        }
-    }
+    return {"data": {"response": "Success", "status": 200}}

@@ -14,9 +14,9 @@ def users_a_get_all(data):
 
     # Get all users from SF
     sf_results = sf.sf.query_all_iter(f"""
-        SELECT
-            Id, Email__c, Full_Name__c, Firebase_UID__c, Phone__c, Image_URL__c, Criminal_Record__c
+        SELECT FIELDS(ALL)
         FROM Employee__c
+        LIMIT 200
     """)
 
     # Get all users from Firebase
@@ -37,7 +37,7 @@ def users_a_get_all(data):
     # Process joint data
     def get_user_data(sf_user):
         firebase_user = get_firebase_user(sf_user)
-        return {
+        return sf_user | {
             "id": sf_user.get("Id"),
             "uid": firebase_user.get("uid"),
             "email": sf_user.get("Email__c"),

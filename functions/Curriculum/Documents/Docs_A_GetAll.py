@@ -9,7 +9,7 @@ def docs_a_get_all(data):
 
     # Get all contracts
     documents = sf.sf.query_all_iter(f"""
-        SELECT FIELDS(ALL), Teacher__r.Full_Name__c
+        SELECT FIELDS(ALL), Teacher__r.Full_Name__c, Teacher__r.Id
         FROM Document__c
         WHERE Deleted__c = False
         LIMIT 200

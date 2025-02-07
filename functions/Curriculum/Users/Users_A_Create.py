@@ -14,18 +14,17 @@ def users_a_create(data):
     sf = getSF()
 
     # Get the parameters
-    user_id = data.get("user_id")
-
-    # Give user claims
-    if not user_id:
+    if not data.get("Id"):
         return {"data": {"response": "User ID is required", "status": 400}}
 
     # Retrieve user email
-    user = sf.sf.query(f"SELECT Email__c, Name FROM Employee__c WHERE Id = '{user_id}'")["records"][0]
+    user = sf.sf.query(f"""
+        SELECT Email__c, Name
+        FROM Employee__c
+        WHERE Id = '{data["Id"]}'
+    """)["records"][0]
     user_email = user.get("Email__c")
     user_name = user.get("Name")
-
-    print(user_email)
 
     # Create Firebase Auth account
     user = auth.create_user(email=user_email)
