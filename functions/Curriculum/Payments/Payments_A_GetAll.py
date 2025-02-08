@@ -1,9 +1,4 @@
-from google.cloud.firestore_v1.base_query import FieldFilter
 from Helpers import firebase_functions_custom, https_fn_custom
-from Google.Connector import GoogleConnector
-from firebase_functions import https_fn, options
-from datetime import datetime
-from firebase_admin import auth
 from Salesforce import getSF
 
 @https_fn_custom()
@@ -68,7 +63,7 @@ def payments_a_get_all(data):
             "to_pay":
                 not payment.get('Paid__c')
                     and is_signed2(payment)
-                    and (not is_contract(payment) and not is_updated(payment)),
+                    and not (is_contract(payment) and not is_updated(payment)),
             "to_update": is_signed(payment) and is_contract(payment) and not is_updated(payment),
             "paid": payment.get('Paid__c'),
             "contract_type": payment.get('Type_of_Payment__c'),

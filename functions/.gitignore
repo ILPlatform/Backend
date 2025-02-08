@@ -2,3 +2,4 @@ __pycache__
 venv
 .googleapi_token.json
 .env*
+.firebase_adminsdk.json

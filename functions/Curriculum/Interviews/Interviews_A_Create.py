@@ -1,11 +1,5 @@
-from google.cloud.firestore_v1.base_query import FieldFilter
 from Helpers import firebase_functions_custom, https_fn_custom
-from Google.Connector import GoogleConnector
-from firebase_functions import https_fn, options
-from datetime import datetime
-from firebase_admin import auth, firestore
 from Salesforce import getSF
-from Emails import send_email_admin
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=4)

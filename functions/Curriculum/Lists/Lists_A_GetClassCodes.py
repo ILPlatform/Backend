@@ -1,9 +1,4 @@
-from google.cloud.firestore_v1.base_query import FieldFilter
 from Helpers import firebase_functions_custom, https_fn_custom
-from Google.Connector import GoogleConnector
-from firebase_functions import https_fn, options
-from datetime import datetime
-from firebase_admin import auth
 from Salesforce import getSF
 
 @https_fn_custom()

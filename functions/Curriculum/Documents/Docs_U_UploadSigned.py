@@ -5,12 +5,12 @@ from Salesforce import getSF
 @https_fn_custom()
 @firebase_functions_custom(auth_level=1)
 def docs_u_upload_signed(data):
-    # Initialize DB and SF
+    # Initialize SF
     sf = getSF()
 
     # Get the parameters
     details = data.get("details")
-    if not details or details.get("Id"):
+    if not details or not details.get("Id"):
         return {"data": {"response": "Document ID is required", "status": 400}}
 
     # Retrieve the document
