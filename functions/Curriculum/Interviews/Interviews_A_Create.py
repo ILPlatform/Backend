@@ -1,5 +1,5 @@
 from Helpers import firebase_functions_custom, https_fn_custom
-from Salesforce import getSF
+from Salesforce import getSF, safe_create
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=4)
@@ -16,6 +16,6 @@ def interviews_a_create(data):
     details["RecordTypeId"] = "012P5000001UtMf"
 
     # Create the user in Salesforce
-    sf.sf.Note__c.create(details)
+    safe_create(sf.sf.Note__c, details)
 
     return {"data": {"response": "Note created successfully", "status": 200}}

@@ -15,4 +15,15 @@ def docs_a_delete(data):
     # Update the document in the database
     sf.sf.Document__c.update(document.get("Id"), {"Deleted__c": True})
 
+    # Retrieve all attached payment objects
+    payments = sf.sf.query_all_iter(f"""
+        SELECT Id
+        FROM Payment__c
+        WHERE Document__c = '{document.get("Id")}'
+    """)
+
+    # Mark all payments attached as deleted
+    for payment in payments:
+        sf.sf.Payment__c.update(payment.get("Id"), {"Deleted__c": True})
+
     return {"data": {"response": "Success", "status": 200}}

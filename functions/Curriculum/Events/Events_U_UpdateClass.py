@@ -1,6 +1,6 @@
 from Helpers import firebase_functions_custom, https_fn_custom
 from Google.Connector import GoogleConnector
-from datetime import datetime
+import datetime
 from Salesforce import getSF
 
 from .getSchedule import getSchedule
