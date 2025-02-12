@@ -1,6 +1,5 @@
 from .ReplacementsCreateOneTime import replacements_create_one_time
 from .ReplacementsCreatePermanent import replacements_create_permanent
-from .ReplacementsGetOneTime import replacements_get_one_time
 from .ReplacementsDelete import replacements_delete
 from .ReplacementsGetAllUser import replacements_get_all_user
 from .ReplacementsSolve import replacements_solve

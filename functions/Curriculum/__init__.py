@@ -1,5 +1,3 @@
-# from .CurriculumGetUser import curriculum_get_user
-
 from .Documents import *
 from .Lists import *
 from .Users import *
@@ -13,3 +11,4 @@ from .Camps import *
 from .Additional import *
 from .Payments import *
 from .AdditionalPayments import *
+from .Replacements import *

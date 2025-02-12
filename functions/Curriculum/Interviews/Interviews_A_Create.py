@@ -1,5 +1,5 @@
-from Helpers import firebase_functions_custom, https_fn_custom
-from Salesforce import getSF, safe_create
+from Helpers import firebase_functions_custom, https_fn_custom, safe_create
+from Salesforce import getSF
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=4)

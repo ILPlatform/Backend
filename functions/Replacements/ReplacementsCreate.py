@@ -1,21 +1,16 @@
 import asyncio
 from Helpers import firebase_functions_custom, https_fn_custom
-from Actions import update_and_create_classes_per_week
-from Google.Connector import GoogleConnector
-from firebase_functions import https_fn, options
 from datetime import datetime
 from Salesforce import getSF
 from Emails import send_email_admin
-
-import aiohttp
-import json
-
 from WhatsApp import send_WA_admins
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=2)
 def replacements_create(data):
     # Get the parameters
+    details = data.get("details")
+
     type = data.get("type")
     class_id = data.get("class_id")
     date = data.get("date")
@@ -69,9 +64,11 @@ def replacements_create(data):
         "Reason__c": reason
     })
 
+    safe_create(sf.sf.Replacement__c, details)
+
     # Send email to admins
     send_email_admin(
-        subject=f"{type_nice} Replacement {class_info.get('Code__c')}: {teacher_old_name} -> {teacher_new_name}",
+        subject=f"{type_nice} Replacement {details.get('Opportunity__r').get('Code__C')}: {teacher_old_name} -> {teacher_new_name}",
         body=f"""
             <p>Dear Admins,</p>
             <p>A replacement has been recorded for the class <b>{class_info.get("Code__c")}</b> on <b>{date}</b>.</p>
