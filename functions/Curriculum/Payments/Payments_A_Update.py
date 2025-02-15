@@ -3,17 +3,14 @@ from Salesforce import getSF
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=10)
-def payments_a_mark_paid(data):
+def payments_a_update(data):
     # Initialize DB and SF
     sf = getSF()
 
     # Get the parameters
-    payment_id = data.get("payment_id")
+    details = data.get("details")
 
     # Update the payment in SF
-    if data.get("reverse"):
-        sf.sf.Payment__c.update(payment_id, {"Paid__c": False})
-    else:
-        sf.sf.Payment__c.update(payment_id, {"Paid__c": True})
+    sf.sf.Payment__c.update(details.get("Id"), {"Amount__c": details.get("Amount__c"), "Updated__c": True})
 
     return {"data": {"response": 1, "status": 200}}

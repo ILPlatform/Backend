@@ -3,7 +3,7 @@ from Salesforce import getSF
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=10)
-def payments_a_get_all(data):
+def payments_a_get_processed(data):
     # Initialize DB and SF
     sf = getSF()
 

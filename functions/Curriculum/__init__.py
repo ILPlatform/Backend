@@ -10,5 +10,5 @@ from .Events import *
 from .Camps import *
 from .Additional import *
 from .Payments import *
-from .AdditionalPayments import *
+from .PaymentsAdditional import *
 from .Replacements import *
