@@ -10,3 +10,18 @@ def safe_delete(object, id):
         return {"data": {"response": f"Error deleting replacement: {e}", "status": 400}}
 
     return {"data": {"response": "Success", "status": 200}}
+
+def safe_query(sf, unsafe_query):
+    results = []
+    offset = 0
+    while True:
+        safe_query = f"{unsafe_query} LIMIT 200 OFFSET {offset}"
+        response = sf.sf.query(safe_query)
+        records = response.get('records', [])
+        results.extend(records)
+
+        if not response.get('done', False):
+            offset += 200
+        else:
+            break
+    return results

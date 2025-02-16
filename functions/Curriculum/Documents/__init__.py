@@ -2,7 +2,7 @@
 
 # Admin functions
 from .Docs_A_Delete import docs_a_delete
-from .Docs_A_GetAll import docs_a_get_all
+from .Docs_A_Get import docs_a_get
 from .Docs_A_CreateContract import docs_a_create_contract
 from .Docs_A_CreateCustom import docs_a_create_custom
 
