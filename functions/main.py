@@ -25,3 +25,8 @@ from Functions import admin_get_week_codes, admin_create_camps_form, admin_updat
 from Replacements import *
 from Curriculum import *
 from Landing import *
+
+# for name, obj in globals().items():
+#     if callable(obj) and getattr(obj, '_firebase_function', False):
+#         print(name)
+#         firebase.register(name, obj)

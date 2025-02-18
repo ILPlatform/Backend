@@ -30,7 +30,7 @@ def users_a_create(data):
     user = auth.create_user(email=user_email)
 
     # Save the user UID to the Salesforce record
-    sf.sf.Employee__c.update(user_id, {"Firebase_UID__c": user.uid})
+    sf.sf.Employee__c.update(data.get("Id"), {"Firebase_UID__c": user.uid})
 
     # Generate password reset link
     reset_link = auth.generate_password_reset_link(user_email)

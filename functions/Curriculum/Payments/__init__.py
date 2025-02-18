@@ -3,3 +3,4 @@ from .Payments_A_MarkPaid import payments_a_mark_paid
 from .Payments_A_Create import payments_a_create
 from .Payments_A_Get import payments_a_get
 from .Payments_A_Update import payments_a_update
+from .Payments_A_Delete import payments_a_delete

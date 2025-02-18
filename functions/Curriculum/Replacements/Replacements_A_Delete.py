@@ -1,3 +1,7 @@
-from Helpers import deleter
+from Helpers import getter
+from Helpers import https_fn_custom, firebase_functions_custom
 
-replacements_a_delete = deleter("Replacement__c", auth_level=2)
+@https_fn_custom()
+@firebase_functions_custom(auth_level=2)
+def replacements_a_delete(data):
+    return deleter("Replacement__c", data.get("details", {}).get("Id"))
