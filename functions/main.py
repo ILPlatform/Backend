@@ -7,8 +7,6 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-from Helpers import https_fn_custom
-
 # Initialize the app
 # Path to your service account key JSON file
 SERVICE_ACCOUNT_PATH = ".firebase_adminsdk.json"

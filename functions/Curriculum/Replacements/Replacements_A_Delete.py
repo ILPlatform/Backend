@@ -1,4 +1,4 @@
-from Helpers import getter
+from Helpers import deleter
 from Helpers import https_fn_custom, firebase_functions_custom
 
 @https_fn_custom()

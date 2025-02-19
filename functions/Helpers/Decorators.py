@@ -26,7 +26,8 @@ def https_fn_custom(timeout_sec=60, memory=256, access=False):
         cors=options.CorsOptions(
             cors_origins=[
                 "https://admin.ilplatform.be",
-                "https://curriculum.ilplatform.be", "https://independentlearningplatform.lightning.force.com",
+                "https://curriculum.ilplatform.be",
+                "https://independentlearningplatform.lightning.force.com",
                 "https://independentlearningplatform--internbox.sandbox.lightning.force.com"
             ] if not access else ["*"],
             cors_methods=["get", "post", "options"]
