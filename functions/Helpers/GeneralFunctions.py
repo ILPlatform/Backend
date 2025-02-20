@@ -38,6 +38,6 @@ def creator(object_name, details, record_type_id):
         instance = object_api.create(valid_details)
 
         # Return the object ID
-        return {"data": {"response": {"Id", instance.get("id")}, "status": 200}}
+        return {"data": {"response": {"Id": instance.get("id")}, "status": 200}}
     except Exception as e:
         return {"data": {"response": str(e), "status": 400}}
