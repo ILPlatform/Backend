@@ -1,4 +1,6 @@
 from firebase_admin import auth
+from .SafeSF import safe_query
+from Salesforce import getSF
 
 # Auth levels:
     # 0 - No authentication required
@@ -18,8 +20,22 @@ def verify_auth(req, auth_level=1):
         decoded_token = auth.verify_id_token(token, check_revoked=True)
         uid = decoded_token["uid"]
 
+        # Check if the user exists in the database, and attach SF ID if not already attached
+        sf = getSF()
+        result = safe_query(sf, f"SELECT Id FROM Employee__c WHERE Firebase_UID__c = '{uid}'")
+        if len(result) > 0 and not decoded_token.get("sfid"):
+            auth.set_custom_user_claims(uid, {"sfid": result[0].get("Id")})
+
+        processed_token = {
+            "Id": decoded_token.get("sfid"),
+            "Firebase_UID__c": uid,
+            "Email__c": decoded_token.get("email"),
+            "uid": uid,
+            "email": decoded_token["email"]
+        }
+
         if decoded_token.get("roles") and "super_admin" in decoded_token.get("roles"):
-            return {"uid": uid, "email": decoded_token["email"]}, True
+            return processed_token, True
 
         if auth_level == 1.5 and "no_curriculum" in decoded_token.get("roles"):
             return f"User {uid} does not have access to the (curriculum) application. Please contact an admin for further information.", False
@@ -32,6 +48,6 @@ def verify_auth(req, auth_level=1):
         if auth_level == 10 and not "super_admin" in decoded_token.get("roles"):
             return f"User {uid} does not have access to the (super_admin) application. Please contact an admin for further information.", False
 
-        return {"uid": uid, "email": decoded_token["email"]}, True
+        return processed_token, True
     except Exception as e:
         return f"Could not authenticate user. Error: {e}", False

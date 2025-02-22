@@ -2,20 +2,8 @@
   "functions": [
     {
       "source": "functions",
-      "codebase": "admin",
       "runtime": "python311",
       "ignore": ["venv", ".git", "firebase-debug.log", "firebase-debug.*.log"]
     }
-  ],
-  "hosting": {
-    "site": "ilplatform-admin",
-    "public": "front/build",
-    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
-    ]
-  }
+  ]
 }

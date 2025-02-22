@@ -1,7 +1,0 @@
-from .ReplacementsCreateOneTime import replacements_create_one_time
-from .ReplacementsCreatePermanent import replacements_create_permanent
-from .ReplacementsDelete import replacements_delete
-from .ReplacementsGetAllUser import replacements_get_all_user
-from .ReplacementsSolve import replacements_solve
-from .ReplacementsCreate import replacements_create
-from .ReplacementsCreateUser import replacements_create_user

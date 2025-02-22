@@ -28,7 +28,3 @@ pip3 install -r requirements.txt
 ## Firebase Functions
 
 **List to be made**
-
-## Google Script Apps
-
-**List to be made**

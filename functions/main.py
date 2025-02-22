@@ -18,11 +18,11 @@ cred = credentials.Certificate(SERVICE_ACCOUNT_PATH)
 app = initialize_app(cred)
 
 # Import the functions
-from Functions import admin_get_week_codes, admin_create_camps_form, admin_update_camps_events, admin_get_teachers_partners, admin_create_teacher_convention, admin_update_teacher_contract_signed, admin_update_classes_events, admin_update_single_class_events #, admin_create_teacher_attestations
+# from Functions import admin_get_week_codes, admin_create_camps_form, admin_update_camps_events, admin_get_teachers_partners, admin_create_teacher_convention, admin_update_teacher_contract_signed, admin_update_classes_events, admin_update_single_class_events #, admin_create_teacher_attestations
 
-from Replacements import *
-from Curriculum import *
-from Landing import *
+# from Replacements import *
+from FunctionsCurriculum import *
+from FunctionsLanding import *
 
 # for name, obj in globals().items():
 #     if callable(obj) and getattr(obj, '_firebase_function', False):

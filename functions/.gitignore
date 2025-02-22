@@ -3,3 +3,4 @@ venv
 .googleapi_token.json
 .env*
 .firebase_adminsdk.json
+.googleapi_credentials.json

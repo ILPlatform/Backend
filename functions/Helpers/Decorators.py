@@ -25,11 +25,12 @@ def https_fn_custom(timeout_sec=60, memory=256, access=False):
         region='europe-west1',
         cors=options.CorsOptions(
             cors_origins=[
+                "https://www.ilplatform.be",
                 "https://admin.ilplatform.be",
                 "https://curriculum.ilplatform.be",
                 "https://independentlearningplatform.lightning.force.com",
                 "https://independentlearningplatform--internbox.sandbox.lightning.force.com"
-            ] if not access else ["*"],
+            ],
             cors_methods=["get", "post", "options"]
         ),
         timeout_sec=timeout_sec)
@@ -43,6 +44,7 @@ def __get_json_data(function):
         # Add the uid to the data
         user_details, logged_in = verify_auth(request)
         if logged_in:
+            data["user_details"] = user_details
             data["uid"] = user_details.get("uid")
             data["user_email"] = user_details.get("email")
             data["admin_role"] = user_details.get("admin_role")

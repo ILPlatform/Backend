@@ -1,9 +1,0 @@
-# Google App Scripts
-This repository contains a collection of Google App Scripts that I have written to automate various tasks in Google Sheets.
-
-Note that these scripts are written in JavaScript and are intended to be run in the Google App Script environment. They do hence not run locally.
-
-## UpdateTeacherContractSigned
-This script is used to update the "Teacher Contract" on Salesforce, when a teacher has signed their contract. They upload the signed contract to a Google Forms, which triggers the script to ping an API endpoint on Firebase Cloud Functions, which in turn updates the Salesforce record.
-
-The script is an installable trigger, meaning that it requests authorizations to run on the user's behalf. To specify the authorizations, go to the project settings on Google App Scripts, and select to show `appsscript.json`. Then copy the content of the `appsscript.json` file in this repository to the `appsscript.json` file in the Google App Script project.
