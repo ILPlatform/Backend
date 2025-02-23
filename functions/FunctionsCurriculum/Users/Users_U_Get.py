@@ -1,18 +1,11 @@
-from google.cloud.firestore_v1.base_query import FieldFilter
 from Helpers import firebase_functions_custom, https_fn_custom
-from Google.Connector import GoogleConnector
-from firebase_functions import https_fn, options
-from datetime import datetime
-from firebase_admin import firestore
 from Salesforce import getSF
-from firebase_admin import auth
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=1)
 def users_u_get(data):
     # Initialize DB and SF
     sf = getSF()
-    google = GoogleConnector()
 
     # Get the parameters
     uid = data.get("uid")
@@ -33,9 +26,9 @@ def users_u_get(data):
             Address__Street__s, Address__City__s, Address__PostalCode__s,
             Image_URL__c, Criminal_Record__c,
             (
-                SELECT Id
+                SELECT Id, Signed__c
                 FROM Documents__r
-                WHERE Signed__c = False AND Deleted__c = False
+                WHERE Deleted__c = False
             )
         FROM Employee__c
         WHERE Firebase_UID__c='{uid}'

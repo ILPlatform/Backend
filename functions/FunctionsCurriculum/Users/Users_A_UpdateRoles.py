@@ -18,6 +18,7 @@ def users_a_update_roles(data):
     #     return {"data": {"response": "Cannot assign super admin role", "status": 400}}
 
     # Give user claims
-    auth.set_custom_user_claims(user_uid, {"roles": roles})
+    user = auth.get_user(user_uid)
+    auth.set_custom_user_claims(user_uid, user.custom_claims | {"roles": roles})
 
     return {"data": {"response": "Success", "status": 200}}

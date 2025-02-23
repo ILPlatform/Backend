@@ -11,8 +11,7 @@ def camps_e_get(data):
             SELECT
                 Id, Account.Name, Price__c, Registration_Link__c, Ages_Announced__c,
                 Parent_Organisation_Name__c,
-                Account.BillingAddress,
-                Partner_Type__c
+                Account.BillingAddress, Partner_Type__c
             FROM Opportunities__r
         )
     FROM Picklist__c

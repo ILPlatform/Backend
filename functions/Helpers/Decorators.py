@@ -69,13 +69,17 @@ def __protect_try_except(function):
     @wraps(function)
     def wrapper(request):
         try:
-            return function(request)
+            return function(request), 200
         except Exception as e:
-            if os.getenv("FUNCTIONS_EMULATOR") == "true":
-                raise Exception(e)
-            else:
-                send_email_error(e)
-                return {"data": {"error": str(e), "status": 400}}
+            # if os.getenv("FUNCTIONS_EMULATOR") == "true":
+            #     raise Exception(e)
+            # else:
+            #     send_email_error(e)
+            return {"data": {"error": str(e), "status": 400}}, 400
+            # pass
+        if request.environ.get("werkzeug.server.shutdown") or request.stream.closed:
+            print("Request was aborted by the client.")
+            return {"status": 499, "error": "Request Aborted"}, 499
     return wrapper
 
 # Custom decorator which combines the above decorators
