@@ -59,7 +59,7 @@ def __auth_verifier(auth_level):
         def wrapper(request):
             message, success = verify_auth(request, auth_level)
             if not success:
-                return {"data": {"error": message, "status": 401}}
+                return {"data": {"error": message, "status": 401}}, 401
             return function(request)
         return wrapper
     return decorator
@@ -76,7 +76,6 @@ def __protect_try_except(function):
             # else:
             #     send_email_error(e)
             return {"data": {"error": str(e), "status": 400}}, 400
-            # pass
         if request.environ.get("werkzeug.server.shutdown") or request.stream.closed:
             print("Request was aborted by the client.")
             return {"status": 499, "error": "Request Aborted"}, 499
