@@ -9,9 +9,9 @@ def lists_a_get_users(data):
     sf = getSF()
 
     # Get all users from SF
-    sf_results = sf.sf.query_all_iter(f"""
+    sf_results = sf.sf.query_all_iter("""
         SELECT
-            Id, Email__c, Full_Name__c, Firebase_UID__c, Phone__c
+            Id, Email__c, Full_Name__c, Firebase_UID__c, Phone__c, Name
         FROM Employee__c
     """)
 

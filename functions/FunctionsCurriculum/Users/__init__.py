@@ -11,3 +11,4 @@ from .Users_U_UpdatePicture import users_u_update_picture
 from .Users_U_UpdateCriminal import users_u_update_criminal
 from .Users_A_Get import users_a_get
 from .Users_A_LoginAs import users_a_login_as
+from .Users_A_AddContact import users_a_add_contact

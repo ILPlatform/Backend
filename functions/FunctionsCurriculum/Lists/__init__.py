@@ -1,4 +1,5 @@
 from .Lists_A_GetClassCodes import lists_a_get_class_codes
 from .Lists_A_GetUsers import lists_a_get_users
+from .Lists_A_GetWeekCodes import lists_a_get_week_codes
 
 from .Lists_U_GetClassCodes import lists_u_get_class_codes

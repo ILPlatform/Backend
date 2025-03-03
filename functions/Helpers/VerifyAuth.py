@@ -31,11 +31,14 @@ def verify_auth(req, auth_level=1):
             "Firebase_UID__c": uid,
             "Email__c": decoded_token.get("email"),
             "uid": uid,
-            "email": decoded_token["email"]
+            "email": decoded_token["email"],
         }
 
         if decoded_token.get("roles") and "super_admin" in decoded_token.get("roles"):
             return processed_token, True
+
+        if not decoded_token.get("roles"):
+            return f"User {uid} does not have any roles assigned. Please contact an admin for further information.", False
 
         if auth_level == 1.5 and "no_curriculum" in decoded_token.get("roles"):
             return f"User {uid} does not have access to the (curriculum) application. Please contact an admin for further information.", False

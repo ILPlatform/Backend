@@ -1,27 +1,22 @@
+from firebase_admin import auth
 from Salesforce import getSF
-from firebase_functions import logger, https_fn, storage_fn, options
-from Google import GoogleConnector, TimesheetDocument
 from Helpers import firebase_functions_custom, https_fn_custom
-from Emails import send_convention
-from Google import Events
-from pprint import pprint
+from Google import Events, GoogleConnector
 from Actions import generate_confirmation_text, get_teacher_dict, update_payment_sheet
-from Emails import send_attestation_teacher, send_attestation_admin
-from firebase_admin import firestore, auth
-
+from Emails import send_attestation_admin
 from .GenerateTimesheet import generate_timesheet
 
 BLACKLIST_EMAILS = [
-  # '.*@ilplatform.be',
   'luca.paraschi@gmail.com',
   'mihneataranu@gmail.com',
 ]
 
 # @storage_fn.on_object_finalized(timeout_sec=540, memory=options.MemoryOption.GB_1)
-@https_fn_custom(timeout_sec=540, memory=1024)
+@https_fn_custom(timeout_sec=3600, memory=1024)
 @firebase_functions_custom(auth_level=2)
 def attestations_a_create(data):
     """HTTPS Cloud Function to create monthly attestations. This version runs once the proposal has been confirmed."""
+
     # Initialize the Salesforce client
     sf = getSF()
 
@@ -56,7 +51,7 @@ def attestations_a_create(data):
         return {"data": {"response": return_string, "status": 200}}
 
     # Update the payment sheet
-    update_payment_sheet(google, teacher_dict, year, month)
+    # update_payment_sheet(google, teacher_dict, year, month)
 
     # Create the timesheets, send the emails and add the document to Firestore
     for teacher_email in teacher_dict:

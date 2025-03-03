@@ -27,7 +27,6 @@ class Document():
         if 'id' not in document:
             print(f"[ERROR] {log_details} - Error in copying file")
             return None
-        print(f"[SUCCESS] {log_details} - Copied Timesheet Document Successfully")
 
         return document['id']
 
@@ -86,7 +85,6 @@ class TimesheetDocument(Document):
 
             # Send the batchUpdate request
             self.google.docs.documents().batchUpdate(documentId=self.document_id, body={'requests': requests}).execute()
-            print(f"[SUCCESS] {self.teacher.get('name')} - Document Filled Out Successfully")
 
         except Exception as e:
             raise IndexError(f"[ERROR] {self.teacher.get('name')} - Error In Filling Out File: {e}")
@@ -129,7 +127,6 @@ class ContractDocument(Document):
 
             # Send the batchUpdate request
             self.google.docs.documents().batchUpdate(documentId=self.document_id, body={'requests': requests}).execute()
-            print(f"[SUCCESS] {self.teacher.get('name')} - Document Filled Out Successfully")
 
         except Exception as e:
             raise ValueError(f"[ERROR] {self.teacher.get('name')} - Error In Filling Out File: {e}")
@@ -167,7 +164,6 @@ class PaymentsDocument(Document):
 
             # Send the batchUpdate request
             self.google.docs.documents().batchUpdate(documentId=self.document_id, body={'requests': requests}).execute()
-            print(f"[SUCCESS] {self.log_details} - Document Filled Out Successfully")
 
         except Exception as e:
             print(f"[ERROR] {self.log_details} - Error In Filling Out File: {e}")

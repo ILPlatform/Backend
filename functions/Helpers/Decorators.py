@@ -44,6 +44,7 @@ def __get_json_data(function):
         # Add the uid to the data
         user_details, logged_in = verify_auth(request)
         if logged_in:
+            user_details["google_oauth"] = data.get("googleAuthToken")
             data["user_details"] = user_details
             data["uid"] = user_details.get("uid")
             data["user_email"] = user_details.get("email")
@@ -59,7 +60,7 @@ def __auth_verifier(auth_level):
         def wrapper(request):
             message, success = verify_auth(request, auth_level)
             if not success:
-                return {"data": {"error": message, "status": 401}}, 401
+                return {"data": {"response": message, "status": 401}}, 401
             return function(request)
         return wrapper
     return decorator
@@ -71,10 +72,11 @@ def __protect_try_except(function):
         try:
             return function(request), 200
         except Exception as e:
-            # if os.getenv("FUNCTIONS_EMULATOR") == "true":
-            #     raise Exception(e)
-            # else:
-            #     send_email_error(e)
+            if os.getenv("FUNCTIONS_EMULATOR") == "true":
+                raise Exception(e)
+            else:
+                # send_email_error(e)
+                print(f"[ERROR] {e}")
             return {"data": {"error": str(e), "status": 400}}, 400
         if request.environ.get("werkzeug.server.shutdown") or request.stream.closed:
             print("Request was aborted by the client.")

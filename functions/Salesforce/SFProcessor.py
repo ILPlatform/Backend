@@ -171,7 +171,7 @@ class SFProcessor(SFConnector):
 
         nn = data.get("Registration_Number__c").replace(".", "")
 
-        processed_data = {
+        processed_data = data | {
             "id": data.get("Id"),
             "uid": data.get("Firebase_UID__c"),
             "name": data.get("Full_Name__c"),

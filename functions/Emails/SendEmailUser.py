@@ -44,7 +44,7 @@ def send_email_user(email, subject, body, file_url=None, file_name=None):
     server = create_smtp_transport()
     try:
         server.sendmail(GMAIL_SENDER, email, msg.as_string())
-        print("[SUCCESS] USER - Email Sent Successfully")
+        print(f"[SUCCESS] Email Sent Successfully to {email}")
     except Exception as e:
         raise SystemError(f"[ERROR] USER - Error in sending email: {e}")
     finally:

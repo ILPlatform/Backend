@@ -4,6 +4,7 @@ import datetime
 from Salesforce import getSF
 
 from .getSchedule import getSchedule
+from .getEventDict import getEventDict
 
 @https_fn_custom()
 @firebase_functions_custom(auth_level=1)
@@ -77,6 +78,7 @@ def events_u_update_class(data):
             firstAllUpdate = True
             for instance in sorted(response['items'], key=lambda item: item["start"]["dateTime"]):
                 instance_date = datetime.datetime.strptime(instance["start"]["dateTime"][:10], '%Y-%m-%d').date()
+                print(instance_date)
 
                 # Check if the date should be held
                 if instance_date not in course_days:
@@ -108,54 +110,12 @@ def events_u_update_class(data):
         else:
             print(f'[INFO] Successfully updated events for {class_data["Code__c"]}')
 
-    # Define the event details
-    start_date = course_days[0]
-    start_time = datetime.datetime.strptime(class_data["Start_Time__c"][:-1], "%H:%M:%S.%f").time()
-    end_time = datetime.datetime.strptime(class_data["End_Time__c"][:-1], "%H:%M:%S.%f").time()
-    start_datetime = datetime.datetime.combine(start_date, start_time)
-    if not class_data["Account"]["Online__c"]:
-        start_datetime -= datetime.timedelta(minutes=15)
-    start_datetime_iso = start_datetime.isoformat()
-    end_datetime = datetime.datetime.combine(start_date, end_time) # + datetime.timedelta(minutes=15)
-    end_datetime_iso = end_datetime.isoformat()
-    event = {
-        'summary': f'{class_data["Code__c"]} - {class_data["Account"]["Name"]} [{class_data["Ages_Announced__c"] if class_data.get("Ages_Announced__c") and class_data.get("Ages_Announced__c") != "" else "???"}]',
-        'location': f'{class_data["Account"]["BillingAddress"]["street"]}, {class_data["Account"]["BillingAddress"]["postalCode"]} {class_data["Account"]["BillingAddress"]["city"]}, {class_data["Account"]["BillingAddress"]["country"]}',
-        'description':
-            f"Horaire de cours: {class_data['Start_Time__c'][:5]} - {class_data['End_Time__c'][:5]}. Arrivée attendue 15 minutes avant pour préparer la salle.\n\n" + \
-            f"Procédure de présences: {class_data['Yearly_Schedule__r']['Attendance_Description__c']}",
-        'start': {
-            'dateTime': start_datetime_iso,
-            'timeZone': 'Europe/Brussels',
-        },
-        'end': {
-            'dateTime': end_datetime_iso,
-            'timeZone': 'Europe/Brussels',
-        },
-        'recurrence': [
-            f'RRULE:FREQ=WEEKLY;UNTIL={class_data["Yearly_Schedule__r"]["End_Date__c"].replace("-", "")}T235959Z'
-        ],
-        'attendees': [
-            {'email': class_data["Teacher__r"]["Email__c"]} if class_data.get("Teacher__r") else None,
-            {'email': class_data["Additional_Invite__c"]} if class_data.get("Additional_Invite__c") else None
-        ],
-        "conferenceData": {
-            "createRequest": {
-                "conferenceSolutionKey": {
-                "type": "hangoutsMeet"
-                },
-                "requestId": f'{class_data["Code__c"]} - {class_data["Account"]["Name"]} [{class_data["Ages_Announced__c"] if class_data.get("Ages_Announced__c") and class_data.get("Ages_Announced__c") != "" else "???"}]',
-            }
-        } if class_data["Account"]["Online__c"] else None,
-        'sendUpdates': 'all'
-    }
-    print(event)
+    event = getEventDict(class_data, course_days)
 
+    # Create or update the Google Event
     if not class_data.get("Google_Event__c"):
-        # Create the Google Event
         batch1.add(google.calendar.events().insert(calendarId=google.CALENDAR_CLASSES_ID, body=event, sendUpdates="all", conferenceDataVersion=1), callback=callback1)
     else:
-        # Update the Google Event
         batch1.add(google.calendar.events().update(calendarId=google.CALENDAR_CLASSES_ID, eventId=class_data["Google_Event__c"], body=event, sendUpdates="none", conferenceDataVersion=1), callback=callback1)
 
     # Execute the Batch Requests

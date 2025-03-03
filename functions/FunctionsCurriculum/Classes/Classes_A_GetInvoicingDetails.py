@@ -56,8 +56,11 @@ def classes_a_get_invoicing_details(data):
         "school_name": code.get("Account").get("Short_Name__c") if code.get("Account") else None,
         "classes": ", ".join([translate_date(str(k)) for (k, v) in getSchedule(code).items() if start_date <= str(k) <= end_date]),
         "number_classes": len([1 for (k, v) in getSchedule(code).items() if start_date <= str(k) <= end_date]),
-        "registrations": int(code.get("Registrations__c")) if with_regs else 0,
+        "registrations": int(code.get("Registrations__c")) if code.get("Registrations__c") and with_regs else 0,
     } for code in result]
+
+    codes = [code for code in codes if code["number_classes"] > 0]
+
     codes.sort(key=lambda x: x["code"])
 
     # Function to translate English day of week to French

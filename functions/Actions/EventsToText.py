@@ -1,5 +1,3 @@
-from pprint import pprint
-
 def get_teacher_dict(sf, events):
     # Get unique teachers
     teachers = set()
@@ -27,7 +25,7 @@ def get_teacher_dict(sf, events):
             "hours": int(total_minutes // 60),
             "minutes": int(total_minutes % 60)
         })
-        nice_name = f"{teacher.get('name')} [{teacher.get('hours')}h{teacher.get('minutes')} - {teacher.get('total_amount')}€]"
+        nice_name = f"{teacher.get('Full_Name__c')} -> {teacher.get('Contract_Type__c')} [{teacher.get('hours')}h{teacher.get('minutes')} - {teacher.get('total_amount')}€]"
         teacher.update({"nice_name": nice_name})
 
     return teacher_dict
