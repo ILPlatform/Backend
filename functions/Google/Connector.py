@@ -4,9 +4,6 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
-# from apiclient import discovery
-# from httplib2 import Http
-# from oauth2client import client, file, tools
 
 # Constants
 TOKEN_PATH = os.path.join(os.getcwd(), '.googleapi_token.json')
@@ -101,9 +98,9 @@ class GoogleConnector():
                     if credentials and credentials.expired and credentials.refresh_token:
                         credentials.refresh(Request())
                     else:
-                        with open(CREDENTIALS_PATH, 'r') as creds_file:
-                            info = json.load(creds_file)
-                        flow = InstalledAppFlow.from_client_config(info, SCOPES)
+                        # with open(CREDENTIALS_PATH, 'r') as creds_file:
+                        #     info = json.load(creds_file)
+                        flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_PATH, SCOPES)
                         credentials = flow.run_local_server(host="localhost", port=8888)
 
                     # Save credentials to a file
