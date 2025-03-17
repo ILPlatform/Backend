@@ -5,3 +5,5 @@ from .SendEmailReplacementsOneTime import send_email_replacement_onetime
 from .SendEmailNewDocument import send_email_new_document
 from .SendEmailAdmin import send_email_admin
 from .SendEmailUser import send_email_user
+
+from .SendEmail import sendEmail

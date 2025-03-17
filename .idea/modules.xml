@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/../ILPlatform_Curriculum/.idea/Curriculum_New.iml" filepath="$PROJECT_DIR$/../ILPlatform_Curriculum/.idea/Curriculum_New.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ILPlatform.iml" filepath="$PROJECT_DIR$/.idea/ILPlatform.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ILPlatform Backend.iml" filepath="$PROJECT_DIR$/.idea/ILPlatform Backend.iml" />
       <module fileurl="file://$PROJECT_DIR$/../ILPlatform_HomePage/.idea/ILPlatform-HomePage.iml" filepath="$PROJECT_DIR$/../ILPlatform_HomePage/.idea/ILPlatform-HomePage.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/ILPlatform_Salesforce.iml" filepath="$PROJECT_DIR$/.idea/ILPlatform_Salesforce.iml" />
     </modules>
   </component>
 </project>

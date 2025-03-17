@@ -1,4 +1,4 @@
-#!/Users/danielcortild/Documents/Code/ILPlatform/ILPlatform_Salesforce/functions/venv/bin/python3.11
+#!/Users/danielcortild/Documents/Code/ILPlatform/ILPlatform_Salesforce/functions/venv/bin/python3
 # -*- coding: utf-8 -*-
 # Copyright 2024 Google LLC
 #
@@ -45,6 +45,7 @@ def partition(
 class firestore_adminCallTransformer(cst.CSTTransformer):
     CTRL_PARAMS: Tuple[str] = ('retry', 'timeout', 'metadata')
     METHOD_TO_PARAMS: Dict[str, Tuple[str]] = {
+        'bulk_delete_documents': ('name', 'collection_ids', 'namespace_ids', ),
         'create_backup_schedule': ('parent', 'backup_schedule', ),
         'create_database': ('parent', 'database', 'database_id', ),
         'create_index': ('parent', 'index', ),
@@ -59,12 +60,12 @@ class firestore_adminCallTransformer(cst.CSTTransformer):
         'get_field': ('name', ),
         'get_index': ('name', ),
         'import_documents': ('name', 'collection_ids', 'input_uri_prefix', 'namespace_ids', ),
-        'list_backups': ('parent', ),
+        'list_backups': ('parent', 'filter', ),
         'list_backup_schedules': ('parent', ),
-        'list_databases': ('parent', ),
+        'list_databases': ('parent', 'show_deleted', ),
         'list_fields': ('parent', 'filter', 'page_size', 'page_token', ),
         'list_indexes': ('parent', 'filter', 'page_size', 'page_token', ),
-        'restore_database': ('parent', 'database_id', 'backup', ),
+        'restore_database': ('parent', 'database_id', 'backup', 'encryption_config', ),
         'update_backup_schedule': ('backup_schedule', 'update_mask', ),
         'update_database': ('database', 'update_mask', ),
         'update_field': ('field', 'update_mask', ),

@@ -10,12 +10,13 @@ def docs_a_create_custom(data):
 
     # Get the parameters and check them
     details = data.get("details")
+    print(details)
     if not (details and
             details.get("Teacher__c") and
             details.get("Unsigned_URL__c") and
             details.get("Description__c") and
             details.get("Teacher__r").get("Email__c")):
-        return {"data": {"response": "Missing parameters", "status": 400}}
+        raise ValueError("Missing parameters")
 
     # Create the document
     document = safe_create(sf.sf.Document__c, details | {"RecordTypeId": "012P5000001T9P7IAK"})

@@ -20,7 +20,7 @@ def safe_query(sf, unsafe_query):
         records = response.get('records', [])
         results.extend(records)
 
-        if not response.get('done', False):
+        if len(list(records)) == 200:
             offset += 200
         else:
             break

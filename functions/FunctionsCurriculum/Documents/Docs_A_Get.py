@@ -8,4 +8,5 @@ def docs_a_get(data):
         SELECT FIELDS(ALL), Teacher__r.Full_Name__c, Teacher__r.Id
         FROM Document__c
         WHERE Deleted__c = False
+        ORDER BY CreatedDate DESC
     """)

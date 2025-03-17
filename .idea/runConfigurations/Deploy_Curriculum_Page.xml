@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Deploy Curriculum Page" type="js.build_tools.npm">
+    <package-json value="$PROJECT_DIR$/../ILPlatform_Curriculum/package.json" />
+    <command value="run" />
+    <scripts>
+      <script value="deploy" />
+    </scripts>
+    <node-interpreter value="project" />
+    <envs>
+      <env name="NODE_OPTIONS" value="--openssl-legacy-provider" />
+    </envs>
+    <method v="2" />
+  </configuration>
+</component>

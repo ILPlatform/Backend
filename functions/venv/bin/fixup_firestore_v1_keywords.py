@@ -1,4 +1,4 @@
-#!/Users/danielcortild/Documents/Code/ILPlatform/ILPlatform_Salesforce/functions/venv/bin/python3.11
+#!/Users/danielcortild/Documents/Code/ILPlatform/ILPlatform_Salesforce/functions/venv/bin/python3
 # -*- coding: utf-8 -*-
 # Copyright 2024 Google LLC
 #
