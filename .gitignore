@@ -75,3 +75,8 @@ __pycache__
 
 # Python virtual environment
 */venv
+
+# Token files
+.googleapi_token.json
+.firebase_adminsdk.json
+.googleapi_credentials.json

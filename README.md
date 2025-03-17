@@ -1,3 +1,5 @@
+# ILPlatform Backend
+
 ## Setup
 
 In order for the code to make sense, you need to generate the following files:
@@ -54,7 +56,7 @@ In order for the code to make sense, you need to generate the following files:
   WHATSAPP_ADMINS_TEST=
   WHATSAPP_ADMINS=
   ```
-  - `functions/venv` - Contains the Python virtual environment for the backend. Can be created by running
+- `functions/venv` - Contains the Python virtual environment for the backend. Can be created by running
   ```bash
   cd functions
   python3.11 -m venv venv
