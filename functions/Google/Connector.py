@@ -16,9 +16,10 @@ SCOPES = [
   'https://www.googleapis.com/auth/spreadsheets',
   'https://www.googleapis.com/auth/contacts'
 ]
-CAMPS_FORM_ID = "1pFYz_J2dwGJ6SGoixtmnILJRfssPJevXaXUWIO73-Dw"
+CAMPS_FORM_ID = os.getenv("CAMPS_FORM_ID")
 CALENDAR_CAMPS_ID = os.getenv("CALENDAR_CAMPS_ID")
 DRIVE_CAMPS_PHOTOS_ID = os.getenv("DRIVE_CAMPS_PHOTOS_ID")
+CAMPS_FORM_DRIVE_ID = os.getenv("CAMPS_FORM_DRIVE_ID")
 
 class GoogleConnector():
     CALENDAR_CAMPS_ID = os.getenv("CALENDAR_CAMPS_ID")
@@ -98,8 +99,6 @@ class GoogleConnector():
                     if credentials and credentials.expired and credentials.refresh_token:
                         credentials.refresh(Request())
                     else:
-                        # with open(CREDENTIALS_PATH, 'r') as creds_file:
-                        #     info = json.load(creds_file)
                         flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_PATH, SCOPES)
                         credentials = flow.run_local_server(host="localhost", port=8888)
 
@@ -121,7 +120,7 @@ class GoogleConnector():
     def create_camps_form(self):
         # Create body for form allowing daniel@ilplatform.be to edit
         body = {
-            "addParents": ["1llQJfvK-FNlQ26-9HmUXWKALy59cr8uM"]
+            "addParents": [CAMPS_FORM_DRIVE_ID]
         }
 
         return self.drive.files().copy(fileId=CAMPS_FORM_ID, body=body).execute()

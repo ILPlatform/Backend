@@ -16,6 +16,6 @@ def replacements_u_create(data):
     })
 
     # Send email to admins
-    sendEmail("replacements_admin", details)
+    sendEmail("replacement_admin", details)
 
     return {"data": {"response": {"Id": replacement.get("id")}, "status": 200}}

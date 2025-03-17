@@ -7,4 +7,5 @@ def sendEmail(type, details):
     elif type == "reimbursements_admin":
         sendEmail_ReimbursementsAdmin(details)
     else:
+        print("[ERROR] Invalid email type")
         raise ValueError("Invalid email type")
