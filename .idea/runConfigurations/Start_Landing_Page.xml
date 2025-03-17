@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="Start Landing Page" type="js.build_tools.npm">
-    <package-json value="$PROJECT_DIR$/../ILPlatform_HomePage/front-client/package.json" />
+    <package-json value="$PROJECT_DIR$/../ILPlatform_HomePage/package.json" />
     <command value="start" />
     <node-interpreter value="project" />
     <envs>
