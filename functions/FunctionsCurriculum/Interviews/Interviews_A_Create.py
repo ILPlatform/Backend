@@ -12,10 +12,7 @@ def interviews_a_create(data):
     if not details:
         return {"data": {"response": "User details are required", "status": 400}}
 
-    # Add RecordTypeId to details
-    details["RecordTypeId"] = "012P5000001UtMf"
+    # Create the note in Salesforce
+    note = safe_create(sf.sf.Note__c, details | {"RecordTypeId": "012P5000001UtMf"})
 
-    # Create the user in Salesforce
-    safe_create(sf.sf.Note__c, details)
-
-    return {"data": {"response": "Note created successfully", "status": 200}}
+    return {"data": {"response": {"Id": note.get("id")}, "status": 200}}
