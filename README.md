@@ -25,39 +25,12 @@ In order for the code to make sense, you need to generate the following files:
   GMAIL_USER_EMAIL=
   GMAIL_PASSWORD=
   
-  # Google Calendar IDs
-  CALENDAR_CLASSES_ID=
-  CALENDAR_CAMPS_ID=
-  CALENDAR_TESTING_ID=
-  
-  # Document Template IDs
-  ATTESTATION_TEMPLATE_ID=
-  PRESTATION_TEMPLATE_ID=
-  CONVENTION_TEMPLATE_ID=
-  PAYMENTS_TEMPLATE_ID=
-  STUDENT_CONTRACT_TEMPLATE_ID=
-  VOLUNTEER_CONTRACT_TEMPLATE_ID=
-  
-  # Google Form Template IDs
-  CLASSES_FORM_ID=
-  CAMPS_FORM_ID=
-  
-  # Google Drive Folder IDs
-  DOCUMENTS_BY_BOT_ID=
-  DRIVE_CAMPS_PHOTOS_ID=
-  
-  # Google Sheet IDs
-  SHEETS_PAYMENTS_ID=
-  
-  # Salesforce Standard IDs
-  SF_TEACHERS_ACCOUNT_ID=
-  SF_TEACHER_CONTRACT_RECORD_TYPE_ID=
-  
   # WhatsApp Configuration
   WHATSAPP_ACCESS_TOKEN=
   WHATSAPP_PHONE_ID=
-  WHATSAPP_ADMINS_TEST=
-  WHATSAPP_ADMINS=
+  
+  # Google Drive Folder ID (public folder to store photos)
+  DRIVE_CAMPS_PHOTOS_ID
   ```
 - `functions/venv` - Contains the Python virtual environment for the backend. Can be created by running
   ```bash

@@ -12,7 +12,7 @@ class SFConnector:
                     username=SF_USERNAME,
                     password=SF_PASSWORD,
                     security_token=SF_SECURITY_TOKEN,
-                    domain="test")
+                    domain=SF_DOMAIN)
             else:
                 self.sf = Salesforce(
                     username=SF_USERNAME,
@@ -25,5 +25,5 @@ class SFConnector:
     def update_opportunity(self, id, data):
         return self.sf.Opportunity.update(id, data)
 
-    def update_picklist(self, id, data):
-        return self.sf.Picklist__c.update(id, data)
+    # def update_picklist(self, id, data):
+    #     return self.sf.Picklist__c.update(id, data)

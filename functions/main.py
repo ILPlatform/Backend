@@ -6,6 +6,7 @@ from firebase_admin import initialize_app, credentials
 import os
 from dotenv import load_dotenv
 load_dotenv()
+load_dotenv('config.env')
 
 # Initialize the app
 SERVICE_ACCOUNT_PATH = ".firebase_adminsdk.json"

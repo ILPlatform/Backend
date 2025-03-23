@@ -1,5 +1,3 @@
-from google.oauth2 import service_account
-from datetime import datetime
 import os
 from datetime import date
 
