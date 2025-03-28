@@ -19,7 +19,8 @@ class SFConnector:
                     password=SF_PASSWORD,
                     security_token=SF_SECURITY_TOKEN)
         except Exception as e:
-            raise ValueError(f"Could not authenticate to Salesforce client {SF_USERNAME} -> {e}")
+            print("TF", e)
+            raise ValueError(f"[ERROR] Could not authenticate to Salesforce client {SF_USERNAME} -> {e}")
         print(f"[AUTHENTICATE] Authenticated to Salesforce client {SF_USERNAME}")
 
     def update_opportunity(self, id, data):

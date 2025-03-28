@@ -1,9 +1,11 @@
 from Emails import send_email_admin
 
 def sendEmail_ReplacementsAdmin(details):
+    type = "Permanent" if details.get("RecordTypeId") == "012P5000001QAUbIAO" else "OneTime"
+
     # Send email to admins
     send_email_admin(
-        subject=f"""{details.get('RecordType').get('Name')} Replacement {details.get('Opportunity__r').get('Code__c')}:
+        subject=f"""{type} Replacement {details.get('Opportunity__r').get('Code__c')}:
             {details.get('Teacher_Old__r', {}).get('Full_Name__c')} ->
             {details.get('Teacher__r', {}).get('Full_Name__c')}""",
         body=f"""
@@ -17,7 +19,7 @@ def sendEmail_ReplacementsAdmin(details):
                 <li><b>Time Slot:</b> {details.get('Opportunity__r').get("Start_Time__c")}
                     - {details.get('Opportunity__r').get("End_Time__c")}</li>
                 <li><b>Replacement Date:</b> {details.get('Date__c')}</li>
-                <li><b>Replacement Type:</b> {details.get('RecordType').get('Name')}</li>
+                <li><b>Replacement Type:</b> {type} ()</li>
                 <li><b>Old Teacher:</b> {details.get('Teacher_Old__r', {}).get('Full_Name__c')}</li>
                 <li><b>New Teacher:</b> {details.get('Teacher__r', {}).get('Full_Name__c')}</li>
                 <li><b>Reason:</b> {details.get('Reason__c')}</li>

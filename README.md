@@ -30,7 +30,7 @@ In order for the code to make sense, you need to generate the following files:
   WHATSAPP_PHONE_ID=
   
   # Google Drive Folder ID (public folder to store photos)
-  DRIVE_CAMPS_PHOTOS_ID
+  DRIVE_CAMPS_PHOTOS_ID=
   ```
 - `functions/venv` - Contains the Python virtual environment for the backend. Can be created by running
   ```bash
