@@ -19,7 +19,7 @@ def sendEmail_ReplacementsAdmin(details):
                 <li><b>Time Slot:</b> {details.get('Opportunity__r').get("Start_Time__c")}
                     - {details.get('Opportunity__r').get("End_Time__c")}</li>
                 <li><b>Replacement Date:</b> {details.get('Date__c')}</li>
-                <li><b>Replacement Type:</b> {type} ()</li>
+                <li><b>Replacement Type:</b> {type}</li>
                 <li><b>Old Teacher:</b> {details.get('Teacher_Old__r', {}).get('Full_Name__c')}</li>
                 <li><b>New Teacher:</b> {details.get('Teacher__r', {}).get('Full_Name__c')}</li>
                 <li><b>Reason:</b> {details.get('Reason__c')}</li>
