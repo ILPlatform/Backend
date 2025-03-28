@@ -3,6 +3,11 @@ def safe_create(object, details):
     valid_details = {key: value for key, value in details.items() if key in valid_fields}
     return object.create(valid_details)
 
+def safe_update(object, details):
+    valid_fields = {field['name'] for field in object.describe()['fields'] if field['name'] != "Id"}
+    valid_details = {key: value for key, value in details.items() if key in valid_fields}
+    return object.update(details.get("Id"), valid_details)
+
 def safe_delete(object, id):
     try:
         object.update(id, {"Deleted__c": True})
