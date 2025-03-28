@@ -8,6 +8,7 @@ DOCUMENTS_BY_BOT_ID = os.getenv('DOCUMENTS_BY_BOT_ID')
 PAYMENTS_TEMPLATE_ID = os.getenv('PAYMENTS_TEMPLATE_ID')
 STUDENT_CONTRACT_TEMPLATE_ID = os.getenv('STUDENT_CONTRACT_TEMPLATE_ID')
 VOLUNTEER_CONTRACT_TEMPLATE_ID = os.getenv('VOLUNTEER_CONTRACT_TEMPLATE_ID')
+NDA_TEMPLATE_ID = os.getenv('NDA_TEMPLATE_ID')
 
 class Document():
     def __init__(self, google):
@@ -100,6 +101,8 @@ class ContractDocument(Document):
                 file_id = VOLUNTEER_CONTRACT_TEMPLATE_ID
             case "Convention":
                 file_id = CONVENTION_TEMPLATE_ID
+            case "NDA":
+                file_id = NDA_TEMPLATE_ID
             case _:
                 raise ValueError(type)
         name = f"{type} ILPlatform {teacher.get('name')}"
