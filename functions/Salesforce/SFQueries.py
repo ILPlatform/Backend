@@ -142,13 +142,13 @@ class SFQueries:
     #         """
     #     return query
 
-    # def get_week_name(self, week_code):
-    #     query = f"""
-    #         SELECT Name, Start_Date__c, End_Date__c
-    #         FROM Picklist__c
-    #         WHERE Week_Code__c='{week_code}'
-    #         """
-    #     return query
+    def get_week_name(self, week_code):
+        query = f"""
+            SELECT Name, Start_Date__c, End_Date__c
+            FROM Picklist__c
+            WHERE Week_Code__c='{week_code}'
+            """
+        return query
 
     def get_teacher_details(self, email):
         query = f"""

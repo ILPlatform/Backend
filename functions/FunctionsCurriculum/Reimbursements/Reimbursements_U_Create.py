@@ -13,7 +13,8 @@ def reimbursements_u_create(data):
     user_details = data.get("user_details")
     replacement = safe_create(sf.sf.Reimbursement__c, details | {
         "Employee__c": user_details.get("Id"),
-        "Status__c": "Pending"
+        "Status__c": "Pending",
+        "RecordTypeId": "012P5000002MZkLIAW"
     })
 
     # Send email to admins

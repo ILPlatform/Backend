@@ -12,36 +12,36 @@ class SFProcessor(SFConnector):
         super().__init__(SF_USERNAME, SF_PASSWORD, SF_SECURITY_TOKEN, SF_DOMAIN)
         self.queries = SFQueries()
 
-    # def __process_camp_details(self, data):
-    #     nl = '\n\n'
-    #     address = f'{data["Account"]["BillingAddress"]["street"]}, {data["Account"]["BillingAddress"]["postalCode"]} {data["Account"]["BillingAddress"]["city"]}, {data["Account"]["BillingAddress"]["country"]}'
-    #     processed_data = {
-    #         "id": data["Id"],
-    #         "code": data["Camp_Code__c"],
-    #         "name": data["Name"],
-    #         "event_id": data["Google_Event__c"],
-    #         "picture_grand_parent_id": data.get("Week__r").get("Holiday__r").get("Google_Drive_Pictures_ID__c"),
-    #         "picture_parent_id": data.get("Week__r").get("Google_Drive_Pictures_ID__c"),
-    #         "picture_parent_name": f'{data.get("Week__r").get("Name")} ({data["Week__r"]["Start_Date__c"][8:10]}/{data["Week__r"]["Start_Date__c"][5:7]}-{data["Week__r"]["End_Date__c"][8:10]}/{data["Week__r"]["End_Date__c"][5:7]})',
-    #         "week_name": data.get("Week__r").get("Name"),
-    #         "week_id": data.get("Week__r").get("Id"),
-    #         "holiday_id": data.get("Week__r").get("Holiday__r").get("Id"),
-    #         "pictures_id": data["Google_Drive_Pictures__c"],
-    #         "pictures_name": f'{data.get("Account").get("Name")} ({data.get("Time_Schedule__r").get("Time_Slot__c", "")[3:]})',
-    #         "summary": f'{data["Camp_Code__c"]} - Stage {data["Account"]["Name"]} [{data["Ages_Real__c"] if data["Ages_Real__c"] != "" else "???"} ans]',
-    #         "teacher_text": f'{data["Time_Schedule__r"]["Name"]} {data["Account"]["Name"]} ({address}) [{data["Ages_Real__c"] if data["Ages_Real__c"] != "" else "???"} ans]',
-    #         "teacher_email": data["Teacher__r"]["Email__c"] if data["Teacher__r"] else None,
-    #         "start_time": data["Time_Schedule__r"]["Start_Pay_Time__c"][:-1],
-    #         "start": f'{data["Week__r"]["Start_Date__c"]}T{data["Time_Schedule__r"]["Start_Pay_Time__c"][:-1]}',
-    #         "end_day1": f'{data["Week__r"]["Start_Date__c"]}T{data["Time_Schedule__r"]["End_Pay_Time__c"][:-1]}',
-    #         "start_day1": f'{(data["Week__r"]["Start_Date__c"] + "T" + data.get("Time_Schedule__r", {}).get("Start_Pay_Time_Day_1__c")[:-1]) if data.get("Time_Schedule__r", {}).get("Start_Pay_Time_Day_1__c") else (data["Week__r"]["Start_Date__c"] + "T" + data["Time_Schedule__r"]["Start_Pay_Time__c"][:-1])}',
-    #         "address": address,
-    #         "description": f'{"".join(["Notes importantes: ", data["Description"], nl]) if data["Description"] else ""}{data["Time_Schedule__r"]["Description__c"]}',
-    #         "excluded_day": data.get("Week__r").get("Excluded_Day__c"),
-    #         "replacements": [{"date": replacement.get("Date__c"), "email": replacement.get("Teacher__r").get("Email__c")} for replacement in (data.get("Replacements__r") or {}).get('records', [])],
-    #         "overwrite_cancelled": data.get("Overwrite_Cancelled__c"),
-    #     }
-    #     return processed_data
+    def __process_camp_details(self, data):
+        nl = '\n\n'
+        address = f'{data["Account"]["BillingAddress"]["street"]}, {data["Account"]["BillingAddress"]["postalCode"]} {data["Account"]["BillingAddress"]["city"]}, {data["Account"]["BillingAddress"]["country"]}'
+        processed_data = {
+            "id": data["Id"],
+            "code": data["Camp_Code__c"],
+            "name": data["Name"],
+            "event_id": data["Google_Event__c"],
+            "picture_grand_parent_id": data.get("Week__r").get("Holiday__r").get("Google_Drive_Pictures_ID__c"),
+            "picture_parent_id": data.get("Week__r").get("Google_Drive_Pictures_ID__c"),
+            "picture_parent_name": f'{data.get("Week__r").get("Name")} ({data["Week__r"]["Start_Date__c"][8:10]}/{data["Week__r"]["Start_Date__c"][5:7]}-{data["Week__r"]["End_Date__c"][8:10]}/{data["Week__r"]["End_Date__c"][5:7]})',
+            "week_name": data.get("Week__r").get("Name"),
+            "week_id": data.get("Week__r").get("Id"),
+            "holiday_id": data.get("Week__r").get("Holiday__r").get("Id"),
+            "pictures_id": data["Google_Drive_Pictures__c"],
+            "pictures_name": f'{data.get("Account").get("Name")} ({data.get("Time_Schedule__r").get("Time_Slot__c", "")[3:]})',
+            "summary": f'{data["Camp_Code__c"]} - Stage {data["Account"]["Name"]} [{data["Ages_Real__c"] if data["Ages_Real__c"] != "" else "???"} ans]',
+            "teacher_text": f'{data["Time_Schedule__r"]["Name"]} {data["Account"]["Name"]} ({address}) [{data["Ages_Real__c"] if data["Ages_Real__c"] != "" else "???"} ans]',
+            "teacher_email": data["Teacher__r"]["Email__c"] if data["Teacher__r"] else None,
+            "start_time": data["Time_Schedule__r"]["Start_Pay_Time__c"][:-1],
+            "start": f'{data["Week__r"]["Start_Date__c"]}T{data["Time_Schedule__r"]["Start_Pay_Time__c"][:-1]}',
+            "end_day1": f'{data["Week__r"]["Start_Date__c"]}T{data["Time_Schedule__r"]["End_Pay_Time__c"][:-1]}',
+            "start_day1": f'{(data["Week__r"]["Start_Date__c"] + "T" + data.get("Time_Schedule__r", {}).get("Start_Pay_Time_Day_1__c")[:-1]) if data.get("Time_Schedule__r", {}).get("Start_Pay_Time_Day_1__c") else (data["Week__r"]["Start_Date__c"] + "T" + data["Time_Schedule__r"]["Start_Pay_Time__c"][:-1])}',
+            "address": address,
+            "description": f'{"".join(["Notes importantes: ", data["Description"], nl]) if data["Description"] else ""}{data["Time_Schedule__r"]["Description__c"]}',
+            "excluded_day": data.get("Week__r").get("Excluded_Day__c"),
+            "replacements": [{"date": replacement.get("Date__c"), "email": replacement.get("Teacher__r").get("Email__c")} for replacement in (data.get("Replacements__r") or {}).get('records', [])],
+            "overwrite_cancelled": data.get("Overwrite_Cancelled__c"),
+        }
+        return processed_data
 
     def get_camp_details(self, code, confirmed=True):
         if confirmed:

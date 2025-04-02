@@ -27,7 +27,7 @@ def generate_timesheet(google, sf, teacher, year, month):
       "Paid__c": False,
       "Beneficiary__c": teacher.get("id"),
       "Type_of_Payment__c": teacher.get("Contract_Type__c"),
-      "Contract__c": "contract" in teacher.get("Contract_Type__c").toLowerCase(),
+      "Contract__c": "contract" in teacher.get("Contract_Type__c").lower(),
       "Amount__c": teacher.get('total_amount'),
       "RecordTypeId": "012P5000001tRevIAE",
     })
