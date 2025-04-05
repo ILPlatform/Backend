@@ -13,3 +13,4 @@ from .Payments import *
 from .PaymentsAdditional import *
 from .Replacements import *
 from .Reimbursements import *
+from .Activities import *
