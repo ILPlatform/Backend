@@ -1,3 +1,4 @@
 from .Events_U_UpdateClass import events_u_update_class
 from .Events_U_UpdateCamp import events_u_update_camp
 from .getSchedule import getSchedule
+from .Events_A_UpdateCamps import events_a_update_camps

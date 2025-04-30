@@ -52,7 +52,7 @@ def __camp_event(google, sf, camp_info, batch1, batch2, batch3):
             print(f'[ERROR] In batch3: {exception}')
         else:
             # Keep track of first non excluded day
-            first_non_exluded_day = True
+            # first_non_exluded_day = True
 
             # Loop through the instances (sorted by start date)
             for instance in sorted(response['items'], key=lambda item: item["start"]["dateTime"]):
@@ -61,11 +61,11 @@ def __camp_event(google, sf, camp_info, batch1, batch2, batch3):
                     # Delete the excluded instances
                     instance["status"] = "cancelled"
                     updated = True
-                elif first_non_exluded_day:
-                    # Update the start date of the first instance
-                    instance["start"]["dateTime"] = camp_info["start_day1"]
-                    first_non_exluded_day = False
-                    updated = True
+                # elif first_non_exluded_day:
+                #     # Update the start date of the first instance
+                #     instance["start"]["dateTime"] = camp_info["start_day1"]
+                #     first_non_exluded_day = False
+                #     updated = True
 
                 # Find the replacement day, if any
                 replacement = next((c for c in camp_info.get("replacements") if c["date"] == instance["start"]["dateTime"][:10]), None)
