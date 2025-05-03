@@ -72,7 +72,7 @@ class Events():
                 title.pop(0)
                 title = '-'.join(title)
                 amount = round(self.__calculate_amount(code, minutes), 2)
-                nice_name = f"    [{code}] {title} ({start}, {minutes}min, {amount}€)"
+                nice_name = f"    [{code}] {start} - {title.split('[')[0]}({minutes}min, {amount}€)"
                 processed_events.append({
                     'teachers': teachers,
                     'held': held,

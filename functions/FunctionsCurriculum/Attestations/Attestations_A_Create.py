@@ -56,7 +56,8 @@ def attestations_a_create(data):
     # Create the timesheets, send the emails and add the document to Firestore
     for teacher_email in teacher_dict:
         teacher = teacher_dict.get(teacher_email)
-        generate_timesheet(google, sf, teacher, year, month)
+        if teacher.get("Contract_Type__c") != "Ignore":
+            generate_timesheet(google, sf, teacher, year, month)
 
     # Send the confirmation email to the admin
     send_attestation_admin(return_string, year, month)

@@ -3,6 +3,8 @@ from datetime import date
 
 ATTESTATION_TEMPLATE_ID = os.getenv('ATTESTATION_TEMPLATE_ID')
 PRESTATION_TEMPLATE_ID = os.getenv('PRESTATION_TEMPLATE_ID')
+INVOICING_TEMPLATE_ID = os.getenv('INVOICING_TEMPLATE_ID')
+
 CONVENTION_TEMPLATE_ID = os.getenv('CONVENTION_TEMPLATE_ID')
 DOCUMENTS_BY_BOT_ID = os.getenv('DOCUMENTS_BY_BOT_ID')
 PAYMENTS_TEMPLATE_ID = os.getenv('PAYMENTS_TEMPLATE_ID')
@@ -58,8 +60,13 @@ class TimesheetDocument(Document):
         self.year = year
         self.month = month
 
-        file_id = PRESTATION_TEMPLATE_ID if teacher.get('contract') else ATTESTATION_TEMPLATE_ID
-        name = f"{year}-{month} {'Prestations' if teacher.get('contract') else 'Attestation'} {teacher.get('name')}"
+        if teacher.get("Contract_Type__c") == "Volunteering":
+            file_id = ATTESTATION_TEMPLATE_ID
+        elif teacher.get("Contract_Type__c") == "Article 17" or teacher.get("Contract_Type__c") == "Student Contract":
+            file_id = PRESTATION_TEMPLATE_ID
+        elif teacher.get("Contract_Type__c") == "Invoicing":
+            file_id = INVOICING_TEMPLATE_ID
+        name = f"{year}-{month} Prestations {teacher.get('name')}"
         log_details = teacher.get('name')
         self.log_details = log_details
         self.document_id = self._Document__copy_document(file_id, name, log_details)
@@ -76,7 +83,7 @@ class TimesheetDocument(Document):
                 {'replaceAllText': {'containsText': {'text': '{ADDRESS}'}, 'replaceText': self.teacher.get('address')}},
                 {'replaceAllText': {'containsText': {'text': '{TOTAL_HOURS}'}, 'replaceText': f"{self.teacher.get('hours')}h{self.teacher.get('minutes')}"}},
                 {'replaceAllText': {'containsText': {'text': '{TOTAL_AMOUNT}'}, 'replaceText': str(self.teacher.get('total_amount'))}},
-                {'replaceAllText': {'containsText': {'text': '{DESCRIPTIONS_FR}'}, 'replaceText': '\n'.join(list(map(lambda x: x.get('nice_name'), self.teacher.get('events'))))}},
+                {'replaceAllText': {'containsText': {'text': '{DESCRIPTIONS_FR}'}, 'replaceText': '\n'.join(list(map(lambda x: x.get('nice_name')[4:], self.teacher.get('events'))))}},
                 {'replaceAllText': {'containsText': {'text': '{TOTAL_HOURS_SECOND_HOURS}'}, 'replaceText': str(round(self.teacher.get('total_amount') / self.teacher.get('contract'))) if self.teacher.get('contract') > 0 else "0"}},
                 {'replaceAllText': {'containsText': {'text': '{TOTAL_HOURS_SECOND_MIN}'}, 'replaceText': str(round(((self.teacher.get('total_amount') / self.teacher.get('contract')) % 1) * 60)) if self.teacher.get('contract') > 0 else "0"}},
                 {'replaceAllText': {'containsText': {'text': '{SALARY}'}, 'replaceText': str(self.teacher.get('contract'))}}
