@@ -2,7 +2,7 @@
   "functions": [
     {
       "source": "functions",
-      "runtime": "python311",
+      "runtime": "python312",
       "ignore": ["venv", ".git", "firebase-debug.log", "firebase-debug.*.log"]
     }
   ]

@@ -106,6 +106,8 @@ class ContractDocument(Document):
                 file_id = STUDENT_CONTRACT_TEMPLATE_ID
             case "Volunteer Contract":
                 file_id = VOLUNTEER_CONTRACT_TEMPLATE_ID
+            case "Volunteering Contract":
+                file_id = VOLUNTEER_CONTRACT_TEMPLATE_ID
             case "Convention":
                 file_id = CONVENTION_TEMPLATE_ID
             case "NDA":
