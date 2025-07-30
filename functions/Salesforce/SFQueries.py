@@ -23,7 +23,7 @@ class SFQueries:
             SELECT Name, Camp_Code__c, Teacher__r.Email__c, Week__r.Name, Week__r.Id, Week__r.Start_Date__c, Week__r.End_Date__c, Account.Name, Account.BillingAddress, Ages_Real__c, Time_Schedule__r.Start_Pay_Time__c, Time_Schedule__r.Time_Slot__c ,Time_Schedule__r.End_Pay_Time__c, Time_Schedule__r.Start_Pay_Time_Day_1__c, Time_Schedule__r.Description__c, Description, Id, Google_Event__c, Time_Schedule__r.Name, Google_Drive_Pictures__c, Week__r.Holiday__r.Google_Drive_Pictures_ID__c, Week__r.Holiday__r.Name, Week__r.Holiday__r.Id, Week__r.Google_Drive_Pictures_ID__c, Week__r.Excluded_Day__c,
             Overwrite_Cancelled__c,
                 (
-                    SELECT Id, Teacher__r.Email__c, Date__c
+                    SELECT Id, Teacher__r.Email__c, Date__c, RecordType.Name
                     FROM Replacements__r
                     WHERE Deleted__c = False
                 )

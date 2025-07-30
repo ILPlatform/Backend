@@ -38,7 +38,7 @@ class SFProcessor(SFConnector):
             "address": address,
             "description": f'{"".join(["Notes importantes: ", data["Description"], nl]) if data["Description"] else ""}{data["Time_Schedule__r"]["Description__c"]}',
             "excluded_day": data.get("Week__r").get("Excluded_Day__c"),
-            "replacements": [{"date": replacement.get("Date__c"), "email": replacement.get("Teacher__r").get("Email__c")} for replacement in (data.get("Replacements__r") or {}).get('records', [])],
+            "replacements": [{"date": replacement.get("Date__c"), "email": replacement.get("Teacher__r").get("Email__c"), "type": replacement.get("RecordType").get("Name")} for replacement in (data.get("Replacements__r") or {}).get('records', [])],
             "overwrite_cancelled": data.get("Overwrite_Cancelled__c"),
         }
         return processed_data
