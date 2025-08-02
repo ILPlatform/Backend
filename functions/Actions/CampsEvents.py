@@ -148,12 +148,12 @@ class CampManager:
                 rep = next((r for r in replacements if r["date"] == date_str), None)
                 if rep:
                     new_email = rep.get("email")
-                    instance["attendees"] = [{'email': new_email}]
+                    instance["attendees"] = [{'email': new_email}] if new_email else []
                     updated = True
 
                 elif current_teacher and current_teacher != original_teacher:
                     # If no replacement and current teacher is not the original, revert to original teacher
-                    instance["attendees"] = [{'email': original_teacher}]
+                    instance["attendees"] = [{'email': original_teacher}] if original_teacher else []
                     updated = True
 
                 # 3. Additional teacher
@@ -161,11 +161,12 @@ class CampManager:
                 if add:
                     add_email = add.get("email")
                     if add_email and not any(att.get("email") == add_email for att in instance.get("attendees", [])):
-                        instance.setdefault("attendees", []).append({'email': add_email})
-                        updated = True
+                        if add_email:
+                            instance.setdefault("attendees", []).append({'email': add_email})
+                            updated = True
                 elif len(current_attendees) > 1:
                     # If there are multiple attendees and no additional teacher, revert to original teacher
-                    instance["attendees"] = [{'email': original_teacher}]
+                    instance["attendees"] = [{'email': original_teacher}] if original_teacher else []
                     updated = True
 
             if updated:

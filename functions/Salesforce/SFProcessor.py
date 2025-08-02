@@ -1,4 +1,3 @@
-
 from .SFConnector import SFConnector
 from .SFQueries import SFQueries
 
@@ -38,7 +37,10 @@ class SFProcessor(SFConnector):
             "address": address,
             "description": f'{"".join(["Notes importantes: ", data["Description"], nl]) if data["Description"] else ""}{data["Time_Schedule__r"]["Description__c"]}',
             "excluded_day": data.get("Week__r").get("Excluded_Day__c"),
-            "replacements": [{"date": replacement.get("Date__c"), "email": replacement.get("Teacher__r").get("Email__c"), "type": replacement.get("RecordType").get("Name")} for replacement in (data.get("Replacements__r") or {}).get('records', [])],
+            "replacements": [{"date": replacement.get("Date__c"),
+                              "email": replacement.get("Teacher__r").get("Email__c") if replacement.get(
+                                  "Teacher__r") else None, "type": replacement.get("RecordType").get("Name")} for
+                             replacement in (data.get("Replacements__r") or {}).get('records', [])],
             "overwrite_cancelled": data.get("Overwrite_Cancelled__c"),
         }
         return processed_data
@@ -126,7 +128,6 @@ class SFProcessor(SFConnector):
             return None
         else:
             return self.__process_class_details(results_list[0])
-
 
     # def get_camp_weeks(self):
     #     query = self.queries.get_camp_weeks()
