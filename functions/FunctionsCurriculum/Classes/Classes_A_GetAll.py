@@ -10,10 +10,10 @@ def classes_a_get_all(data):
     # Get the user
     result = sf.sf.query_all_iter(f"""
         SELECT
-            Id, Code__c, Day_of_Week__c, Start_Time__c, End_Time__c, Account.Name,
+            Id, Code__c, Day_of_Week__c, Start_Time__c, End_Time__c, Account.Name, Account.Short_Name__c,
             Yearly_Schedule__r.Start_Date__c, Yearly_Schedule__r.End_Date__c,
             Teacher__r.Id, Teacher__r.Full_Name__c, Teacher__r.Firebase_UID__c,
-            Google_Event__c,
+            Google_Event__c, StageName,
             (
                 SELECT Teacher__r.Full_Name__c, Date__c, Teacher__r.Id, Teacher__r.Firebase_UID__c
                 FROM Replacements__r
@@ -53,6 +53,6 @@ def classes_a_get_all(data):
         "teacher_id": get_teacher(code)[1],
         "teacher_uid": get_teacher(code)[2],
         "event_id": code.get("Google_Event__c")
-    } for code in result]
+    } | code for code in result]
 
     return {"data": {"response": codes, "status": 200}}
