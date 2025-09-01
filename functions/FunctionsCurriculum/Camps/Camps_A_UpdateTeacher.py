@@ -20,3 +20,4 @@ def camps_a_update_teacher(data):
     sf.sf.Opportunity.update(camp_id, {"Teacher__c": teacher_id})
 
     return {"data": {"response": "Success", "status": 200}}
+
