@@ -1,4 +1,4 @@
-# ILPlatform Backend
+  # ILPlatform Backend
 
 This repo constitutes the backend for the ILPlatform landing and curriculum page. It is built using Firebase Functions
 and connects to the Salesforce and Google API for database and document management.
