@@ -17,7 +17,7 @@ SCOPES = [
 ]
 CAMPS_FORM_ID = os.getenv("CAMPS_FORM_ID")
 CALENDAR_CAMPS_ID = os.getenv("CALENDAR_CAMPS_ID")
-DRIVE_CAMPS_PHOTOS_ID = os.getenv("DRIVE_CAMPS_PHOTOS_ID")
+# DRIVE_CAMPS_PHOTOS_ID = os.getenv("DRIVE_CAMPS_PHOTOS_ID")
 CAMPS_FORM_DRIVE_ID = os.getenv("CAMPS_FORM_DRIVE_ID")
 
 class GoogleConnector():
@@ -133,35 +133,35 @@ class GoogleConnector():
 
         return form
 
-    def create_camp_pictures_folder(self, name, parent=None):
-        # Create the folder
-        file_metadata = {
-            'name': name,
-            'mimeType': 'application/vnd.google-apps.folder'
-        }
-        file = self.drive.files().create(body=file_metadata, fields='id, parents').execute()
+    # def create_camp_pictures_folder(self, name, parent=None):
+    #     # Create the folder
+    #     file_metadata = {
+    #         'name': name,
+    #         'mimeType': 'application/vnd.google-apps.folder'
+    #     }
+    #     file = self.drive.files().create(body=file_metadata, fields='id, parents').execute()
+    #
+    #     # Move the folder
+    #     previous_parents = ",".join(file.get("parents"))
+    #     file = self.drive.files().update(
+    #                 fileId=file.get("id"),
+    #                 addParents=parent or DRIVE_CAMPS_PHOTOS_ID,
+    #                 removeParents=previous_parents,
+    #                 fields="id",
+    #             ).execute()
+    #     return file.get("id")
 
-        # Move the folder
-        previous_parents = ",".join(file.get("parents"))
-        file = self.drive.files().update(
-                    fileId=file.get("id"),
-                    addParents=parent or DRIVE_CAMPS_PHOTOS_ID,
-                    removeParents=previous_parents,
-                    fields="id",
-                ).execute()
-        return file.get("id")
-
-    def update_camp_pictures_folder(self, id, name, parent=None):
-        file = self.drive.files().get(fileId=id, fields='id, parents').execute()
-        file_metadata = {
-            'name': name,
-        }
-        previous_parents = ",".join(file.get("parents"))
-        file = self.drive.files().update(
-                    body=file_metadata,
-                    fileId=id,
-                    addParents=parent or DRIVE_CAMPS_PHOTOS_ID,
-                    removeParents=previous_parents,
-                    fields="id",
-                ).execute()
-        return file.get("id")
+    # def update_camp_pictures_folder(self, id, name, parent=None):
+    #     file = self.drive.files().get(fileId=id, fields='id, parents').execute()
+    #     file_metadata = {
+    #         'name': name,
+    #     }
+    #     previous_parents = ",".join(file.get("parents"))
+    #     file = self.drive.files().update(
+    #                 body=file_metadata,
+    #                 fileId=id,
+    #                 addParents=parent or DRIVE_CAMPS_PHOTOS_ID,
+    #                 removeParents=previous_parents,
+    #                 fields="id",
+    #             ).execute()
+    #     return file.get("id")

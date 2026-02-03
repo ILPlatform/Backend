@@ -41,30 +41,30 @@ class CampManager:
             'sendUpdates': 'all'
         }
 
-    def _manage_picture_folders(self, camp_info):
-        """Creates Google Drive folders for camp pictures if they don't exist."""
-        # ... unchanged ...
-        # (same as original)
-        # Create holiday-specific folder if needed
-        if not camp_info.get("picture_grand_parent_id"):
-            folder_id = self.google.create_camp_pictures_folder(f"{camp_info.get('holiday_name')}")
-            self.sf.sf.Picklist__c.update(camp_info["holiday_id"], {"Google_Drive_Pictures_ID__c": folder_id})
-            camp_info["picture_grand_parent_id"] = folder_id
-
-        # Create week-specific folder if needed
-        if not camp_info.get("picture_parent_id"):
-            folder_id = self.google.create_camp_pictures_folder(
-                f"{camp_info.get('picture_parent_name')}", parent=camp_info["picture_grand_parent_id"]
-            )
-            self.sf.sf.Picklist__c.update(camp_info["week_id"], {"Google_Drive_Pictures_ID__c": folder_id})
-            camp_info["picture_parent_id"] = folder_id
-
-        # Create camp-specific folder if needed
-        if not camp_info.get("pictures_id"):
-            folder_id = self.google.create_camp_pictures_folder(
-                f"{camp_info.get('pictures_name')}", parent=camp_info["picture_parent_id"]
-            )
-            self.sf.sf.Opportunity.update(camp_info["id"], {"Google_Drive_Pictures__c": folder_id})
+    # def _manage_picture_folders(self, camp_info):
+    #     """Creates Google Drive folders for camp pictures if they don't exist."""
+    #     # ... unchanged ...
+    #     # (same as original)
+    #     # Create holiday-specific folder if needed
+    #     if not camp_info.get("picture_grand_parent_id"):
+    #         folder_id = self.google.create_camp_pictures_folder(f"{camp_info.get('holiday_name')}")
+    #         self.sf.sf.Picklist__c.update(camp_info["holiday_id"], {"Google_Drive_Pictures_ID__c": folder_id})
+    #         camp_info["picture_grand_parent_id"] = folder_id
+    #
+    #     # Create week-specific folder if needed
+    #     if not camp_info.get("picture_parent_id"):
+    #         folder_id = self.google.create_camp_pictures_folder(
+    #             f"{camp_info.get('picture_parent_name')}", parent=camp_info["picture_grand_parent_id"]
+    #         )
+    #         self.sf.sf.Picklist__c.update(camp_info["week_id"], {"Google_Drive_Pictures_ID__c": folder_id})
+    #         camp_info["picture_parent_id"] = folder_id
+    #
+    #     # Create camp-specific folder if needed
+    #     if not camp_info.get("pictures_id"):
+    #         folder_id = self.google.create_camp_pictures_folder(
+    #             f"{camp_info.get('pictures_name')}", parent=camp_info["picture_parent_id"]
+    #         )
+    #         self.sf.sf.Opportunity.update(camp_info["id"], {"Google_Drive_Pictures__c": folder_id})
 
     def _add_camp_event_to_batch(self, camp_info):
         """Handles creating or updating a single camp event via batch request."""
@@ -192,7 +192,7 @@ class CampManager:
         for camp_info in camps:
             try:
                 self._add_camp_event_to_batch(camp_info)
-                self._manage_picture_folders(camp_info)
+                # self._manage_picture_folders(camp_info)
                 print(f'[INFO] Queued tasks for {camp_info.get("code")}')
             except Exception as e:
                 print(f'[ERROR] Failed to queue tasks for {camp_info.get("code")}: {e}')

@@ -102,23 +102,23 @@ def __camp_event(google, sf, camp_info, batch1, batch2, batch3):
         # Update the Google Event
         batch1.add(google.calendar.events().update(calendarId=google.CALENDAR_CAMPS_ID, eventId=camp_info.get("event_id"), body=event, sendUpdates="all"), callback=callback1)
 
-def __camp_pictures(google, sf, camp_info):
-    # If holiday specific folder does not exist, create it
-    if camp_info.get("picture_grand_parent_id") == None:
-        created_folder_id = google.create_camp_pictures_folder(f"{camp_info.get('holiday_name')}")
-        sf.sf.Picklist__c.update(camp_info["holiday_id"], {"Google_Drive_Pictures_ID__c": created_folder_id})
-        camp_info["picture_grand_parent_id"] = created_folder_id
-
-    # If week specific folder does not exist, create it
-    if camp_info.get("picture_parent_id") == None:
-        created_folder_id = google.create_camp_pictures_folder(f"{camp_info.get('picture_parent_name')}", parent=camp_info["picture_grand_parent_id"])
-        sf.sf.Picklist__c.update(camp_info["week_id"], {"Google_Drive_Pictures_ID__c": created_folder_id})
-        camp_info["picture_parent_id"] = created_folder_id
-
-    # If camp specific folder does not exist, create it
-    if camp_info["pictures_id"] == None:
-        created_folder_id = google.create_camp_pictures_folder(f"{camp_info.get('pictures_name')}", parent=camp_info["picture_parent_id"])
-        sf.sf.Opportunity.update(camp_info["id"], {"Google_Drive_Pictures__c": created_folder_id})
+# def __camp_pictures(google, sf, camp_info):
+#     # If holiday specific folder does not exist, create it
+#     if camp_info.get("picture_grand_parent_id") == None:
+#         created_folder_id = google.create_camp_pictures_folder(f"{camp_info.get('holiday_name')}")
+#         sf.sf.Picklist__c.update(camp_info["holiday_id"], {"Google_Drive_Pictures_ID__c": created_folder_id})
+#         camp_info["picture_grand_parent_id"] = created_folder_id
+#
+#     # If week specific folder does not exist, create it
+#     if camp_info.get("picture_parent_id") == None:
+#         created_folder_id = google.create_camp_pictures_folder(f"{camp_info.get('picture_parent_name')}", parent=camp_info["picture_grand_parent_id"])
+#         sf.sf.Picklist__c.update(camp_info["week_id"], {"Google_Drive_Pictures_ID__c": created_folder_id})
+#         camp_info["picture_parent_id"] = created_folder_id
+#
+#     # If camp specific folder does not exist, create it
+#     if camp_info["pictures_id"] == None:
+#         created_folder_id = google.create_camp_pictures_folder(f"{camp_info.get('pictures_name')}", parent=camp_info["picture_parent_id"])
+#         sf.sf.Opportunity.update(camp_info["id"], {"Google_Drive_Pictures__c": created_folder_id})
 
 def update_and_create_camps_per_week(google, sf, week_codes):
     # Get the camp details for the specified weeks
@@ -136,7 +136,7 @@ def update_and_create_camps_per_week(google, sf, week_codes):
     for camp_info in camps:
         try:
             __camp_event(google, sf, camp_info, batch1, batch2, batch3)
-            __camp_pictures(google, sf, camp_info)
+            # __camp_pictures(google, sf, camp_info)
             print(f'[SUCCESS] Event created for {camp_info.get("code")}')
         except Exception as e:
             raise ValueError(f'[ERROR] {e}')
@@ -165,7 +165,7 @@ def update_and_create_camps(google, sf, camp_id):
     for camp_info in camps:
         try:
             __camp_event(google, sf, camp_info, batch1, batch2, batch3)
-            __camp_pictures(google, sf, camp_info)
+            # __camp_pictures(google, sf, camp_info)
             print(f'[SUCCESS] Event created for {camp_info.get("code")}')
         except Exception as e:
             raise ValueError(f'[ERROR] {e}')

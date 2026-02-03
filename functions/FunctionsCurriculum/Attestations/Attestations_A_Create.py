@@ -2,7 +2,7 @@ from firebase_admin import auth
 from Salesforce import getSF
 from Helpers import firebase_functions_custom, https_fn_custom
 from Google import Events, GoogleConnector
-from Actions import generate_confirmation_text, get_teacher_dict, update_payment_sheet
+from Actions import generate_confirmation_text, get_teacher_dict
 from Emails import send_attestation_admin
 from .GenerateTimesheet import generate_timesheet
 
