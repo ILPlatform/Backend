@@ -2,8 +2,8 @@ import os
 from datetime import date
 
 ATTESTATION_TEMPLATE_ID = os.getenv('ATTESTATION_TEMPLATE_ID')
-PRESTATION_TEMPLATE_ID = os.getenv('PRESTATION_TEMPLATE_ID')
-INVOICING_TEMPLATE_ID = os.getenv('INVOICING_TEMPLATE_ID')
+# PRESTATION_TEMPLATE_ID = os.getenv('PRESTATION_TEMPLATE_ID')
+# INVOICING_TEMPLATE_ID = os.getenv('INVOICING_TEMPLATE_ID')
 
 CONVENTION_TEMPLATE_ID = os.getenv('CONVENTION_TEMPLATE_ID')
 DOCUMENTS_BY_BOT_ID = os.getenv('DOCUMENTS_BY_BOT_ID')
@@ -62,14 +62,26 @@ class TimesheetDocument(Document):
 
         if teacher.get("Contract_Type__c") == "Volunteering":
             file_id = ATTESTATION_TEMPLATE_ID
-        elif teacher.get("Contract_Type__c") == "Article 17" or teacher.get("Contract_Type__c") == "Student Contract":
-            file_id = PRESTATION_TEMPLATE_ID
+            type = "Convention de Bénévolat"
+            rule = "De plus, je déclare ne pas avoir reçu plus de 1760,83 € pour l’ensemble de mes activités sous convention de bénévolat, toutes associations comprises, durant l’année 2026."
+        elif teacher.get("Contract_Type__c") == "Article 17":
+            file_id = ATTESTATION_TEMPLATE_ID
+            type = "Contrat Associatif (Ex Article 17)"
+            rule = "De plus, je déclare ne pas avoir reçu plus de 7700 € pour l’ensemble de mes activités sous contrat associatif, toutes associations comprises, durant l’année 2026."
+        elif teacher.get("Contract_Type__c") == "Student Contract":
+            file_id = ATTESTATION_TEMPLATE_ID
+            type = "Contrat Etudiant"
+            rule = ""
         elif teacher.get("Contract_Type__c") == "Invoicing":
-            file_id = INVOICING_TEMPLATE_ID
+            file_id = ATTESTATION_TEMPLATE_ID
+            type = "Facturation"
+            rule = "La facture est à envoyer à hr@ilplatform.be, et sera payée dans les 14 jours après réception de celle-ci."
         name = f"{year}-{month} Prestations {teacher.get('name')}"
         log_details = teacher.get('name')
         self.log_details = log_details
         self.document_id = self._Document__copy_document(file_id, name, log_details)
+        self.type = type
+        self.rule = rule
 
     def fill(self):
         try:
@@ -86,7 +98,9 @@ class TimesheetDocument(Document):
                 {'replaceAllText': {'containsText': {'text': '{DESCRIPTIONS_FR}'}, 'replaceText': '\n'.join(list(map(lambda x: x.get('nice_name')[4:], self.teacher.get('events'))))}},
                 {'replaceAllText': {'containsText': {'text': '{TOTAL_HOURS_SECOND_HOURS}'}, 'replaceText': str(round(self.teacher.get('total_amount') / self.teacher.get('contract'))) if self.teacher.get('contract') > 0 else "0"}},
                 {'replaceAllText': {'containsText': {'text': '{TOTAL_HOURS_SECOND_MIN}'}, 'replaceText': str(round(((self.teacher.get('total_amount') / self.teacher.get('contract')) % 1) * 60)) if self.teacher.get('contract') > 0 else "0"}},
-                {'replaceAllText': {'containsText': {'text': '{SALARY}'}, 'replaceText': str(self.teacher.get('contract'))}}
+                {'replaceAllText': {'containsText': {'text': '{SALARY}'}, 'replaceText': str(self.teacher.get('contract'))}},
+                {'replaceAllText': {'containsText': {'text': '{CONTRACT_TYPE}'}, 'replaceText': str(self.type)}},
+                {'replaceAllText': {'containsText': {'text': '{CONTRACT_RULE}'}, 'replaceText': str(self.rule)}}
             ]
 
             # Send the batchUpdate request
