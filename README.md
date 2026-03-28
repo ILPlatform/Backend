@@ -1,4 +1,4 @@
-  # ILPlatform Backend
+# ILPlatform Backend
 
 This repo constitutes the backend for the ILPlatform landing and curriculum page. It is built using Firebase Functions
 and connects to the Salesforce and Google API for database and document management.
@@ -7,8 +7,9 @@ and connects to the Salesforce and Google API for database and document manageme
 
 In order for the code to make sense, you need to generate the following files:
 
-- `functions/.googleapi_credentials.json` - Can be obtained through the Google Cloud Console under Credentials > OAuth
-  2.0 Client IDs with type Web Application and redirect URI "http://localhost:8888/oauth2callback".
+- `functions/.googleapi_credentials.json` - Can be obtained through the Google Cloud Console (Project: ILPlatform
+  Website) under Credentials (search for it) > OAuth 2.0 Client IDs with type Web Application and redirect
+  URI "http://localhost:8888/oauth2callback". Simply select pre-existing client and generate new client secret.
 - `functions/.googleapi_token.json` - Can be obtained by running the server locally (see below) and calling any endpoint
   that requires the Google Connector. Ensure that all required scopes are activated in the Google API.
 - `functions/.firebase_adminsdk.json` - Can be obtained through the Firebase Console under Project Settings > Service
@@ -35,16 +36,33 @@ In order for the code to make sense, you need to generate the following files:
 - `functions/venv` - Contains the Python virtual environment for the backend. Can be created by running
   ```bash
   cd functions
-  python3.11 -m venv venv
+  python3.12 -m venv venv
   source venv/bin/activate
-  python3.11 -m pip install -r requirements.txt 
+  python3.12 -m pip install -r requirements.txt 
   ```
+  Alternatively, run `source sh_create_env.sh`.
 
 ## Local Development
 
 In order to run the code, you need to run the following;
 
 ```
-. functions/venv/bin/activate
+source functions/venv/bin/activate
 firebase emulators:start --only functions
+```
+Alternatively, run `source sh_start.sh`.
+
+## Possible Issues
+
+### User code failed to load
+
+An error of this style might occur:
+```
+⬢  functions: Failed to load function definition from source: FirebaseError: User code failed to load. Cannot determine backend specification. Timeout after 10000. See https://firebase.google.com/docs/functions/tips#avoid_deployment_timeouts_during_initialization'
+```
+
+To solve it, do the following:
+
+```
+npm i -g firebase-tools
 ```
