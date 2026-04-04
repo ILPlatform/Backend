@@ -44,4 +44,5 @@ jobs:
       - name: Deploy Functions
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/functions/.firebase_adminsdk.json
-        run: firebase deploy --only functions
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: firebase deploy --only functions --token "$FIREBASE_TOKEN"
