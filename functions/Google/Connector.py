@@ -3,6 +3,7 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
 from googleapiclient.discovery import build
+from Logger import log
 
 # Constants
 TOKEN_PATH = os.path.join(os.getcwd(), '.googleapi_token.json')
@@ -27,9 +28,12 @@ class GoogleConnector():
     CLASSES_FORM_ID = os.getenv("CLASSES_FORM_ID")
 
     def __init__(self, token=None):
-        self.auth = self.__authorize(token)
+        if token:
+            self.auth = self.__authorize_with_token(token)
+        else:
+            self.auth = self.__authorize_without_token()
         self.__build_services()
-        print("[AUTHENTICATE] Connected to Google APIs")
+        log("AUTHENTICATE", "Google", "Connected to Google APIs")
 
     def __build_services(self):
         self.__build_calendar()
@@ -44,81 +48,85 @@ class GoogleConnector():
             self.calendar = build('calendar', 'v3', credentials=self.auth)
         except Exception as e:
             self.calendar = None
-            print(f"[ERROR] Calendar not built. Error: {e}")
+            log("ERROR", "Google", f"Calendar not built. Error: {e}")
 
     def __build_drive(self):
         try:
             self.drive = build('drive', 'v3', credentials=self.auth)
         except Exception as e:
             self.drive = None
-            print(f"[ERROR] Drive not built. Error: {e}")
+            log("ERROR", "Google", f"Drive not built. Error: {e}")
 
     def __build_forms(self):
         try:
             self.forms = build('forms', 'v1', credentials=self.auth)
         except Exception as e:
             self.forms = None
-            print(f"[ERROR] Forms not built. Error: {e}")
+            log("ERROR", "Google", f"Forms not built. Error: {e}")
 
     def __build_docs(self):
         try:
             self.docs = build('docs', 'v1', credentials=self.auth)
         except Exception as e:
             self.docs = None
-            print(f"[ERROR] Docs not built. Error: {e}")
+            log("ERROR", "Google", f"Docs not built. Error: {e}")
 
     def __build_sheets(self):
         try:
             self.sheets = build('sheets', 'v4', credentials=self.auth)
         except Exception as e:
             self.sheets = None
-            print(f"[ERROR] Sheets not built. Error: {e}")
+            log("ERROR", "Google", f"Sheets not built. Error: {e}")
 
     def __build_contacts(self):
         try:
             self.contacts = build('people', 'v1', credentials=self.auth)
         except Exception as e:
             self.contacts = None
-            print(f"[ERROR] Contacts not built. Error: {e}")
+            log("ERROR", "Google", f"Contacts not built. Error: {e}")
 
-    # Authorize and return a Google API client
-    def __authorize(self, token):
+    # Authorize and return a Google API client using a provided token
+    def __authorize_with_token(self, token):
         try:
-            # If a specific user is provided, authenticate with their credentials
-            if token:
-                print("[AUTHENTICATE] Authenticating with pre-existing Google credentials")
-                return Credentials(
-                    token=token,
-                    scopes=SCOPES
-                )
-            else:
-                print("[AUTHENTICATE] Creating Google credentials")
-                # Load saved credentials if they exist
-                credentials = None
-                if os.path.exists(TOKEN_PATH):
-                    with open(TOKEN_PATH, 'r') as token_file:
-                        credentials = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
-
-                if not credentials or not credentials.valid:
-                    print("[AUTHENTICATE] Token non-existing, generating file")
-                    if credentials and credentials.expired and credentials.refresh_token:
-                        credentials.refresh(Request())
-                    else:
-                        flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_PATH, SCOPES)
-                        credentials = flow.run_local_server(
-                            host="localhost",
-                            port=8888,
-                            access_type='offline',
-                            prompt='consent'
-                        )
-
-                    # Save credentials to a file
-                    with open(TOKEN_PATH, 'w') as token_file:
-                        token_file.write(credentials.to_json())
-
-                return credentials
+            log("AUTHENTICATE", "Google", "Authenticating with pre-existing Google credentials")
+            return Credentials(
+                token=token,
+                scopes=SCOPES
+            )
         except Exception as e:
-            print(f"[ERROR] Authentication failed: {e}")
+            log("ERROR", "Google", f"Authentication failed: {e}")
+            exit()
+
+    # Authorize and return a Google API client without a provided token
+    def __authorize_without_token(self):
+        try:
+            log("AUTHENTICATE", "Google", "Creating Google credentials")
+            # Load saved credentials if they exist
+            credentials = None
+            if os.path.exists(TOKEN_PATH):
+                with open(TOKEN_PATH, 'r') as token_file:
+                    credentials = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
+
+            if not credentials or not credentials.valid:
+                log("AUTHENTICATE", "Google", "Token non-existing, generating file")
+                if credentials and credentials.expired and credentials.refresh_token:
+                    credentials.refresh(Request())
+                else:
+                    flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_PATH, SCOPES)
+                    credentials = flow.run_local_server(
+                        host="localhost",
+                        port=8888,
+                        access_type='offline',
+                        prompt='consent'
+                    )
+
+                # Save credentials to a file
+                with open(TOKEN_PATH, 'w') as token_file:
+                    token_file.write(credentials.to_json())
+
+            return credentials
+        except Exception as e:
+            log("ERROR", "Google", f"Authentication failed: {e}")
             exit()
 
     def create_event(self, event):

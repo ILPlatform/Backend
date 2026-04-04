@@ -25,7 +25,8 @@ def get_teacher_dict(sf, events):
             "hours": int(total_minutes // 60),
             "minutes": int(total_minutes % 60)
         })
-        nice_name = f"{teacher.get('Full_Name__c')} -> {teacher.get('Contract_Type__c')} [{teacher.get('hours')}h{teacher.get('minutes')} - {teacher.get('total_amount')}€]"
+        formatted_total_amount = f"{total_amount:.2f}"
+        nice_name = f"{teacher.get('Full_Name__c')} -> {teacher.get('Contract_Type__c')} [{teacher.get('hours')}h{teacher.get('minutes')} - {formatted_total_amount}€]"
         teacher.update({"nice_name": nice_name})
 
     return teacher_dict
@@ -45,7 +46,7 @@ def generate_confirmation_text(teacher_dict, events):
         return_string += [teacher.get("nice_name")]
         for event in teacher.get("events"):
             return_string += [event.get('nice_name')]
-    return_string += ["", f"--> TOTAL: {total}"]
+    return_string += ["", f"--> TOTAL: {total:.2f}"]
 
     # 2. Double Teacher
     double_events = [event for event in events if len(event.get("teachers")) > 1 and event.get("held")]

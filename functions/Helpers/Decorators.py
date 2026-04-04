@@ -40,7 +40,13 @@ def https_fn_custom(timeout_sec=60, memory=256, access=False):
 def __get_json_data(function):
     @wraps(function)
     def wrapper(request):
-        data = json.loads(request.data.decode('utf8').replace("'", '"')).get("data", {}) or {}
+        payload = None
+        if hasattr(request, "get_json"):
+            payload = request.get_json(silent=True)
+        if payload is None:
+            raw = request.data.decode("utf8") if request.data else ""
+            payload = json.loads(raw) if raw else {}
+        data = (payload or {}).get("data", {}) or {}
 
         # Add the uid to the data
         user_details, logged_in = verify_auth(request)

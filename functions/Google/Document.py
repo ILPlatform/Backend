@@ -1,5 +1,6 @@
 import os
 from datetime import date
+from Logger import log
 
 ATTESTATION_TEMPLATE_ID = os.getenv('ATTESTATION_TEMPLATE_ID')
 
@@ -24,7 +25,7 @@ class Document():
 
         # Log success status
         if 'id' not in document:
-            print(f"[ERROR] {log_details} - Error in copying file")
+            log("ERROR", "Google", f"{log_details} - Error in copying file")
             return None
 
         return document['id']
@@ -43,12 +44,12 @@ class Document():
 
             # Construct the download link
             download_link = f"{web_view_link.split('edit')[0]}export?format=pdf"
-            print(f"[SUCCESS] {self.log_details} - Download Link Generated Successfully: {download_link}")
+            log("SUCCESS", "Google", f"{self.log_details} - Download Link Generated Successfully: {download_link}")
 
             return download_link
 
         except Exception as e:
-            print(f"[ERROR] {self.log_details} - Error Occurred: {e}")
+            log("ERROR", "Google", f"{self.log_details} - Error Occurred: {e}")
             return None
 
 class TimesheetDocument(Document):
@@ -188,5 +189,5 @@ class PaymentsDocument(Document):
             self.google.docs.documents().batchUpdate(documentId=self.document_id, body={'requests': requests}).execute()
 
         except Exception as e:
-            print(f"[ERROR] {self.log_details} - Error In Filling Out File: {e}")
+            log("ERROR", "Google", f"{self.log_details} - Error In Filling Out File: {e}")
             return None

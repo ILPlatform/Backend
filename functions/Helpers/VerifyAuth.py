@@ -1,5 +1,5 @@
 from firebase_admin import auth
-from .SafeSF import safe_query
+from Salesforce.SafeSF import safe_query
 from Salesforce import getSF
 
 # Auth levels:

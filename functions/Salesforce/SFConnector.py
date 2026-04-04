@@ -1,8 +1,6 @@
 # from dotenv.main import load_dotenv
 from simple_salesforce import Salesforce
-from pprint import pprint
-from firebase_functions.params import StringParam
-from firebase_functions import logger
+from Logger import log
 
 class SFConnector:
     def __init__(self, SF_USERNAME, SF_PASSWORD, SF_SECURITY_TOKEN, SF_DOMAIN):
@@ -19,9 +17,9 @@ class SFConnector:
                     password=SF_PASSWORD,
                     security_token=SF_SECURITY_TOKEN)
         except Exception as e:
-            print("TF", e)
+            log("ERROR", "Salesforce", f"Authentication failed: {e}")
             raise ValueError(f"[ERROR] Could not authenticate to Salesforce client {SF_USERNAME} -> {e}")
-        print(f"[AUTHENTICATE] Authenticated to Salesforce client {SF_USERNAME}")
+        log("AUTHENTICATE", "Salesforce", f"Connected to {SF_USERNAME}")
 
     def update_opportunity(self, id, data):
         return self.sf.Opportunity.update(id, data)

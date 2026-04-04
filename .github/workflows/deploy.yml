@@ -3,7 +3,7 @@ name: Firebase Functions Deploy
 on:
   push:
     branches:
-    - main
+    - master
 
 jobs:
   build:
@@ -12,6 +12,13 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@master
+
+      - name: Write secret files
+        run: |
+          printf '%s' "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" > functions/.firebase_adminsdk.json
+          printf '%s' "${{ secrets.GOOGLEAPI_CREDENTIALS_JSON }}" > functions/.googleapi_credentials.json
+          printf '%s' "${{ secrets.GOOGLEAPI_TOKEN_JSON }}" > functions/.googleapi_token.json
+          chmod 600 functions/.firebase_adminsdk.json functions/.googleapi_credentials.json functions/.googleapi_token.json
 
       - name: GitHub Action for Firebase
         uses: w9jds/firebase-action@v13.34.0
