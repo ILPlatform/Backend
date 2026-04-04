@@ -8,17 +8,18 @@ from googleapiclient.discovery import build
 TOKEN_PATH = os.path.join(os.getcwd(), '.googleapi_token.json')
 CREDENTIALS_PATH = os.path.join(os.getcwd(), '.googleapi_credentials.json')
 SCOPES = [
-  'https://www.googleapis.com/auth/calendar',
-  'https://www.googleapis.com/auth/drive',
-  'https://www.googleapis.com/auth/forms.body',
-  'https://www.googleapis.com/auth/documents',
-  'https://www.googleapis.com/auth/spreadsheets',
-  'https://www.googleapis.com/auth/contacts'
+    'https://www.googleapis.com/auth/calendar',
+    'https://www.googleapis.com/auth/drive',
+    'https://www.googleapis.com/auth/forms.body',
+    'https://www.googleapis.com/auth/documents',
+    'https://www.googleapis.com/auth/spreadsheets',
+    'https://www.googleapis.com/auth/contacts'
 ]
 CAMPS_FORM_ID = os.getenv("CAMPS_FORM_ID")
 CALENDAR_CAMPS_ID = os.getenv("CALENDAR_CAMPS_ID")
 # DRIVE_CAMPS_PHOTOS_ID = os.getenv("DRIVE_CAMPS_PHOTOS_ID")
 CAMPS_FORM_DRIVE_ID = os.getenv("CAMPS_FORM_DRIVE_ID")
+
 
 class GoogleConnector():
     CALENDAR_CAMPS_ID = os.getenv("CALENDAR_CAMPS_ID")
@@ -85,8 +86,13 @@ class GoogleConnector():
         try:
             # If a specific user is provided, authenticate with their credentials
             if token:
-                return Credentials(token=token)
+                print("[AUTHENTICATE] Authenticating with pre-existing Google credentials")
+                return Credentials(
+                    token=token,
+                    scopes=SCOPES
+                )
             else:
+                print("[AUTHENTICATE] Creating Google credentials")
                 # Load saved credentials if they exist
                 credentials = None
                 if os.path.exists(TOKEN_PATH):
@@ -99,7 +105,12 @@ class GoogleConnector():
                         credentials.refresh(Request())
                     else:
                         flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_PATH, SCOPES)
-                        credentials = flow.run_local_server(host="localhost", port=8888)
+                        credentials = flow.run_local_server(
+                            host="localhost",
+                            port=8888,
+                            access_type='offline',
+                            prompt='consent'
+                        )
 
                     # Save credentials to a file
                     with open(TOKEN_PATH, 'w') as token_file:
