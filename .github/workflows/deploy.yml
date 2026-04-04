@@ -15,9 +15,9 @@ jobs:
 
       - name: Write secret files
         run: |
-          printf '%s' "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}" > functions/.firebase_adminsdk.json
-          printf '%s' "${{ secrets.GOOGLEAPI_CREDENTIALS_JSON }}" > functions/.googleapi_credentials.json
-          printf '%s' "${{ secrets.GOOGLEAPI_TOKEN_JSON }}" > functions/.googleapi_token.json
+          printf '%s' "${{ secrets.GOOGLE_APPLICATION_CREDENTIALS_B64 }}" | base64 --decode > functions/.firebase_adminsdk.json
+          printf '%s' "${{ secrets.GOOGLEAPI_CREDENTIALS_JSON_B64 }}" | base64 --decode > functions/.googleapi_credentials.json
+          printf '%s' "${{ secrets.GOOGLEAPI_TOKEN_JSON_B64 }}" | base64 --decode > functions/.googleapi_token.json
           chmod 600 functions/.firebase_adminsdk.json functions/.googleapi_credentials.json functions/.googleapi_token.json
 
       - name: Set up Python
@@ -44,5 +44,4 @@ jobs:
       - name: Deploy Functions
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/functions/.firebase_adminsdk.json
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: firebase deploy --only functions --token "$FIREBASE_TOKEN"
+        run: firebase deploy --only functions
