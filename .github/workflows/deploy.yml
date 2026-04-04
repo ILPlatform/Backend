@@ -44,4 +44,8 @@ jobs:
       - name: Deploy Functions
         env:
           GOOGLE_APPLICATION_CREDENTIALS: ${{ github.workspace }}/functions/.firebase_adminsdk.json
-        run: firebase deploy --only functions
+          CLOUDSDK_AUTH_CREDENTIAL_FILE_OVERRIDE: ${{ github.workspace }}/functions/.firebase_adminsdk.json
+          GOOGLE_CLOUD_PROJECT: ilplatform
+          GCLOUD_PROJECT: ilplatform
+          FIREBASE_PROJECT: ilplatform
+        run: firebase deploy --only functions --project "$FIREBASE_PROJECT"
