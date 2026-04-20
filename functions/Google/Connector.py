@@ -152,6 +152,19 @@ class GoogleConnector():
 
         return form
 
+    def publish_form(self, form_id):
+        body = {
+            "publishSettings": {
+                "publishState": {
+                    "isPublished": True,
+                    "isAcceptingResponses": True,
+                }
+            },
+            "updateMask": "publish_state",
+        }
+
+        return self.forms.forms().setPublishSettings(formId=form_id, body=body).execute()
+
     # def create_camp_pictures_folder(self, name, parent=None):
     #     # Create the folder
     #     file_metadata = {

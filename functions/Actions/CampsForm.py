@@ -48,6 +48,10 @@ def get_camps_form(google, sf, title, week_codes):
         }
     })
 
-    form = google.update_form(result["id"], update)
-    print(f'[SUCCESS] Form created successfully under link {form["responderUri"]}')
-    return form["responderUri"]
+    form_id = result["id"]
+    google.update_form(form_id, update)
+    google.publish_form(form_id)
+
+    editor_uri = f"https://docs.google.com/forms/d/{form_id}/edit"
+    print(f'[SUCCESS] Form created successfully under link {editor_uri}')
+    return editor_uri
