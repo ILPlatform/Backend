@@ -1,0 +1,1 @@
+from .DailyClassesEmail import daily_classes_email
