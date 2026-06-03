@@ -35,6 +35,21 @@ def _format_email_cell(value):
     return html.escape(value)
 
 
+def _send_html_email(recipients, subject, body):
+    msg = MIMEMultipart()
+    msg["From"] = GMAIL_SENDER
+    msg["Reply-to"] = GMAIL_REPLY_TO
+    msg["To"] = ", ".join(recipients)
+    msg["Subject"] = subject
+    msg.attach(MIMEText(body + html_signature(), "html"))
+
+    server = create_smtp_transport()
+    try:
+        server.sendmail(GMAIL_SENDER, recipients, msg.as_string())
+    finally:
+        server.quit()
+
+
 def get_daily_classes_recipients():
     return [
         email.strip()
@@ -98,6 +113,7 @@ def get_classes_for_date(target_date):
     results = sf.sf.query_all_iter(f"""
         SELECT
             Id, Code__c, Start_Time__c, End_Time__c, Day_of_Week__c,
+            Account.Name,
             Teacher__r.Email__c, Teacher__r.Full_Name__c,
             Additional_Invite__c,
             Yearly_Schedule__r.Start_Date__c,
@@ -130,8 +146,10 @@ def get_classes_for_date(target_date):
 
         classes.append({
             "code": class_data.get("Code__c") or "Unknown",
+            "school_name": (class_data.get("Account") or {}).get("Name") or "Unknown",
             "start_time": _format_time(class_data.get("Start_Time__c")),
             "end_time": _format_time(class_data.get("End_Time__c")),
+            "teachers": teachers,
             "teacher": _format_teacher_names(teachers),
             "replacement": get_replacement_note(class_data, target_date),
         })
@@ -192,19 +210,8 @@ def send_daily_classes_email(target_date=None):
     ) else ""
     subject = f"{subject_prefix}Classes today - {target_date.strftime('%d/%m/%Y')}"
 
-    msg = MIMEMultipart()
-    msg["From"] = GMAIL_SENDER
-    msg["Reply-to"] = GMAIL_REPLY_TO
-    msg["To"] = ", ".join(recipients)
-    msg["Subject"] = subject
-    msg.attach(MIMEText(body + html_signature(), "html"))
-
-    server = create_smtp_transport()
-    try:
-        server.sendmail(GMAIL_SENDER, recipients, msg.as_string())
-        print(f"[SUCCESS] Daily classes email sent to {', '.join(recipients)}")
-    finally:
-        server.quit()
+    _send_html_email(recipients, subject, body)
+    print(f"[SUCCESS] Daily classes email sent to {', '.join(recipients)}")
 
     return {
         "date": target_date.isoformat(),
@@ -213,7 +220,7 @@ def send_daily_classes_email(target_date=None):
     }
 
 
-def parse_target_date(argv=None):
+def parse_target_date(argv=None, script_name="scripts/send_daily_classes_email.py"):
     argv = argv if argv is not None else sys.argv[1:]
     if not argv:
         return None
@@ -221,7 +228,7 @@ def parse_target_date(argv=None):
     try:
         return dt.datetime.strptime(argv[0], "%Y-%m-%d").date()
     except ValueError as exc:
-        raise SystemExit("Usage: python scripts/send_daily_classes_email.py [YYYY-MM-DD]") from exc
+        raise SystemExit(f"Usage: python {script_name} [YYYY-MM-DD]") from exc
 
 
 def main(argv=None):
