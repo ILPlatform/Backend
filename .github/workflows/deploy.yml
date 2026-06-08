@@ -3,7 +3,6 @@ name: Firebase Functions Deploy
 on:
   push:
     branches:
-    - main
 
 jobs:
   build:
