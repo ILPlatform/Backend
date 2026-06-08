@@ -5,7 +5,11 @@ from Helpers import https_fn_custom, firebase_functions_custom
 @firebase_functions_custom(auth_level=10)
 def additional_payments_a_get_all(data):
     return getter("""
-        SELECT FIELDS(ALL), Beneficiary__r.Full_Name__c
+        SELECT
+            FIELDS(ALL),
+            Beneficiary__r.Full_Name__c, Beneficiary__r.Email__c,
+            Beneficiary__r.Phone__c, Beneficiary__r.IBAN__c,
+            Beneficiary__r.BIC__c
         FROM Payment__c
         WHERE (RecordTypeId = '012P5000001tcX7IAI' OR RecordTypeId = NULL)
             AND Deleted__c = False

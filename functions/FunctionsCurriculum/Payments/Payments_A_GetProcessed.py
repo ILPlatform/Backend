@@ -12,6 +12,8 @@ def payments_a_get_processed(data):
         SELECT
             Id, Amount__c, Year__c, Month__c, Paid__c,
             Beneficiary__r.Id, Beneficiary__r.Full_Name__c,
+            Beneficiary__r.Email__c, Beneficiary__r.Phone__c,
+            Beneficiary__r.IBAN__c, Beneficiary__r.BIC__c,
             Document__r.Id, CreatedDate,
             Contract__c, Updated__c, Type_of_Payment__c
         FROM Payment__c
@@ -28,11 +30,18 @@ def payments_a_get_processed(data):
 
     # Process data
     users = set(list(map(lambda x: x.get('Beneficiary__r', {}).get('Id'), sf_results)))
-    get_name = lambda user: list(filter(lambda x: x.get('Beneficiary__r', {}).get('Id') == user, sf_results))[0].get('Beneficiary__r').get('Full_Name__c')
+    beneficiaries = {
+        payment.get('Beneficiary__r', {}).get('Id'): payment.get('Beneficiary__r', {})
+        for payment in sf_results
+    }
     results = {
         user: {
             "id": user,
-            "name": get_name(user),
+            "name": beneficiaries[user].get('Full_Name__c'),
+            "email": beneficiaries[user].get('Email__c'),
+            "phone": beneficiaries[user].get('Phone__c'),
+            "iban": beneficiaries[user].get('IBAN__c'),
+            "bic": beneficiaries[user].get('BIC__c'),
             "pays": []
         }
         for user in users

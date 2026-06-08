@@ -26,13 +26,10 @@ def https_fn_custom(timeout_sec=60, memory=256, access=False):
         cors=options.CorsOptions(
             cors_origins=[
                 "https://www.ilplatform.be",
-                # "https://admin.ilplatform.be",
                 "https://curriculum.ilplatform.be",
-                "https://ilplatform-curriculum-new.web.app/",
-                # "https://independentlearningplatform.lightning.force.com",
-                # "https://independentlearningplatform--internbox.sandbox.lightning.force.com"
+                "https://ilplatform-curriculum-new.web.app/"
             ],
-            cors_methods=["get", "post", "options"]
+            cors_methods=["GET", "POST", "OPTIONS"]
         ),
         timeout_sec=timeout_sec)
 

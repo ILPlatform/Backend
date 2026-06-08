@@ -35,6 +35,17 @@ def _format_email_cell(value):
     return html.escape(value)
 
 
+def _has_missing_teacher(class_info):
+    return "Unknown" in (class_info["teacher"], class_info["replacement"])
+
+
+def _admin_row_style(class_info):
+    style = "padding:8px;border-bottom:1px solid #ddd;"
+    if _has_missing_teacher(class_info):
+        style += "color:#d00000;font-weight:bold;"
+    return style
+
+
 def _send_html_email(recipients, subject, body):
     msg = MIMEMultipart()
     msg["From"] = GMAIL_SENDER
@@ -162,11 +173,11 @@ def build_daily_classes_email(classes, target_date):
     rows = "".join(
         f"""
         <tr>
-            <td style="padding:8px;border-bottom:1px solid #ddd;">{html.escape(class_info["code"])}</td>
-            <td style="padding:8px;border-bottom:1px solid #ddd;">{html.escape(class_info["start_time"])}</td>
-            <td style="padding:8px;border-bottom:1px solid #ddd;">{html.escape(class_info["end_time"])}</td>
-            <td style="padding:8px;border-bottom:1px solid #ddd;">{_format_email_cell(class_info["teacher"])}</td>
-            <td style="padding:8px;border-bottom:1px solid #ddd;">{_format_email_cell(class_info["replacement"])}</td>
+            <td style="{_admin_row_style(class_info)}">{html.escape(class_info["code"])}</td>
+            <td style="{_admin_row_style(class_info)}">{html.escape(class_info["start_time"])}</td>
+            <td style="{_admin_row_style(class_info)}">{html.escape(class_info["end_time"])}</td>
+            <td style="{_admin_row_style(class_info)}">{_format_email_cell(class_info["teacher"])}</td>
+            <td style="{_admin_row_style(class_info)}">{_format_email_cell(class_info["replacement"])}</td>
         </tr>
         """
         for class_info in classes
@@ -204,10 +215,7 @@ def send_daily_classes_email(target_date=None):
     target_date = target_date or dt.datetime.now(LOCAL_TIMEZONE).date()
     classes = get_classes_for_date(target_date)
     body = build_daily_classes_email(classes, target_date)
-    subject_prefix = "[MISSING TEACHER] " if any(
-        "Unknown" in (class_info["teacher"], class_info["replacement"])
-        for class_info in classes
-    ) else ""
+    subject_prefix = "[MISSING TEACHER] " if any(_has_missing_teacher(class_info) for class_info in classes) else ""
     subject = f"{subject_prefix}Classes today - {target_date.strftime('%d/%m/%Y')}"
 
     _send_html_email(recipients, subject, body)
@@ -237,7 +245,7 @@ def main(argv=None):
 
 
 @scheduler_fn.on_schedule(
-    schedule="0 6 * * *",
+    schedule="0 5 * * *",
     timezone=scheduler_fn.Timezone("Europe/Brussels"),
     region="europe-west1",
     timeout_sec=540,
