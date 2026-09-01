@@ -1,4 +1,5 @@
 import os
+from calendar import monthrange
 from datetime import date
 from Logger import log
 
@@ -10,6 +11,9 @@ PAYMENTS_TEMPLATE_ID = os.getenv('PAYMENTS_TEMPLATE_ID')
 STUDENT_CONTRACT_TEMPLATE_ID = os.getenv('STUDENT_CONTRACT_TEMPLATE_ID')
 VOLUNTEER_CONTRACT_TEMPLATE_ID = os.getenv('VOLUNTEER_CONTRACT_TEMPLATE_ID')
 NDA_TEMPLATE_ID = os.getenv('NDA_TEMPLATE_ID')
+PAYSLIP_A17_TEMPLATE_ID = "1Nve5jY8K6vu1fkpctiIGEHlhQMDOTRLOFz2hjEHtsaE"
+
+MONTH_NAMES_FR = ["Janvier", "Février", "Mars", "Avril", "Mai", "Juin", "Juillet", "Août", "Septembre", "Octobre", "Novembre", "Décembre"]
 
 class Document():
     def __init__(self, google):
@@ -153,6 +157,53 @@ class ContractDocument(Document):
 
         except Exception as e:
             raise ValueError(f"[ERROR] {self.teacher.get('name')} - Error In Filling Out File: {e}")
+
+
+class PayslipA17Document(Document):
+    def __init__(self, google, teacher, payment, year, month):
+        Document.__init__(self, google)
+        self.teacher = teacher
+        self.payment = payment
+        self.year = year
+        self.month = month
+
+        name = f"{year}-{month} Payslip A17 {teacher.get('name')}"
+        log_details = teacher.get('name')
+        self.log_details = log_details
+        self.document_id = self._Document__copy_document(PAYSLIP_A17_TEMPLATE_ID, name, log_details)
+
+    def fill(self):
+        try:
+            total_amount = float(self.payment.get("Amount__c") or 0)
+            total_minutes = round(total_amount / 15 * 60)
+            hours = total_minutes // 60
+            minutes = total_minutes % 60
+            address_parts = (self.teacher.get('address') or "").split(",", 1)
+            address1 = address_parts[0].strip()
+            address2 = address_parts[1].strip() if len(address_parts) > 1 else ""
+            start = date(self.year, self.month, 1)
+            end = date(self.year, self.month, monthrange(self.year, self.month)[1])
+
+            requests = [
+                {'replaceAllText': {'containsText': {'text': '{NAME}'}, 'replaceText': self.teacher.get('name') or ""}},
+                {'replaceAllText': {'containsText': {'text': '{REG_NB}'}, 'replaceText': self.teacher.get('nn') or ""}},
+                {'replaceAllText': {'containsText': {'text': '{ADDRESS}'}, 'replaceText': self.teacher.get('address') or ""}},
+                {'replaceAllText': {'containsText': {'text': '{ADDRESS1}'}, 'replaceText': address1}},
+                {'replaceAllText': {'containsText': {'text': '{ADDRESS2}'}, 'replaceText': address2}},
+                {'replaceAllText': {'containsText': {'text': '{MONTH_FR}'}, 'replaceText': MONTH_NAMES_FR[self.month - 1]}},
+                {'replaceAllText': {'containsText': {'text': '{YEAR}'}, 'replaceText': str(self.year)}},
+                {'replaceAllText': {'containsText': {'text': '{START}'}, 'replaceText': start.strftime("%d/%m/%Y")}},
+                {'replaceAllText': {'containsText': {'text': '{END}'}, 'replaceText': end.strftime("%d/%m/%Y")}},
+                {'replaceAllText': {'containsText': {'text': '{TOT_AMOUNT}'}, 'replaceText': str(total_amount)}},
+                {'replaceAllText': {'containsText': {'text': '{TOTAL_HOURS}'}, 'replaceText': f"{hours:02d} h {minutes:02d} min"}},
+                {'replaceAllText': {'containsText': {'text': '{IBAN}'}, 'replaceText': self.teacher.get('iban') or ""}},
+                {'replaceAllText': {'containsText': {'text': '{BIC}'}, 'replaceText': self.teacher.get('bic') or ""}},
+            ]
+
+            self.google.docs.documents().batchUpdate(documentId=self.document_id, body={'requests': requests}).execute()
+
+        except Exception as e:
+            raise ValueError(f"[ERROR] {self.teacher.get('name')} - Error In Filling Out Payslip A17: {e}")
 
 
 class PaymentsDocument(Document):
