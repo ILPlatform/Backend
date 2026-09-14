@@ -22,7 +22,7 @@ def events_u_update_class(data):
     class_data = sf.sf.query(f"""
         SELECT
             Id, Name, Code__c, Teacher__r.Email__c, Teacher__r.Full_Name__c,
-            Account.Name, Account.BillingAddress, Account.Online__c,
+            Account.Name, Account.BillingAddress, Account.Online__c, Account.WiFi_SSID__c, Account.WiFi_Password__c,
             Start_Time__c, End_Time__c, Day_of_Week__c,
             Yearly_Schedule__r.Start_Date__c, Yearly_Schedule__r.End_Date__c,
             Yearly_Schedule__r.Associated_Calendar__r.Holiday_Weeks__c, Yearly_Schedule__r.Associated_Calendar__r.Holiday_Days__c,

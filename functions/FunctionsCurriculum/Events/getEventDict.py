@@ -1,6 +1,9 @@
 import datetime as dt
 
 def getEventDict(details, course_days):
+    wifi_ssid = details["Account"].get("WiFi_SSID__c") or "N/A"
+    wifi_password = details["Account"].get("WiFi_Password__c") or "N/A"
+
     return {
         'summary': f'{details["Code__c"]} - {details["Account"]["Name"]} [{details["Ages_Announced__c"] if details.get("Ages_Announced__c") and details.get("Ages_Announced__c") != "" else "???"}]',
         'location': f"""
@@ -11,6 +14,7 @@ def getEventDict(details, course_days):
         'description':
             f"Horaire de cours: {details['Start_Time__c'][:5]} - {details['End_Time__c'][:5]}. " + \
             "Arrivée attendue 15 minutes avant pour préparer la salle.\n\n" + \
+            f"WiFi: {wifi_ssid} / {wifi_password}\n\n" + \
             f"Procédure de présences: {details['Yearly_Schedule__r']['Attendance_Description__c']}",
         'start': {
             'dateTime': (dt.datetime.combine(

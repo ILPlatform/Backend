@@ -14,6 +14,8 @@ class SFProcessor(SFConnector):
     def __process_camp_details(self, data):
         nl = '\n\n'
         address = f'{data["Account"]["BillingAddress"]["street"]}, {data["Account"]["BillingAddress"]["postalCode"]} {data["Account"]["BillingAddress"]["city"]}, {data["Account"]["BillingAddress"]["country"]}'
+        wifi_ssid = data["Account"].get("WiFi_SSID__c") or "N/A"
+        wifi_password = data["Account"].get("WiFi_Password__c") or "N/A"
         processed_data = {
             "id": data["Id"],
             "code": data["Camp_Code__c"],
@@ -35,7 +37,7 @@ class SFProcessor(SFConnector):
             "end_day1": f'{data["Week__r"]["Start_Date__c"]}T{data["Time_Schedule__r"]["End_Pay_Time__c"][:-1]}',
             "start_day1": f'{(data["Week__r"]["Start_Date__c"] + "T" + data.get("Time_Schedule__r", {}).get("Start_Pay_Time_Day_1__c")[:-1]) if data.get("Time_Schedule__r", {}).get("Start_Pay_Time_Day_1__c") else (data["Week__r"]["Start_Date__c"] + "T" + data["Time_Schedule__r"]["Start_Pay_Time__c"][:-1])}',
             "address": address,
-            "description": f'{"".join(["Notes importantes: ", data["Description"], nl]) if data["Description"] else ""}{data["Time_Schedule__r"]["Description__c"]}',
+            "description": f'{"".join(["Notes importantes: ", data["Description"], nl]) if data["Description"] else ""}WiFi Details: {wifi_ssid} / {wifi_password}{nl}{data["Time_Schedule__r"]["Description__c"]}',
             "excluded_day": data.get("Week__r").get("Excluded_Day__c"),
             "replacements": [{"date": replacement.get("Date__c"),
                               "email": replacement.get("Teacher__r").get("Email__c") if replacement.get(

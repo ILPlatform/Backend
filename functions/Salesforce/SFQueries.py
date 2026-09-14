@@ -5,7 +5,7 @@ class SFQueries:
 
     def get_camp_details(self, code):
         query = f"""
-            SELECT Name, Camp_Code__c, Teacher__r.Email__c, Week__r.Name, Week__r.Id, Week__r.Start_Date__c, Week__r.End_Date__c, Account.Name, Account.BillingAddress, Ages_Real__c, Time_Schedule__r.Start_Pay_Time__c, Time_Schedule__r.Time_Slot__c ,Time_Schedule__r.End_Pay_Time__c, Time_Schedule__r.Start_Pay_Time_Day_1__c, Time_Schedule__r.Description__c, Description, Id, Google_Event__c, Time_Schedule__r.Name, Google_Drive_Pictures__c, Week__r.Holiday__r.Google_Drive_Pictures_ID__c, Week__r.Holiday__r.Name, Week__r.Holiday__r.Id, Week__r.Google_Drive_Pictures_ID__c, Week__r.Excluded_Day__c,
+            SELECT Name, Camp_Code__c, Teacher__r.Email__c, Week__r.Name, Week__r.Id, Week__r.Start_Date__c, Week__r.End_Date__c, Account.Name, Account.BillingAddress, Account.WiFi_SSID__c, Account.WiFi_Password__c, Ages_Real__c, Time_Schedule__r.Start_Pay_Time__c, Time_Schedule__r.Time_Slot__c ,Time_Schedule__r.End_Pay_Time__c, Time_Schedule__r.Start_Pay_Time_Day_1__c, Time_Schedule__r.Description__c, Description, Id, Google_Event__c, Time_Schedule__r.Name, Google_Drive_Pictures__c, Week__r.Holiday__r.Google_Drive_Pictures_ID__c, Week__r.Holiday__r.Name, Week__r.Holiday__r.Id, Week__r.Google_Drive_Pictures_ID__c, Week__r.Excluded_Day__c,
                 (
                     SELECT Id, Teacher__r.Email__c, Date__c
                     FROM Replacements__r
@@ -18,7 +18,7 @@ class SFQueries:
 
     def get_all_camp_details(self, week_codes):
         query = f"""
-            SELECT Name, Camp_Code__c, Teacher__r.Email__c, Week__r.Name, Week__r.Id, Week__r.Start_Date__c, Week__r.End_Date__c, Account.Name, Account.BillingAddress, Ages_Real__c, Time_Schedule__r.Start_Pay_Time__c, Time_Schedule__r.Time_Slot__c ,Time_Schedule__r.End_Pay_Time__c, Time_Schedule__r.Start_Pay_Time_Day_1__c, Time_Schedule__r.Description__c, Description, Id, Google_Event__c, Time_Schedule__r.Name, Google_Drive_Pictures__c, Week__r.Holiday__r.Google_Drive_Pictures_ID__c, Week__r.Holiday__r.Name, Week__r.Holiday__r.Id, Week__r.Google_Drive_Pictures_ID__c, Week__r.Excluded_Day__c,
+            SELECT Name, Camp_Code__c, Teacher__r.Email__c, Week__r.Name, Week__r.Id, Week__r.Start_Date__c, Week__r.End_Date__c, Account.Name, Account.BillingAddress, Account.WiFi_SSID__c, Account.WiFi_Password__c, Ages_Real__c, Time_Schedule__r.Start_Pay_Time__c, Time_Schedule__r.Time_Slot__c ,Time_Schedule__r.End_Pay_Time__c, Time_Schedule__r.Start_Pay_Time_Day_1__c, Time_Schedule__r.Description__c, Description, Id, Google_Event__c, Time_Schedule__r.Name, Google_Drive_Pictures__c, Week__r.Holiday__r.Google_Drive_Pictures_ID__c, Week__r.Holiday__r.Name, Week__r.Holiday__r.Id, Week__r.Google_Drive_Pictures_ID__c, Week__r.Excluded_Day__c,
             Overwrite_Cancelled__c,
                 (
                     SELECT Id, Teacher__r.Email__c, Date__c, RecordType.Name
@@ -34,7 +34,7 @@ class SFQueries:
     def get_all_class_details(self, year_code):
         query = f"""
         SELECT  Id, Name, Code__c, Teacher__r.Email__c,
-                Account.Name, Account.BillingAddress,
+                Account.Name, Account.BillingAddress, Account.WiFi_SSID__c, Account.WiFi_Password__c,
                 Start_Time__c, End_Time__c, Day_of_Week__c,
                 Yearly_Schedule__r.Start_Date__c, Yearly_Schedule__r.End_Date__c,
                 Yearly_Schedule__r.Associated_Calendar__r.Holiday_Weeks__c, Yearly_Schedule__r.Associated_Calendar__r.Holiday_Days__c,
@@ -56,7 +56,7 @@ class SFQueries:
     def get_all_class_details2(self, week_code):
         query = f"""
         SELECT  Id, Name, Code__c, Teacher__r.Email__c,
-                Account.Name, Account.BillingAddress, Account.Online__c,
+                Account.Name, Account.BillingAddress, Account.Online__c, Account.WiFi_SSID__c, Account.WiFi_Password__c,
                 Start_Time__c, End_Time__c, Day_of_Week__c,
                 Yearly_Schedule__r.Start_Date__c, Yearly_Schedule__r.End_Date__c,
                 Yearly_Schedule__r.Associated_Calendar__r.Holiday_Weeks__c, Yearly_Schedule__r.Associated_Calendar__r.Holiday_Days__c,
@@ -78,7 +78,7 @@ class SFQueries:
     def get_all_class_details3(self, class_id):
         query = f"""
         SELECT  Id, Name, Code__c, Teacher__r.Email__c,
-                Account.Name, Account.BillingAddress, Account.Online__c,
+                Account.Name, Account.BillingAddress, Account.Online__c, Account.WiFi_SSID__c, Account.WiFi_Password__c,
                 Start_Time__c, End_Time__c, Day_of_Week__c,
                 Yearly_Schedule__r.Start_Date__c, Yearly_Schedule__r.End_Date__c,
                 Yearly_Schedule__r.Associated_Calendar__r.Holiday_Weeks__c, Yearly_Schedule__r.Associated_Calendar__r.Holiday_Days__c,
